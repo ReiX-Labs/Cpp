@@ -2,8 +2,7 @@
 
 Web học &amp; luyện tập **C++ cho lập trình game** — học có hệ thống, luyện tập ngay trong từng mục, và **ôn tập hằng ngày** kiểu spaced-repetition (giống Anki) để kiến thức không rơi rụng.
 
-🔗 **Bản demo:** https://rei-1407.github.io/Cpp/
-
+🔗 **Bản demo:** https://reix-labs.github.io/Cpp/
 ---
 
 ## ✨ Tính năng
