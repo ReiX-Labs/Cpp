@@ -56,6 +56,9 @@ export default function Sidebar() {
       </div>
 
       <nav className="nav">
+        <NavLink to="/fundamentals" className={({ isActive }) => "nav-link" + (isActive ? " active" : "")}>
+          <span className="nav-ico">📖</span> Ôn nền tảng · 01–09
+        </NavLink>
         <NavLink to="/" end className={({ isActive }) => "nav-link" + (isActive ? " active" : "")}>
           <span className="nav-ico">◈</span> Tổng quan
         </NavLink>

@@ -5,6 +5,7 @@
   "type": "module",
   "description": "Website học & luyện tập C++ cho Game Development (nội bộ).",
   "scripts": {
+    "check:handoff": "node scripts/check-handoff.mjs",
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview"

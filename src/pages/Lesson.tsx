@@ -8,6 +8,7 @@ import { actions, useStore } from "../lib/store";
 import Markdown, { headingSlug } from "../components/Markdown";
 import Quiz from "../components/Quiz";
 import ChallengePanel from "../components/ChallengePanel";
+import { fundamentalsLessons } from "../content/handoff";
 
 interface Toc {
   text: string;
@@ -109,6 +110,16 @@ export default function Lesson() {
 
         {tab === "learn" ? (
           <div className="fade">
+            {fundamentalsLessons.some((item) => item.related.includes(section.id)) && (
+              <aside className="card pad" style={{ marginBottom: 20 }}>
+                <strong>Ôn theo handoff bài 01–09</strong>
+                <div className="handoff-related">
+                  {fundamentalsLessons.filter((item) => item.related.includes(section.id)).map((item) => (
+                    <Link className="chip" key={item.id} to={`/fundamentals?topic=${item.id}`}>Bài {item.id} · {item.title}</Link>
+                  ))}
+                </div>
+              </aside>
+            )}
             <Markdown>{section.body}</Markdown>
 
             <div className="lesson-footer">

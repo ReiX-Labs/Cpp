@@ -6,6 +6,7 @@ import Lesson from "./pages/Lesson";
 import Review from "./pages/Review";
 import Reference from "./pages/Reference";
 import Exercises from "./pages/Exercises";
+import Fundamentals from "./pages/Fundamentals";
 import { useSelector } from "./lib/store";
 
 export default function App() {
@@ -22,6 +23,7 @@ export default function App() {
         <Route path="lesson/:id" element={<Lesson />} />
         <Route path="review" element={<Review />} />
         <Route path="exercises" element={<Exercises />} />
+        <Route path="fundamentals" element={<Fundamentals />} />
         <Route path="reference" element={<Reference />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>

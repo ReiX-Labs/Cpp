@@ -3,6 +3,25 @@
    Desktop-first. Dark by default, light theme via [data-theme].
    ============================================================ */
 
+.fundamentals-layout { display: grid; grid-template-columns: 245px minmax(0, 1fr); gap: 20px; align-items: start; }
+.fundamentals-nav { display: flex; flex-direction: column; gap: 8px; }
+.fundamentals-nav .btn { text-align: left; white-space: normal; justify-content: flex-start; }
+.handoff-related { margin-top: 20px; }
+.handoff-related .chip { display: inline-block; margin: 4px 8px 4px 0; white-space: normal; }
+.handoff-answers { margin: 24px 0; padding: 16px; border: 1px solid var(--border); border-radius: 10px; }
+.handoff-answers summary { cursor: pointer; color: var(--accent); font-weight: 600; }
+.syntax-filters { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; }
+.syntax-filters label { flex: 1 1 220px; font-size: 13px; }
+.syntax-filters input, .syntax-filters select { display: block; width: 100%; margin-top: 6px; padding: 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); }
+.syntax-table-wrap { overflow-x: auto; }
+.syntax-table { width: 100%; border-collapse: collapse; text-align: left; }
+.syntax-table th, .syntax-table td { padding: 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+.syntax-table th { background: var(--surface-2); }
+.syntax-table td:first-child { min-width: 220px; width: 38%; }
+.syntax-table code { overflow-wrap: anywhere; color: var(--accent); }
+.syntax-table .prose p { margin: 0; }
+@media (max-width: 1050px) { .fundamentals-layout { grid-template-columns: minmax(0, 1fr); } }
+
 :root {
   /* palette (dark) */
   --bg: #0a0d14;

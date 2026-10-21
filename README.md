@@ -16,6 +16,15 @@ Web học &amp; luyện tập **C++ cho lập trình game** — học có hệ t
 - **Giao diện sáng/tối**, tối ưu cho desktop.
 - Tiến độ lưu ngay trên trình duyệt — không cần đăng nhập, không cần server.
 
+## Nội dung cập nhật từ handoff
+
+- **Ôn nền tảng · 01–09**: nội dung từ `Update/CPP_Fundamentals_Review_01-09_AI_Handoff.md`, gồm bài 06.5, ví dụ Arena ba file, 23 câu tự kiểm tra có mở đáp án và lịch ôn.
+- **Tra cứu & Cheat sheet** mặc định mở bảng **Câu lệnh → Ý nghĩa**, tìm có/không dấu, tìm toán tử và lọc nhóm.
+- Các bài tổng hợp liên kết tới bài handoff tương ứng; tìm kiếm trên thanh trên cùng bao gồm nội dung mới.
+- Bài 09 chưa chấm; bài 10–12 chờ tài liệu. Nội dung/tiến độ cũ vẫn giữ nguyên.
+- Xem `Update/CONTENT_AUDIT.md` để biết phần trùng, phần bổ sung và quy trình cập nhật đến bài 12.
+- Kiểm tra dữ liệu: `npm run check:handoff`; kiểm tra TypeScript và build: `npm run build`.
+
 ## 🛠 Công nghệ
 
 React + TypeScript + Vite.

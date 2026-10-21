@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { reference } from "../content/reference";
 import { actions, useStore } from "../lib/store";
 import Markdown from "../components/Markdown";
+import SyntaxLookup from "../components/SyntaxLookup";
 
 export default function Reference() {
   const state = useStore();
@@ -11,26 +11,12 @@ export default function Reference() {
   const sections = appendix?.sections ?? [];
 
   const requested = params.get("tab");
-  const initial =
-    (requested && (requested === "settings" || sections.some((s) => s.id === requested))
+  const active =
+    (requested && (requested === "syntax" || requested === "settings" || sections.some((s) => s.id === requested))
       ? requested
       : null) ??
-    sections[0]?.id ??
-    "settings";
-  const [active, setActive] = useState<string>(initial);
-
-  // follow deep links like /reference?tab=h when they change
-  useEffect(() => {
-    if (requested && requested !== active) {
-      if (requested === "settings" || sections.some((s) => s.id === requested)) {
-        setActive(requested);
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [requested]);
-
+    "syntax";
   const select = (id: string) => {
-    setActive(id);
     setParams({ tab: id }, { replace: true });
   };
 
@@ -46,6 +32,9 @@ export default function Reference() {
       </p>
 
       <div className="tabs" style={{ flexWrap: "wrap" }}>
+        <button className={"tab" + (active === "syntax" ? " active" : "")} onClick={() => select("syntax")}>
+          Câu lệnh · Bài 01–09
+        </button>
         {sections.map((s) => (
           <button
             key={s.id}
@@ -64,7 +53,7 @@ export default function Reference() {
         </button>
       </div>
 
-      {active === "settings" ? (
+      {active === "syntax" ? <SyntaxLookup /> : active === "settings" ? (
         <div className="card pad fade" style={{ maxWidth: 620 }}>
           <h3 style={{ marginTop: 0 }}>Cài đặt học tập</h3>
 

@@ -1,6 +1,7 @@
 import { useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { reference } from "../content/reference";
+import { fundamentalsLessons, handoffChapter, studyResources } from "../content/handoff";
 import { actions, useStore } from "../lib/store";
 
 function norm(s: string): string {
@@ -21,23 +22,30 @@ export default function Topbar() {
   const results = useMemo(() => {
     const query = norm(q.trim());
     if (query.length < 2) return [];
-    return reference.sections
+    const searchable = [
+      ...reference.sections.map((s) => ({ ...s, url: `/lesson/${s.id}` })),
+      ...[...fundamentalsLessons, ...studyResources].map((item) => ({
+        ...handoffChapter(item.chapter), id: `handoff-${item.id}`, num: "related" in item ? item.id : "",
+        title: item.title, partTitle: "Ôn nền tảng · Handoff", url: `/fundamentals?topic=${item.id}`,
+      })),
+    ];
+    return searchable
       .map((s) => {
         const hay = norm(s.title + " " + s.body);
         const inTitle = norm(s.title).includes(query);
         const hit = hay.includes(query);
         return hit ? { s, score: inTitle ? 2 : 1 } : null;
       })
-      .filter((x): x is { s: (typeof reference.sections)[number]; score: number } => !!x)
+      .filter((x): x is NonNullable<typeof x> => !!x)
       .sort((a, b) => b.score - a.score)
       .slice(0, 8)
       .map((x) => x.s);
   }, [q]);
 
-  const go = (id: string) => {
+  const go = (url: string) => {
     setQ("");
     setFocused(false);
-    navigate(`/lesson/${id}`);
+    navigate(url);
   };
 
   return (
@@ -64,7 +72,7 @@ export default function Topbar() {
               <div className="search-empty">Không tìm thấy kết quả cho “{q}”.</div>
             ) : (
               results.map((s) => (
-                <a key={s.id} className="search-result" onClick={() => go(s.id)}>
+                <a key={s.id} className="search-result" onClick={() => go(s.url)}>
                   <div className="sr-title">
                     {s.num ? `${s.num}. ` : ""}
                     {s.title}
