@@ -110,6 +110,8 @@ export default function Lesson() {
 
         {tab === "learn" ? (
           <div className="fade">
+            <Markdown>{section.body}</Markdown>
+
             {fundamentalsLessons.some((item) => item.related.includes(section.id)) && (
               <aside className="card pad" style={{ marginBottom: 20 }}>
                 <strong>Ôn theo handoff bài 01–09</strong>
@@ -120,8 +122,6 @@ export default function Lesson() {
                 </div>
               </aside>
             )}
-            <Markdown>{section.body}</Markdown>
-
             <div className="lesson-footer">
               {prev ? (
                 <Link className="lesson-nav" to={`/lesson/${prev.id}`}>

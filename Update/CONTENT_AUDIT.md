@@ -25,6 +25,9 @@ Số bài handoff không trùng số mục web: bài 09 là pointer, còn mục 
 
 ## Cách đưa lên web và xử lý trùng lặp
 
+- **Đã sửa cách tích hợp:** lý thuyết từ handoff hiện xuất hiện trực tiếp trong nội dung bài chính, không yêu cầu mở trang Ôn nền tảng. `src/content/integrateHandoff.ts` thay các đoạn tương ứng hoặc thêm chủ đề còn thiếu vào bài 0, 2, 3, 4, 5, 6, 12, 20, 22, 49. Mục lục trong bài, tìm kiếm, thời gian đọc và số ví dụ đều dùng nội dung đã tích hợp.
+- Ví dụ: mục 3 có chia nguyên/ép kiểu, const/constexpr, short-circuit và bitmask; mục 4 có scope, ba ngôi và quy tắc vòng lặp; mục 6 có bài Healing System và toàn bộ Arena ba file; mục 20 có array/vector, kiểm tra giới hạn và signed/unsigned.
+- Các ví dụ ngắn trùng trong bài 2/3/4/5/6 được thay bằng diễn giải handoff. Phần kiến thức nâng cao còn hữu ích giữ lại. Liên kết ôn tập chuyển xuống sau lý thuyết.
 - Trang **Ôn nền tảng · 01–09** đọc trực tiếp handoff, không chép lại văn bản vào một bộ bài markdown khác.
 - Kiến thức tổng hợp cũ vẫn phục vụ tra cứu mở rộng. Các chủ đề tương ứng có liên kết hai chiều để tránh tạo thêm mục đánh số trùng hoặc gán nhầm tiến độ.
 - Có phần kiến thức giao nhau giữa hai lộ trình, có chủ đích: bản handoff giữ đúng phạm vi và ví dụ người học đã học; bản tổng hợp chứa thêm kiến thức nâng cao.
@@ -39,5 +42,6 @@ Số bài handoff không trùng số mục web: bài 09 là pointer, còn mục 
 2. Nếu handoff mới là bản tích lũy, đổi import ở `src/content/handoff.ts` sang bản mới. Không tự glob mọi markdown trong Update vì có thể trộn các phiên bản lặp nhau hoặc báo cáo này.
 3. Cập nhật `fundamentalsLessons`: ID bài ổn định, số chương tương ứng và liên kết tới kiến thức tổng hợp. Không đổi ID cũ để khớp số chương mới.
 4. Cập nhật `studyResources` nếu số chương phụ trợ thay đổi; cập nhật bảng cú pháp tại nguồn và biểu thức bổ sung khi cần.
+   Cập nhật ánh xạ chủ đề trong `src/content/integrateHandoff.ts` để lý thuyết mới xuất hiện ở bài chính; các tiêu đề không khớp sẽ làm kiểm tra thất bại thay vì âm thầm bỏ mất nội dung.
 5. Cập nhật nhãn phạm vi, trạng thái trong Fundamentals, Sidebar, Lesson và Reference. Chỉ đổi trạng thái chấm khi có căn cứ mới.
 6. Cập nhật các kỳ vọng phạm vi trong `scripts/check-handoff.mjs`; chạy `npm run check:handoff`, `npm run build`, kiểm tra giao diện, liên kết và `git diff --check`.
