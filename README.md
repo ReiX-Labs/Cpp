@@ -16,15 +16,21 @@ Web học &amp; luyện tập **C++ cho lập trình game** — học có hệ t
 - **Giao diện sáng/tối**, tối ưu cho desktop.
 - Tiến độ lưu ngay trên trình duyệt — không cần đăng nhập, không cần server.
 
-## Nội dung cập nhật từ handoff
+## Giáo trình đã tích hợp
 
-- **Ôn nền tảng · 01–09**: nội dung từ `Update/CPP_Fundamentals_Review_01-09_AI_Handoff.md`, gồm bài 06.5, ví dụ Arena ba file, 23 câu tự kiểm tra có mở đáp án và lịch ôn.
-- **Tra cứu & Cheat sheet** mặc định mở bảng **Câu lệnh → Ý nghĩa**, tìm có/không dấu, tìm toán tử và lọc nhóm.
-- Các bài tổng hợp liên kết tới bài handoff tương ứng; tìm kiếm trên thanh trên cùng bao gồm nội dung mới.
-- Lý thuyết handoff đã tích hợp trực tiếp vào các bài chính 0, 2, 3, 4, 5, 6, 12, 20, 22, 49: ví dụ, giải thích, lỗi thường gặp và Arena ba file. Phần trùng được thay tại đúng chủ đề; các ID bài/tiến độ giữ nguyên.
-- Bài 09 chưa chấm; bài 10–12 chờ tài liệu. Nội dung/tiến độ cũ vẫn giữ nguyên.
-- Xem `Update/CONTENT_AUDIT.md` để biết phần trùng, phần bổ sung và quy trình cập nhật đến bài 12.
-- Kiểm tra dữ liệu: `npm run check:handoff`; kiểm tra TypeScript và build: `npm run build`.
+- **Học C++ · 01–17.2** lấy lý thuyết, ví dụ, yêu cầu thực hành và tài nguyên ôn từ một nguồn: `Update/CPP_GIAO_TRINH_CHUAN.md`. Thứ tự đi từ cú pháp → hàm và dữ liệu → ownership/OOP → các tính năng C++17 → debugging và bài tổng kết.
+- **Câu lệnh → Ý nghĩa → Bài giải thích** hỗ trợ tìm có/không dấu, tìm toán tử, lọc nhóm và mở đúng bài học. Tìm kiếm trên thanh đầu trang bao gồm toàn bộ giáo trình.
+- Giữ Pointer-Based Healing, Arena ba file, 23 câu tự kiểm tra có mở đáp án, lịch ôn và lịch sử thực hành có nguồn. Bản Arena Combat đã được chỉnh sửa sau bài nộp có [ZIP tải về](public/downloads/ArenaCombat_Final_Reviewed.zip), tách rõ với bài tự nộp được chấm 9.5/10.
+- Thư viện cũ giữ nguyên ID và đường dẫn `/lesson/:id`; `/fundamentals?topic=...` vẫn mở đúng bài tương ứng. Khóa học mới dùng `/course/:id` với anchor ổn định.
+- Giữ khóa lưu trữ `cpp-dojo-state-v1`, XP, streak, SRS, kết quả và link bài nộp cũ. Tiến độ lộ trình mới dùng tiền tố `course:` và chỉ ghi nhận khi người học chủ động đánh dấu; nhập tài liệu không tự hoàn thành bài.
+- Ôn tập mặc định theo bài đã đánh dấu trong khóa; có thể chọn toàn khóa hoặc thư viện mở rộng. Các bài tập thư viện cũ vẫn có phạm vi riêng.
+
+## Tài liệu để cập nhật tiếp
+
+- [CPP_GIAO_TRINH_CHUAN.md](Update/CPP_GIAO_TRINH_CHUAN.md): bản biên tập chính mà khóa học và bảng tra cứu trên web đang đọc. Hợp nhất tài liệu mới vào file này; không tạo giáo trình song song.
+- [Completion Pack](Update/README.md): handbook, handoff chuyển sang Unreal và mã nguồn bài tổng kết do người học cung cấp; giữ nguyên để đối chiếu nguồn. Phần Unreal là hướng học tiếp, chưa phải khóa mới đã triển khai.
+- [CPP_Fundamentals_Review_01-09_AI_Handoff.md](Update/CPP_Fundamentals_Review_01-09_AI_Handoff.md): vẫn được adapter của **thư viện cũ** sử dụng để giữ phần lý thuyết đã tích hợp; không phải nguồn của khóa học chính nữa.
+- [Update_2026-10-26.zip](Archive/Update_2026-10-26.zip): lưu nguyên bản 5 tài liệu nguồn/báo cáo cũ đã dọn khỏi `Update`, gồm `CONTENT_AUDIT.md`, hai file `CPlusPlus_*`, báo cáo rà soát 23/10 và kế hoạch 24/10. Nội dung lưu trữ đã được kiểm tra SHA-256 với bản gốc.
 
 ## 🛠 Công nghệ
 
@@ -35,10 +41,16 @@ React + TypeScript + Vite.
 ```bash
 npm install
 npm run dev       # mở http://localhost:5173
+npm run check     # nội dung, liên kết, parser, phạm vi ôn và ID tương thích
 npm run build     # build production vào dist/
+npm run preview   # xem bản production tại /Cpp/
 ```
 
-> Yêu cầu Node 18+ (khuyến nghị 20+).
+Chạy `npm run check:cpp` trong **Developer PowerShell/Command Prompt của VS2022** để biên dịch C++17 và đối chiếu kết quả ví dụ, bài tổng kết, các ca biên và câu đoán output. Trên Linux, lệnh dùng `g++`; có thể chọn compiler bằng biến môi trường `CXX`. File build thử nằm trong thư mục tạm, không sửa bài nộp.
+
+GitHub Actions chạy kiểm tra nội dung, C++ và build trước khi deploy GitHub Pages từ `main`. Khi thêm bài: giữ anchor cũ, bổ sung manifest trong `src/content/curriculum.ts`, kiểm tra các liên kết và cập nhật giới hạn phạm vi trong `scripts/check-curriculum.mjs` khi cần.
+
+> CI dùng Node 20. Dự án hiện yêu cầu Node 18+.
 
 ---
 

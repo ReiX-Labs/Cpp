@@ -24,6 +24,7 @@ export default function App() {
         <Route path="review" element={<Review />} />
         <Route path="exercises" element={<Exercises />} />
         <Route path="fundamentals" element={<Fundamentals />} />
+        <Route path="course/:id" element={<Fundamentals />} />
         <Route path="reference" element={<Reference />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>

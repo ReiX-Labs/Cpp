@@ -2,6 +2,8 @@ import { memo, type ReactNode } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
+import { Link } from "react-router-dom";
+import { splitMarkdownStructures } from "../content/markdownStructures";
 
 /** Extract plain text from arbitrary react children (for heading ids). */
 export function nodeText(children: ReactNode): string {
@@ -33,16 +35,28 @@ function Heading({ level, children }: { level: 2 | 3 | 4; children: ReactNode })
 
 interface Props {
   children: string;
+  resolveAnchor?: (anchor: string) => string | undefined;
 }
 
 /** Renders markdown with GFM tables, C++ syntax highlighting and anchored headings. */
-function MarkdownBase({ children }: Props) {
+function MarkdownBase({ children, resolveAnchor }: Props) {
+  // Support only the two trusted document structures we need. Arbitrary raw HTML
+  // remains disabled, while answer disclosures and explicit anchors stay usable.
+  const chunks = splitMarkdownStructures(children);
+  if (chunks.some((chunk) => chunk.type !== "text")) return <>{chunks.map((chunk, index) => {
+    if (chunk.type === "anchor") return <span key={index} id={chunk.id} className="content-anchor" />;
+    if (chunk.type === "details") return <details className="handoff-answers" key={index}>
+      <summary>{chunk.summary}</summary><MarkdownBase resolveAnchor={resolveAnchor}>{chunk.body}</MarkdownBase>
+    </details>;
+    return <MarkdownBase key={index} resolveAnchor={resolveAnchor}>{chunk.body}</MarkdownBase>;
+  })}</>;
   return (
     <div className="prose">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[[rehypeHighlight, { detect: true, ignoreMissing: true }]]}
         components={{
+          table: ({ children }) => <div className="markdown-table-wrap" tabIndex={0}><table>{children}</table></div>,
           h1: ({ children }) => <Heading level={2}>{children}</Heading>,
           h2: ({ children }) => <Heading level={2}>{children}</Heading>,
           h3: ({ children }) => <Heading level={3}>{children}</Heading>,
@@ -50,6 +64,8 @@ function MarkdownBase({ children }: Props) {
           a: ({ href, children }) => {
             // In-page anchors: scroll manually so they don't clash with HashRouter.
             if (href?.startsWith("#")) {
+              const destination = resolveAnchor?.(href.slice(1));
+              if (destination) return <Link to={destination}>{children}</Link>;
               return (
                 <a
                   href={href}

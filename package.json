@@ -5,7 +5,11 @@
   "type": "module",
   "description": "Website học & luyện tập C++ cho Game Development (nội bộ).",
   "scripts": {
+    "check": "npm run check:handoff && npm run check:curriculum && npm run check:compatibility",
     "check:handoff": "node scripts/check-handoff.mjs",
+    "check:curriculum": "node scripts/check-curriculum.mjs",
+    "check:compatibility": "node scripts/check-compatibility.mjs",
+    "check:cpp": "node scripts/check-cpp-examples.mjs && node scripts/check-final-assessment.mjs && node scripts/check-challenges.mjs",
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview"

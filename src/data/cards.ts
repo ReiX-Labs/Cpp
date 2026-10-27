@@ -50,7 +50,7 @@ export const cards: Flashcard[] = [
     sectionId: "2",
     tag: "Preprocessor",
     front: "`#pragma once` dùng để làm gì?",
-    back: "Include guard hiện đại — ngăn 1 header bị include 2 lần trong cùng translation unit (tránh lỗi *redefinition*). Cách truyền thống là `#ifndef / #define / #endif`.",
+    back: "Ngăn xử lý lặp một header trong cùng translation unit; được MSVC và các compiler phổ biến hỗ trợ. Include guard chuẩn dùng `#ifndef / #define / #endif`. Cả hai không chữa định nghĩa external trùng giữa nhiều translation unit: cần một định nghĩa trong .cpp hoặc inline đúng ODR.",
   },
   {
     id: "c-int-ref-ptr",
@@ -74,7 +74,7 @@ export const cards: Flashcard[] = [
     sectionId: "7",
     tag: "Bộ nhớ",
     front: "Stack vs Heap khác nhau thế nào?",
-    back: "**Stack**: tự động, nhanh, vòng đời theo scope, dung lượng nhỏ. **Heap**: cấp phát thủ công (`new`/`delete` hoặc smart pointer), linh hoạt, lớn, chậm hơn và dễ rò rỉ nếu quên giải phóng.",
+    back: "Đó là mô hình triển khai thường gặp: object automatic local thường ở stack, vùng cấp phát động thường ở heap. C++ quy định storage duration automatic/static/thread/dynamic, không bắt mọi local nằm trên stack. Ưu tiên giá trị, container và owner RAII; chi phí/giới hạn phụ thuộc nền tảng.",
   },
   {
     id: "c-new-delete",
@@ -88,21 +88,21 @@ export const cards: Flashcard[] = [
     sectionId: "9",
     tag: "RAII",
     front: "RAII là gì và vì sao là 'nguyên lý vàng' của C++?",
-    back: "**Resource Acquisition Is Initialization**: gắn vòng đời tài nguyên (memory, file, lock…) vào vòng đời object. Constructor giành tài nguyên, destructor trả lại → tự động, an toàn cả khi có exception.",
+    back: "**Resource Acquisition Is Initialization**: gắn tài nguyên với object sở hữu, không bắt buộc ở stack. Destructor của owner trả tài nguyên; owner automatic local đã khởi tạo hoàn chỉnh được hủy khi rời scope hoặc stack unwinding. Raw-resource wrapper phải có chính sách copy/move đúng.",
   },
   {
     id: "c-unique-vs-shared",
     sectionId: "10",
     tag: "Smart pointer",
     front: "Khi nào dùng `unique_ptr` vs `shared_ptr`?",
-    back: "**`unique_ptr`**: sở hữu độc quyền (1 owner), zero-overhead — mặc định nên dùng. **`shared_ptr`**: sở hữu chung qua đếm tham chiếu (ref count), tốn chi phí — chỉ dùng khi thực sự cần nhiều owner.",
+    back: "**`unique_ptr`**: một owner, không có bộ đếm sở hữu chung — ưu tiên khi cần sở hữu động duy nhất. **`shared_ptr`**: nhiều owner qua control block; chỉ dùng khi cần chia sẻ lifetime. Smart pointer không bảo đảm tuyệt đối không leak: cycle shared_ptr hoặc bỏ mất kết quả release() vẫn có thể rò rỉ.",
   },
   {
     id: "c-make-unique",
     sectionId: "10",
     tag: "Smart pointer",
     front: "Tạo smart pointer đúng cách?",
-    back: "Ưu tiên `std::make_unique<T>(args)` và `std::make_shared<T>(args)` thay vì `new`. An toàn exception hơn và (với shared) cấp phát gộp control block.",
+    back: "Ưu tiên `std::make_unique<T>(args)` hoặc `std::make_shared<T>(args)` để tạo object cùng owner rõ ràng. make_shared thường gộp object/control block trong một lần cấp phát. Cần chọn cách khác khi có yêu cầu như custom deleter hoặc quyền truy cập constructor.",
     code: "auto p = std::make_unique<Player>(100);\nauto s = std::make_shared<Texture>(\"hero.png\");",
   },
   {
@@ -117,14 +117,14 @@ export const cards: Flashcard[] = [
     sectionId: "11",
     tag: "Move",
     front: "Move semantics tối ưu điều gì?",
-    back: "Thay vì **copy** (sao chép toàn bộ tài nguyên), **move** chuyển nhượng quyền sở hữu (vd con trỏ nội bộ) từ object tạm → object mới, rồi để nguồn ở trạng thái rỗng hợp lệ. Rẻ hơn nhiều.",
+    back: "Move có thể chuyển tài nguyên thay vì sao chép khi kiểu hỗ trợ. Nguồn không nhất thiết là object tạm hoặc trở thành rỗng; chi phí tùy kiểu/thao tác. Nhiều kiểu thư viện giữ nguồn hợp lệ nhưng không xác định giá trị cụ thể; unique_ptr có cam kết nguồn rỗng sau chuyển ownership.",
   },
   {
     id: "c-std-move",
     sectionId: "11",
     tag: "Move",
     front: "`std::move(x)` thực sự làm gì?",
-    back: "Không di chuyển gì cả! Nó chỉ **ép kiểu** `x` thành rvalue reference để chọn được move constructor/assignment. Sau khi move, `x` ở trạng thái 'valid but unspecified'.",
+    back: "Tạo biểu thức **xvalue**, không tự chuyển tài nguyên hay sửa x. Thao tác tiếp theo chọn overload: có thể move, copy hoặc không biên dịch. Trạng thái nguồn sau thao tác đó phụ thuộc hợp đồng của kiểu, không do std::move quyết định.",
   },
 
   // ---- Part III: OOP ----
@@ -133,7 +133,7 @@ export const cards: Flashcard[] = [
     sectionId: "13",
     tag: "OOP",
     front: "Rule of 0 / 3 / 5 nói gì?",
-    back: "**Rule of 0**: để compiler tự sinh — ưu tiên. **Rule of 3**: nếu cần 1 trong {destructor, copy ctor, copy assign} thì thường cần cả 3. **Rule of 5**: thêm move ctor & move assign cho hiệu năng.",
+    back: "**Rule of Zero**: ưu tiên member tự quản lý (STL/RAII), không tự viết special members. **Rule of Three/Five**: xem xét cả nhóm destructor/copy và thêm move; có thể default/delete/triển khai theo ownership. Compiler không luôn sinh đủ mọi hàm; destructor do người dùng khai báo ngăn implicit move.",
   },
   {
     id: "c-member-init-list",
@@ -147,15 +147,15 @@ export const cards: Flashcard[] = [
     id: "c-virtual-dtor",
     sectionId: "15",
     tag: "OOP",
-    front: "Vì sao base class có hàm virtual cần virtual destructor?",
-    back: "Để `delete basePtr;` (trỏ tới object derived) gọi đúng destructor của derived. Thiếu `virtual ~Base()` → chỉ gọi destructor base → **UB / rò rỉ tài nguyên**.",
+    front: "Khi nào base class cần virtual destructor?",
+    back: "Khi cho phép hủy derived thông qua base pointer, dùng destructor public virtual. Thiếu virtual trong delete thông thường như vậy là **UB trong C++17**, không có output/destructor order bảo đảm. Nếu cấm xóa qua base, có thể dùng destructor protected non-virtual.",
   },
   {
     id: "c-vtable",
     sectionId: "15",
     tag: "OOP",
     front: "Đa hình runtime hoạt động nhờ cơ chế gì?",
-    back: "**vtable** (bảng con trỏ hàm ảo) + vptr trong object. Lời gọi hàm `virtual` được **dynamic dispatch** qua vtable → chọn đúng override lúc runtime.",
+    back: "Lời gọi virtual không ghi rõ tên lớp qua base pointer/reference chọn override theo kiểu động. vtable/vptr là cách triển khai phổ biến; chuẩn C++ quy định hành vi dynamic dispatch, không bắt buộc cấu trúc bảng đó.",
   },
   {
     id: "c-override",
@@ -192,7 +192,7 @@ export const cards: Flashcard[] = [
     sectionId: "18",
     tag: "Lambda",
     front: "Các kiểu capture của lambda: `[=]`, `[&]`, `[this]`?",
-    back: "`[=]` copy by value, `[&]` capture by reference, `[this]` bắt con trỏ this. **Cảnh báo**: `[&]` giữ tham chiếu — nếu lambda sống lâu hơn biến thì dangling. Trong game hay ưu tiên capture tường minh.",
+    back: "`[=]`/`[&]` đặt mặc định capture cho các biến cần dùng, theo giá trị/tham chiếu; không capture tất cả biến có trong scope. `[this]` giữ pointer tới object, không copy object. Tham chiếu/this phải còn hợp lệ khi gọi lambda; ưu tiên capture tường minh.",
   },
   {
     id: "c-template",
@@ -228,14 +228,14 @@ export const cards: Flashcard[] = [
     sectionId: "22",
     tag: "const",
     front: "const-correctness mang lại lợi ích gì?",
-    back: "Đánh dấu cái gì **không đổi** → compiler bắt lỗi sửa nhầm, tài liệu hóa ý định, cho tối ưu tốt hơn. `void f() const` = method không sửa object; `const T&` = tham chiếu chỉ đọc.",
+    back: "Tài liệu hóa quyền sửa và giúp compiler bắt lỗi. Const method không sửa member thông thường qua this, nhưng có ngoại lệ mutable và object khác được trỏ tới. `const T&` hạn chế sửa qua reference đó; không tự bảo đảm hàm thuần hay thread-safe.",
   },
   {
     id: "c-constexpr",
     sectionId: "22",
     tag: "const",
     front: "`const` vs `constexpr`?",
-    back: "`const` = không đổi sau khởi tạo (có thể tính lúc runtime). `constexpr` = tính được **lúc compile** → dùng cho hằng thật sự, mảng cỡ cố định, tối ưu. `enum class` cho hằng có kiểu, an toàn hơn enum thường.",
+    back: "Biến const không cho sửa qua giao diện const, initializer có thể tính lúc runtime. Biến constexpr cần initializer là biểu thức hằng phù hợp. Hàm constexpr có thể dùng khi tính hằng, nhưng vẫn chạy runtime nếu ngữ cảnh/đối số không yêu cầu constant evaluation.",
   },
   {
     id: "c-error-handling",
@@ -372,7 +372,7 @@ export const cards: Flashcard[] = [
     sectionId: "46",
     tag: "Casting",
     front: "4 kiểu cast tường minh của C++ — cái nào kiểm tra runtime?",
-    back: "`static_cast` (số↔số, up/down-cast tự chịu — **không** check), `dynamic_cast` (down-cast **an toàn** khi có `virtual`/RTTI — trả `nullptr` nếu sai), `const_cast` (gỡ/thêm const — code smell), `reinterpret_cast` (diễn giải lại bit — nguy hiểm nhất). Tránh C-style cast `(T)x`.",
+    back: "static_cast chuyển kiểu theo quy tắc tĩnh, không kiểm tra downcast. dynamic_cast kiểm tra down/cross-cast với nguồn đa hình còn sống: pointer thất bại trả nullptr, reference ném std::bad_cast. const_cast đổi cv-qualification; sửa object thật sự const là UB. reinterpret_cast không tự tạo object mới hoặc bảo đảm truy cập hợp lệ. C-style cast không bao gồm dynamic_cast.",
   },
   {
     id: "c-ue-cast",
@@ -386,7 +386,7 @@ export const cards: Flashcard[] = [
     sectionId: "47",
     tag: "Linkage",
     front: "3 nghĩa của `static` trong C++?",
-    back: "**1) static local** — giữ giá trị qua các lần gọi (khởi tạo 1 lần, thread-safe từ C++11). **2) static member** — thuộc về class, mọi object dùng chung. **3) static free function** — chỉ thấy trong file `.cpp` đó (internal linkage).",
+    back: "**1) static local**: giữ trạng thái qua các lần gọi; khởi tạo có đồng bộ từ C++11, nhưng các lần sửa sau đó không tự thread-safe. **2) static data member**: thuộc class, dùng chung; static method không có this. **3) static ở namespace scope**: internal linkage theo translation unit.",
   },
   {
     id: "c-using-namespace",
@@ -451,7 +451,7 @@ export const cards: Flashcard[] = [
     sectionId: "5",
     tag: "Functions",
     front: "3 cách truyền tham số: value / reference / const reference — chọn khi nào?",
-    back: "**By value** (`T`): copy — kiểu nhỏ/POD. **By reference** (`T&`): sửa được biến gốc. **By const reference** (`const T&`): đọc, không copy — mặc định cho object lớn.",
+    back: "**By value** (`T`): tham số riêng, từ lvalue thường copy, từ rvalue có thể move; phù hợp kiểu nhỏ hoặc khi cần sở hữu giá trị. **T&**: sửa biến gốc. **const T&**: mượn chỉ đọc qua giao diện đó, tránh copy object lớn.",
   },
   {
     id: "c-access-specifiers",

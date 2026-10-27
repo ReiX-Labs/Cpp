@@ -1,0 +1,5 @@
+# Preserve the supplied reviewed project byte-for-byte, including the ZIP download.
+Update/ArenaCombat_Final_Reviewed/* -text -whitespace
+# Two trailing spaces are intentional Markdown hard line breaks in the course sources.
+Update/*.md whitespace=-blank-at-eol
+*.zip binary

@@ -399,7 +399,7 @@ void PrintScore(int score) {   // void = không trả về gì
 Đây là **kiến thức cực kỳ quan trọng** ảnh hưởng cả tính đúng đắn lẫn hiệu năng:
 
 ```cpp
-void ByValue(Vector3 v);          // COPY toàn bộ → tốn nếu object lớn
+void ByValue(Vector3 v);          // tham số riêng; từ lvalue thường copy, từ rvalue có thể move
 void ByReference(Vector3& v);     // tham chiếu → có thể SỬA bản gốc
 void ByConstRef(const Vector3& v);// tham chiếu chỉ-đọc → KHÔNG copy, KHÔNG sửa
 void ByPointer(Vector3* v);       // con trỏ → có thể null, có thể sửa
@@ -436,7 +436,7 @@ float Distance(const Vector3& a, const Vector3& b);
 ```
 
 ### `inline` & ý nghĩa thực tế
-`inline` *gợi ý* compiler chèn thẳng thân hàm vào nơi gọi (bỏ chi phí gọi hàm). Ngày nay compiler tự quyết; ý nghĩa quan trọng hơn của `inline` là **cho phép định nghĩa hàm trong header** mà không gây lỗi linker "duplicate symbol".
+`inline` không bắt compiler chèn thân hàm tại nơi gọi; compiler có thể tối ưu cả hàm không có từ khóa này. Trong header, nó cho phép một hàm có external linkage được định nghĩa trong nhiều translation unit **nếu các định nghĩa đáp ứng ODR** (cùng chuỗi token và các điều kiện về tên được tra cứu). Đây vẫn là một thực thể hàm; `inline` không hợp thức hóa các định nghĩa khác nhau.
 
 ```cpp
 inline int Square(int x) { return x * x; }   // hợp lệ đặt trong .h
@@ -489,7 +489,7 @@ ref = 50;               // sửa ref ⇔ sửa health → health = 50
 ### `nullptr` và bug kinh điển
 ```cpp
 Player* p = nullptr;
-p->TakeDamage(10);      // 💥 CRASH! Dereference con trỏ null (null pointer dereference)
+p->TakeDamage(10);      // LỖI CỐ Ý: UB do gọi method qua pointer null; không bảo đảm crash
 
 // Luôn kiểm tra trước khi dùng:
 if (p != nullptr) {     // hoặc viết gọn: if (p)
@@ -499,10 +499,13 @@ if (p != nullptr) {     // hoặc viết gọn: if (p)
 
 ### `const` với pointer (đọc từ phải sang trái)
 ```cpp
-const int* p1;        // con trỏ tới int hằng (không sửa được *p1, đổi được p1)
+int x = 10;
+const int* p1 = &x;   // không sửa được *p1 qua p1; đổi được p1
 int* const p2 = &x;   // con trỏ HẰNG tới int (đổi được *p2, không đổi p2)
-const int* const p3;  // cả hai đều hằng
+const int* const p3 = &x; // không sửa *p3 qua p3, không đổi được p3
 ```
+
+`const int*` hạn chế sửa qua pointer đó; không nhất thiết biến nguồn là const. Kiểm tra non-null không chứng minh lifetime: cả pointer và reference đều có thể dangling.
 
 ### Dangling Pointer — con trỏ "treo" (cực nguy hiểm)
 ```cpp
@@ -518,27 +521,26 @@ int* GetBadPointer() {
 
 ## 7. Memory Model: Stack vs Heap
 
-Mọi biến trong C++ sống ở 1 trong 2 vùng nhớ chính:
+Stack và heap là cách mô tả triển khai thường gặp, không phải toàn bộ mô hình C++. C++ phân biệt storage duration **automatic, static, thread và dynamic**; chuẩn không quy định mọi biến local phải nằm trên stack vật lý.
 
 | | **Stack** | **Heap** (Free Store) |
 |---|---|---|
-| Cấp phát | Tự động (compiler lo) | Thủ công (`new`/`delete`) hoặc smart pointer |
-| Tốc độ | Cực nhanh | Chậm hơn |
-| Kích thước | Nhỏ (~1–8 MB) | Lớn (gần như RAM) |
-| Vòng đời | Hết scope `{}` là tự hủy | Sống đến khi bạn `delete` |
-| Khi nào dùng | Biến local, object nhỏ, ngắn hạn | Object lớn, sống lâu, kích thước biết lúc runtime |
+| Mô hình thường gặp | Object local có automatic storage | Object có dynamic storage, thường qua allocator/`new` |
+| Chi phí/giới hạn | Phụ thuộc nền tảng và tối ưu của compiler | Cấp phát có chi phí; giới hạn phụ thuộc hệ thống/allocator |
+| Vòng đời | Object automatic local thường bị hủy khi rời scope | Cần owner giải phóng đúng lúc, ưu tiên RAII |
+| Khi nào dùng | Giá trị có lifetime phù hợp scope | Khi cần lifetime/kích thước động; ưu tiên container/smart pointer |
 
 ```cpp
 void Example() {
-    int x = 5;                  // STACK — tự hủy khi hết hàm
-    Player p;                   // STACK — tự gọi destructor khi hết scope
+    int x = 5;                  // automatic storage
+    Player p;                   // automatic object; hủy khi rời scope
 
     Player* heapPlayer = new Player();   // HEAP — sống tới khi delete
     delete heapPlayer;          // PHẢI tự giải phóng, nếu không → memory leak
 }   // <-- tại đây x và p tự động bị hủy
 ```
 
-> **Triết lý:** Ưu tiên **stack** bất cứ khi nào có thể. Stack vừa nhanh vừa an toàn (không leak). Chỉ lên heap khi thật sự cần.
+> **Ưu tiên:** dùng giá trị và owner RAII có lifetime rõ ràng. Một `std::vector` local có thể quản lý vùng phần tử động; một `std::array` chứa phần tử ngay trong object, nên nơi lưu trữ phụ thuộc object chứa nó. Automatic storage không tự bảo vệ khỏi dangling pointer hoặc truy cập ngoài biên.
 
 ## 8. Dynamic Allocation (new / delete)
 
@@ -573,31 +575,43 @@ delete e;                    // 💥 crash
 
 **RAII = Resource Acquisition Is Initialization.** Đây là *ý tưởng quan trọng nhất* trong C++. Nguyên tắc:
 
-> **Gắn vòng đời của tài nguyên (memory, file, mutex, socket...) vào vòng đời của một object trên stack.** Constructor *giành* tài nguyên, Destructor *trả* tài nguyên. Khi object hết scope, tài nguyên tự được dọn — kể cả khi có exception.
+> **Gắn vòng đời của tài nguyên (memory, file, mutex, socket...) với một object sở hữu.** Object đó không bắt buộc nằm trên stack. Khi owner được hủy, destructor trả tài nguyên; với owner automatic local đã khởi tạo hoàn chỉnh, việc này cũng diễn ra khi stack unwinding do exception.
 
 ```cpp
+#include <cstdio>
+
 class FileHandle {
-    FILE* file;
+    std::FILE* file;
 public:
-    FileHandle(const char* path) {           // ACQUIRE trong constructor
-        file = fopen(path, "r");
+    explicit FileHandle(const char* path) { // ACQUIRE trong constructor
+        file = std::fopen(path, "r");
     }
     ~FileHandle() {                          // RELEASE trong destructor
-        if (file) fclose(file);
+        if (file) std::fclose(file);
     }
+    bool IsOpen() const { return file != nullptr; }
+
+    // Wrapper toi gian: cam copy/move de khong co hai owner cung dong file.
+    FileHandle(const FileHandle&) = delete;
+    FileHandle& operator=(const FileHandle&) = delete;
+    FileHandle(FileHandle&&) = delete;
+    FileHandle& operator=(FileHandle&&) = delete;
 };
 
 void ReadConfig() {
     FileHandle config("config.txt");   // mở file
+    if (!config.IsOpen()) return;      // xử lý mở file thất bại
     // ... dùng file ...
 }   // <-- file TỰ ĐỘNG được đóng ở đây, dù return sớm hay throw exception
 ```
 
-Smart pointer chính là RAII áp dụng cho bộ nhớ heap.
+Không để wrapper sở hữu raw resource dùng copy mặc định: sao chép `FILE*` sẽ khiến hai destructor cùng đóng một file. Trong code thực tế, ưu tiên owner có sẵn như `std::ifstream` hoặc smart pointer thay vì tự viết wrapper.
+
+Smart pointer áp dụng RAII cho tài nguyên mà nó sở hữu.
 
 ## 10. Smart Pointers (con trỏ thông minh)
 
-Trong `<memory>`. Tự động `delete` khi hết scope → **không bao giờ leak**.
+Trong `<memory>`. `unique_ptr` giải phóng tài nguyên khi owner bị hủy hoặc thay tài nguyên; `shared_ptr` giải phóng khi chủ sở hữu cuối cùng bỏ quyền sở hữu. Chúng giảm lỗi quản lý bộ nhớ nhưng không bảo đảm tuyệt đối không leak: vòng `shared_ptr` hoặc làm mất raw pointer trả về từ `unique_ptr::release()` vẫn có thể gây rò rỉ.
 
 ### `std::unique_ptr` — sở hữu DUY NHẤT (dùng 90% trường hợp)
 ```cpp
@@ -642,46 +656,51 @@ if (auto locked = observer.lock()) {         // thử "nâng cấp" thành share
 
 ## 11. Move Semantics & Rvalue References
 
-Một trong những tính năng "high-level" quan trọng nhất của Modern C++. Cho phép **"di dời" tài nguyên thay vì copy** → tăng tốc lớn cho object nặng.
+Move cho phép kiểu dữ liệu **chuyển tài nguyên thay vì sao chép** khi thiết kế của nó hỗ trợ. Chi phí phụ thuộc kiểu và thao tác; không phải move nào cũng rẻ hơn copy.
 
 ### Lvalue vs Rvalue
 ```cpp
-int x = 10;        // x là lvalue (có tên, có địa chỉ, tồn tại lâu)
-                   // 10 là rvalue (giá trị tạm, sắp biến mất)
+int x = 10;        // biểu thức x là lvalue: định danh object x
+                   // biểu thức 10 là prvalue; rvalue gồm prvalue và xvalue
 ```
 
 ### Vấn đề move giải quyết
 ```cpp
 std::vector<int> CreateHugeVector() {
     std::vector<int> v(1'000'000);   // vector 1 triệu phần tử
-    return v;                         // KHÔNG copy 1 triệu phần tử nữa...
+    return v;                         // có thể NRVO; nếu không thì move vector
 }
-auto data = CreateHugeVector();       // ...mà MOVE — chỉ "chuyển nhượng" con trỏ nội bộ
+auto data = CreateHugeVector();       // không mặc định kết luận có một lần move
 ```
 
-### `std::move` — ép một lvalue thành rvalue để được move
+### `std::move` — tạo biểu thức xvalue, không tự di chuyển tài nguyên
 ```cpp
 std::string a = "very long string...";
-std::string b = std::move(a);    // MOVE thay vì copy: b "cướp" ruột của a
-// Sau move, a ở trạng thái "valid but unspecified" — đừng dùng giá trị của a nữa
+std::string b = std::move(a);    // chọn move constructor của std::string
+// a còn hợp lệ; không giả định a rỗng hay giữ nguyên nội dung.
+// Có thể gán lại, hủy, hoặc gọi thao tác có tiền điều kiện được thỏa mãn.
 ```
+
+`std::move` chỉ chuyển loại biểu thức; nếu overload move không dùng được thì lời gọi có thể copy hoặc không biên dịch. Cam kết "valid but unspecified" áp dụng cho nhiều kiểu thư viện chuẩn, trừ khi kiểu đó có cam kết cụ thể khác; class tự viết phải tự định nghĩa và duy trì hợp đồng của nó. Xem [trạng thái moved-from của kiểu thư viện](https://eel.is/c++draft/lib.types.movedfrom).
 
 ### Move Constructor & Move Assignment (cho class tự định nghĩa)
 ```cpp
+#include <cstddef>
+#include <memory>
+
 class Buffer {
-    int* data;
-    size_t size;
+    std::unique_ptr<int[]> data;
 public:
-    // Move constructor — "ăn cắp" tài nguyên từ other thay vì copy
-    Buffer(Buffer&& other) noexcept
-        : data(other.data), size(other.size) {
-        other.data = nullptr;        // để other không delete vùng nhớ ta vừa lấy
-        other.size = 0;
-    }
+    explicit Buffer(std::size_t count) : data(std::make_unique<int[]>(count)) {}
+    Buffer(const Buffer&) = delete;
+    Buffer& operator=(const Buffer&) = delete;
+    Buffer(Buffer&&) noexcept = default;
+    Buffer& operator=(Buffer&&) noexcept = default;
+    // Destructor tu sinh huy data; unique_ptr giai phong mang dung cach.
 };
 ```
 
-> **Khi nào bạn quan tâm:** Hầu hết khi dùng STL containers (`vector`, `string`...), move xảy ra tự động và bạn hưởng lợi miễn phí. Bạn chỉ cần **tự viết** move khi class trực tiếp quản lý raw resource.
+Ví dụ liệt kê copy/move để làm rõ chính sách sở hữu. Với class chỉ có member tự quản lý như trên, thường có thể bỏ các khai báo copy/move và theo **Rule of Zero**; `unique_ptr` vẫn khiến class không copy được. Chỉ tự viết thao tác chuyển tài nguyên khi cần chính sách mà member hiện có chưa cung cấp.
 
 ---
 
@@ -758,22 +777,28 @@ class Texture {
 public:
     Texture()  { pixels = new unsigned char[1024]; }
     ~Texture() { delete[] pixels; }   // ~TênClass = destructor, tự gọi khi object hết đời
+    Texture(const Texture&) = delete;
+    Texture& operator=(const Texture&) = delete;
+    Texture(Texture&&) = delete;
+    Texture& operator=(Texture&&) = delete;
 };
 ```
 
+Đây là minh họa raw resource với copy/move bị cấm. Không copy mặc định con trỏ sở hữu: hai bản sẽ cùng `delete[]` một vùng nhớ. Thực tế, dùng `std::vector<unsigned char>` hoặc `std::unique_ptr<unsigned char[]>` để tránh tự quản lý vòng đời.
+
 ### Rule of 0/3/5 — quy tắc cực kỳ quan trọng
-Khi một class quản lý tài nguyên (như con trỏ heap), C++ tự sinh ra **copy constructor**, **copy assignment**, **destructor**, **move constructor**, **move assignment**. Nếu bạn định nghĩa 1 trong số đó, thường phải xử lý cả nhóm:
+Compiler chỉ khai báo/sinh các special member **khi đủ điều kiện**, và một hàm mặc định có thể bị `deleted` vì member/base không hỗ trợ thao tác đó. Ví dụ, destructor do người dùng khai báo (kể cả `= default`) ngăn tự khai báo move constructor/assignment; member `unique_ptr` khiến copy mặc định không dùng được. Các quy tắc 0/3/5 là hướng dẫn thiết kế, không phải lời hứa compiler luôn sinh đủ năm hàm:
 
 - **Rule of 0:** Tốt nhất — *không* quản lý raw resource, để smart pointer/STL lo → không cần viết hàm nào. **Ưu tiên cái này.**
-- **Rule of 3:** Nếu cần destructor tùy biến → cũng cần copy constructor + copy assignment.
-- **Rule of 5:** Như trên + thêm move constructor + move assignment cho hiệu năng.
+- **Rule of 3:** Nếu cần tự quản lý destructor/copy constructor/copy assignment, xem xét cả ba; có thể cấm copy bằng `= delete`.
+- **Rule of 5:** Xem xét thêm move constructor và move assignment; lựa chọn `= default`, `= delete` hoặc triển khai đúng chính sách sở hữu.
 
 ```cpp
 // Rule of 0 — class lý tưởng, không cần viết special member nào:
 class Inventory {
     std::vector<Item> items;            // STL tự lo copy/move/destroy
     std::unique_ptr<Weapon> weapon;     // smart pointer tự lo
-};   // compiler sinh mọi thứ đúng đắn — bạn không viết gì cả
+};   // không copy được vì weapon; move được khi các member hỗ trợ
 ```
 
 ## 14. Inheritance & Polymorphism
@@ -803,7 +828,7 @@ goblin.Attack();     // dùng hàm riêng
 class Shape {
 public:
     virtual float Area() const { return 0.0f; }   // virtual = cho phép override
-    virtual ~Shape() = default;                    // destructor PHẢI virtual ở base
+    virtual ~Shape() = default;                    // hỗ trợ hủy qua Shape*
 };
 
 class Circle : public Shape {
@@ -830,14 +855,16 @@ for (const auto& shape : shapes) {
 }
 ```
 
-> **`virtual` & `override` quan trọng vì sao:** không có `virtual`, lời gọi `shape->Area()` luôn gọi bản của `Shape` (static dispatch). Có `virtual`, compiler dùng **vtable** để gọi đúng bản của object thực lúc runtime (dynamic dispatch). Luôn thêm từ khóa `override` ở lớp con để compiler kiểm tra bạn override đúng.
+> **`virtual` & `override` quan trọng vì sao:** với lời gọi không ghi rõ tên lớp qua `Shape*`, hàm không virtual được chọn theo kiểu tĩnh; hàm virtual chọn override theo kiểu động. **vtable** là cách triển khai phổ biến, không phải cấu trúc mà chuẩn C++ bắt buộc. Thêm `override` ở lớp con để compiler kiểm tra bạn override đúng.
 
 ### Cảnh báo: Virtual Destructor
 ```cpp
 Shape* s = new Circle(5.0f);
-delete s;   // Nếu ~Shape() KHÔNG virtual → chỉ gọi ~Shape, ~Circle bị bỏ qua → LEAK
-            // → Base class có virtual function thì destructor PHẢI virtual.
+delete s;   // Hợp lệ vì ~Shape() virtual.
+            // Nếu bỏ virtual: delete derived qua base như ở đây là UB trong C++17.
 ```
+
+Không được dự đoán "chỉ destructor base chạy" cho chương trình UB. Base cho phép hủy đa hình nên có destructor public virtual; nếu thiết kế cấm hủy qua base, một lựa chọn là destructor protected non-virtual. Xem [quy tắc delete qua base](https://eel.is/c++draft/expr.delete#3); ví dụ này dùng delete thông thường trong C++17.
 
 ## 15. Virtual Functions & Abstract Classes
 
@@ -845,7 +872,7 @@ delete s;   // Nếu ~Shape() KHÔNG virtual → chỉ gọi ~Shape, ~Circle b�
 ```cpp
 class IDamageable {                      // tiền tố "I" = interface (quy ước)
 public:
-    virtual void TakeDamage(int amount) = 0;   // "= 0" → pure virtual (không có thân)
+    virtual void TakeDamage(int amount) = 0;   // "= 0" → pure virtual
     virtual ~IDamageable() = default;
 };
 // Class có pure virtual → ABSTRACT, KHÔNG thể tạo instance trực tiếp.
@@ -856,8 +883,11 @@ public:
 };
 
 // IDamageable d;          // ❌ LỖI — abstract class
-IDamageable* d = new Player();  // ✅ OK — qua con trỏ
+auto d = std::make_unique<Player>();
+IDamageable& target = *d;       // dùng interface, owner d quản lý lifetime
 ```
+
+Pure virtual có thể có định nghĩa ở ngoài class; `= 0` không đồng nghĩa "không bao giờ có thân". Class còn final overrider pure virtual là abstract và không thể tạo object trực tiếp.
 
 > Abstract class với toàn pure virtual = **interface** (giống `interface` trong C#/Java). Định nghĩa "hợp đồng" mà lớp con phải tuân theo.
 
@@ -930,7 +960,8 @@ auto scale = [&multiplier](int x) {             // capture by reference (tham ch
     return x * multiplier;
 };
 
-// [=] bắt mọi thứ by value, [&] bắt mọi thứ by reference, [this] bắt con trỏ this
+// [=]/[&]: mặc định capture theo value/reference cho các biến cần dùng.
+// [this] giữ pointer tới object; không copy object.
 ```
 
 **Ứng dụng thực tế — sort & filter:**
@@ -947,7 +978,7 @@ int alive = std::count_if(enemies.begin(), enemies.end(),
 
 ## 19. Templates & Generic Programming
 
-Viết code **một lần, dùng cho mọi kiểu** — compiler sinh ra phiên bản cụ thể lúc biên dịch (zero runtime cost).
+Viết một khuôn code dùng cho **các kiểu đáp ứng phép toán/yêu cầu của khuôn**; compiler tạo specialization cần dùng. Template không tự làm mọi kiểu hợp lệ hoặc bảo đảm mọi phép toán đều miễn phí.
 
 ### Function Template
 ```cpp
@@ -985,7 +1016,7 @@ public:
     constexpr int Length() const { return Size; }
 };
 
-FixedArray<float, 16> matrix;  // mảng 16 float trên stack
+FixedArray<float, 16> matrix{}; // 16 float nằm trong object matrix
 ```
 
 > **Lưu ý:** Template thường phải **viết toàn bộ trong header** (không tách `.cpp`) vì compiler cần thấy định nghĩa để sinh code khi gặp lời gọi.
@@ -997,9 +1028,9 @@ Standard Template Library cung cấp các container đã tối ưu sẵn. **Đ�
 | Container | Cấu trúc | Truy cập | Thêm/Xóa | Dùng khi |
 |---|---|---|---|---|
 | `std::vector<T>` | mảng động liền kề | O(1) theo index | O(1) amortized cuối / O(n) giữa | **Mặc định** — 90% trường hợp |
-| `std::array<T,N>` | mảng tĩnh stack | O(1) | không đổi size | size cố định, biết lúc compile |
+| `std::array<T,N>` | phần tử liền kề bên trong object | O(1) | không đổi size | size cố định, biết lúc compile |
 | `std::deque<T>` | hàng đợi 2 đầu | O(1) | O(1) hai đầu | thêm/xóa cả 2 đầu |
-| `std::list<T>` | doubly linked list | O(n) | O(1) bất kỳ vị trí | chèn/xóa giữa nhiều, ít duyệt |
+| `std::list<T>` | doubly linked list | O(n) | O(1) cho một phần tử khi đã có iterator | cần iterator ổn định/chèn xóa; đo chi phí duyệt |
 | `std::map<K,V>` | cây cân bằng (sorted) | O(log n) | O(log n) | cần thứ tự theo key |
 | `std::unordered_map<K,V>` | hash table | O(1) trung bình | O(1) trung bình | tra cứu nhanh theo key |
 | `std::set<T>` | tập hợp có thứ tự | O(log n) | O(log n) | phần tử duy nhất, có thứ tự |
@@ -1011,7 +1042,7 @@ Standard Template Library cung cấp các container đã tối ưu sẵn. **Đ�
 
 std::vector<Enemy> enemies;
 enemies.push_back(Enemy{});        // thêm cuối
-enemies.emplace_back();            // tạo TẠI CHỖ (hiệu quả hơn, tránh copy/move)
+enemies.emplace_back();            // dựng phần tử mới từ đối số; không luôn nhanh hơn push_back
 enemies[0].health = 50;            // truy cập theo index
 enemies.size();                    // số phần tử
 enemies.clear();                   // xóa hết
@@ -1019,7 +1050,7 @@ enemies.clear();                   // xóa hết
 std::unordered_map<std::string, int> inventory;
 inventory["potion"] = 5;           // thêm/sửa
 inventory["sword"]  = 1;
-if (inventory.contains("potion"))  // C++20 — kiểm tra tồn tại
+if (inventory.find("potion") != inventory.end()) // C++17; contains là C++20
     inventory["potion"]--;
 ```
 
@@ -1066,7 +1097,7 @@ it == v.end();  // end() = "qua khỏi" phần tử cuối (sentinel), KHÔNG de
 class Player {
     int health = 100;
 public:
-    int  GetHealth() const { return health; }   // const method: KHÔNG sửa object
+    int  GetHealth() const { return health; }   // không sửa member thông thường qua this
     void SetHealth(int h)  { health = h; }       // non-const: được sửa
 };
 
@@ -1077,15 +1108,19 @@ void Print(const Player& p) {   // const& → chỉ gọi được const method
 ```
 > `const` không chỉ là an toàn — nó là *tài liệu sống* cho biết hàm/biến nào "đọc-thôi", giúp compiler tối ưu và bắt lỗi sớm.
 
+Const method vẫn có thể sửa `mutable` member hoặc object khác được trỏ tới. `const` không tự đồng nghĩa hàm thuần hoặc an toàn đa luồng.
+
 ### constexpr — tính toán LÚC BIÊN DỊCH
 ```cpp
 constexpr int MaxEnemies = 64;             // hằng số compile-time
-constexpr int Factorial(int n) {           // hàm chạy lúc compile nếu input là hằng
+constexpr int Factorial(int n) {           // có thể dùng trong constant expression
     return (n <= 1) ? 1 : n * Factorial(n - 1);
 }
 constexpr int f5 = Factorial(5);           // 120 được tính KHI BIÊN DỊCH, 0 chi phí runtime
 int arr[MaxEnemies];                       // dùng được làm kích thước mảng tĩnh
 ```
+
+Biến `constexpr` cần initializer là biểu thức hằng phù hợp. Hàm `constexpr` vẫn có thể chạy runtime; constant evaluation được yêu cầu ở ngữ cảnh như khởi tạo `f5`, không chỉ bởi từ khóa trên hàm. Ví dụ factorial dành cho số nhỏ không âm để tránh tràn `int`.
 
 ### enum class — enum an toàn về kiểu (scoped enum)
 ```cpp
@@ -1146,10 +1181,12 @@ if (auto p = FindPlayer(5)) {                  // kiểm tra có giá trị
 // 3. assert / check — bắt lỗi LẬP TRÌNH lúc dev (không cho dữ liệu xấu)
 #include <cassert>
 void SetIndex(int i) {
-    assert(i >= 0 && i < size);   // crash sớm khi dev sai (bị loại bỏ ở Release)
+    assert(i >= 0 && i < size);   // bị vô hiệu hóa nếu NDEBUG được định nghĩa
 }
 // (Unreal dùng check() / ensure() thay cho assert — xem Phần VI)
 ```
+
+`assert` phụ thuộc macro `NDEBUG`, không phụ thuộc trực tiếp tên cấu hình Debug/Release. Không đặt thao tác bắt buộc như `++i` vào biểu thức assert vì nó có thể không được đánh giá. Xem [Microsoft: assert](https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/assert-macro-assert-wassert?view=msvc-170).
 
 ---
 
@@ -1294,9 +1331,10 @@ for (Enemy* e : enemyPointers) e->Update();   // mỗi e ở 1 nơi khác nhau t
 ```cpp
 // Reserve trước để tránh vector tái cấp phát nhiều lần:
 std::vector<Enemy> enemies;
-enemies.reserve(1000);              // cấp sẵn chỗ cho 1000 → không realloc khi push
+enemies.reserve(1000);              // capacity >= 1000, không đổi size
+// Các lần thêm không realloc cho tới khi size mới vượt capacity hiện tại.
 
-// emplace thay vì push (tạo tại chỗ, tránh tạo object tạm + move):
+// emplace dựng phần tử từ đối số; không phải lúc nào cũng nhanh hơn push_back:
 enemies.emplace_back(args...);
 
 // Truyền const& thay vì by value cho object lớn (mục 5).
@@ -2047,7 +2085,7 @@ ensure(Health >= 0);               // log + breakpoint nếu sai, nhưng VẪN c
 verify(InitSystem());              // như check nhưng vẫn chạy biểu thức ở Release build
 
 // Standard C++ tương đương:
-assert(weapon != nullptr);         // chỉ hoạt động ở Debug build
+assert(weapon != nullptr);         // hoạt động khi NDEBUG chưa được định nghĩa
 ```
 
 ### Sanitizers (Standard C++) — phát hiện lỗi bộ nhớ
@@ -2100,7 +2138,7 @@ if (IsValid(TargetActor)) { TargetActor->DoStuff(); }   // ✅ luôn check
 Bản tổng kết tra cứu nhanh khi viết/review code:
 
 ### Bộ nhớ & tài nguyên
-- [ ] Ưu tiên **stack** hơn heap; ưu tiên **smart pointer** hơn `new`/`delete` trần.
+- [ ] Ưu tiên giá trị/owner **RAII** có lifetime rõ ràng hơn `new`/`delete` trần.
 - [ ] Áp dụng **RAII** cho mọi tài nguyên (file, mutex, memory...).
 - [ ] `unique_ptr` mặc định; `shared_ptr` khi cần chia sẻ; `weak_ptr` phá vòng tham chiếu.
 - [ ] (UE) Mọi `UObject*` member là **`UPROPERTY()`**; không `new`/`delete` UObject.
@@ -2110,13 +2148,13 @@ Bản tổng kết tra cứu nhanh khi viết/review code:
 - [ ] Khởi tạo **mọi biến** ngay khi khai báo.
 - [ ] Kiểm tra con trỏ **trước khi dereference** (`if (p)` / `IsValid(p)`).
 - [ ] `const correctness`: đánh dấu `const` mọi thứ không đổi.
-- [ ] Base class có virtual function → **virtual destructor**.
+- [ ] Base cho phép hủy đa hình → destructor public **virtual**; nếu cấm, thiết kế access phù hợp.
 - [ ] Dùng `override` cho mọi hàm override; `enum class` thay enum cũ.
 - [ ] So sánh float bằng **epsilon**, không bằng `==`.
 
 ### Hiệu năng
 - [ ] Truyền object lớn bằng **`const&`**, không by value.
-- [ ] `reserve()` vector khi biết trước kích thước; `emplace_back` thay `push_back`.
+- [ ] Cân nhắc `reserve()` khi biết lượng phần tử; chọn `emplace_back`/`push_back` theo đối số và đo khi tối ưu.
 - [ ] Ưu tiên container **liền kề** (`vector`/`TArray`) cho hiệu năng (cache).
 - [ ] **Đo bằng profiler** trước khi tối ưu — không đoán.
 - [ ] (UE) Không đụng UObject/Actor ngoài **Game Thread** (mục 50).
@@ -2138,7 +2176,7 @@ Bản tổng kết tra cứu nhanh khi viết/review code:
 ### Chuyển kiểu ngầm (implicit) & narrowing
 ```cpp
 int   i = 3;
-float f = i;          // OK — int → float, không mất dữ liệu
+float f = i;          // giá trị 3 biểu diễn chính xác; int lớn có thể mất chính xác
 int   j = 3.7f;       // ⚠️ NARROWING — j = 3, phần thập phân bị cắt (compiler chỉ warning)
 int   k{3.7f};        // ❌ LỖI BIÊN DỊCH — brace init CHẶN narrowing (một lý do nên dùng {})
 ```
@@ -2147,22 +2185,25 @@ int   k{3.7f};        // ❌ LỖI BIÊN DỊCH — brace init CHẶN narrowing 
 | Cast | Dùng cho | Kiểm tra runtime? |
 |---|---|---|
 | `static_cast<T>(x)` | số ↔ số, up-cast, down-cast "tự chịu trách nhiệm", `void*` ↔ `T*` | ❌ Không |
-| `dynamic_cast<T*>(p)` | down-cast **an toàn** trong cây kế thừa có `virtual` | ✅ Có — trả `nullptr` nếu sai kiểu (cần RTTI) |
-| `const_cast<T>(x)` | gỡ/thêm `const` | ❌ — hầu như luôn là code smell |
-| `reinterpret_cast<T>(x)` | diễn giải lại bit (serialization, low-level) | ❌ — nguy hiểm nhất, hạn chế tối đa |
+| `dynamic_cast<T*>(p)` / `dynamic_cast<T&>(x)` | down/cross-cast có kiểm tra với kiểu nguồn đa hình | pointer thất bại → `nullptr`; reference thất bại → ném `std::bad_cast` |
+| `const_cast<T>(x)` | thay đổi cv-qualification của pointer/reference | ❌ — sửa object thật sự const qua cast là UB |
+| `reinterpret_cast<T>(x)` | một số chuyển đổi pointer/integer mức thấp | ❌ — không tự tạo object kiểu mới hay bảo đảm truy cập hợp lệ; không phải công cụ serialization tổng quát |
 
 ```cpp
 float ratio = static_cast<float>(kills) / deaths;   // ép sang float để chia số thực
 
-Entity* e = GetSomeEntity();
+Entity* e = GetSomeEntity(); // giả sử Entity là base đa hình, có ít nhất một hàm virtual
 if (Enemy* enemy = dynamic_cast<Enemy*>(e)) {   // chỉ vào if nếu e THẬT SỰ là Enemy
     enemy->Attack();
 }
 
-// ❌ C-style cast:  (Enemy*)e  — tránh: nó lần lượt thử MỌI loại cast, che giấu lỗi, khó grep
+// Tránh (Enemy*)e: C-style cast có thể dùng static/const/reinterpret_cast
+// hoặc các kết hợp được phép; KHÔNG bao gồm kiểm tra dynamic_cast.
 ```
 
 > **Quy tắc:** cần chuyển kiểu → viết cast **tường minh, có tên**. Nếu thấy mình cần `dynamic_cast` ở nhiều nơi → thường là dấu hiệu nên thiết kế lại bằng virtual function/interface thay vì "hỏi kiểu".
+
+Các cast đòi hỏi đối tượng nguồn còn sống và kiểu hợp lệ; kiểm tra kiểu không chữa dangling pointer. Xem [dynamic_cast](https://eel.is/c++draft/expr.dynamic.cast) và [các phép chuyển đổi của C-style cast](https://eel.is/c++draft/expr.cast).
 
 ### Trong Unreal: dùng `Cast<>()` — KHÔNG dùng dynamic_cast
 UE build với **RTTI tắt** ở hầu hết module, và `UObject` đã có reflection (mục 31) → dùng cast của engine:
@@ -2215,7 +2256,7 @@ Tương đương `static` cho hàm/biến tự do, nhưng là cách viết C++ h
 ### 3 nghĩa của `static`
 ```cpp
 int Counter() {
-    static int calls = 0;      // 1) static LOCAL — giữ giá trị qua các lần gọi (khởi tạo 1 lần, thread-safe từ C++11)
+    static int calls = 0;      // 1) static LOCAL — giữ giá trị qua các lần gọi
     return ++calls;
 }
 
@@ -2228,6 +2269,8 @@ int Enemy::aliveCount = 0;     // định nghĩa trong .cpp (C++17: có thể vi
 
 static void Helper() {}        // 3) static FREE FUNCTION — chỉ thấy trong file .cpp này (≈ anonymous namespace)
 ```
+
+Khởi tạo local static có đồng bộ từ C++11, nhưng phép `++calls` sau khởi tạo không tự thread-safe. Bộ đếm ví dụ chỉ dùng trong một luồng. Xem [khởi tạo biến static cục bộ](https://eel.is/c++draft/stmt.dcl).
 
 ### Lưu ý riêng cho Unreal
 > **UHT không hỗ trợ reflected type nằm trong namespace:** `UCLASS`, `USTRUCT`, `UENUM` phải ở global scope — đó là lý do UE dùng **prefix** (A/U/F/E) thay cho namespace. Code C++ thuần (không reflection) trong project vẫn dùng namespace bình thường; code engine mới của Epic cũng vậy (vd `UE::Tasks`, `UE::Math`).
@@ -2757,7 +2800,7 @@ Tra ngược từ thông báo lỗi. Mẹo số 1: luôn đọc **lỗi ĐẦU T
 | `C2027: use of undefined type 'X'` | mới forward declare nhưng lại gọi hàm/truy cập member | `#include` đầy đủ trong `.cpp` (mục 41) |
 | `C2664: cannot convert argument` | sai kiểu tham số; thiếu `*`/`&`; (UE) quên `TEXT()` hoặc quên `*FString` | so lại chữ ký hàm; xem mục 35 |
 | `LNK2019: unresolved external symbol` | khai báo nhưng chưa định nghĩa; `.cpp` chưa vào build; (UE) **thiếu module trong `.Build.cs`**; thiếu macro `MYGAME_API` khi dùng chéo module | viết định nghĩa; thêm module (mục 30); thêm macro API |
-| `LNK2005 / LNK1169: already defined` | định nghĩa hàm/biến trong header mà không `inline`; thiếu include guard | thêm `inline` hoặc chuyển vào `.cpp`; `#pragma once` (mục 2) |
+| `LNK2005 / LNK1169: already defined` | nhiều định nghĩa external cùng symbol giữa các translation unit | giữ một định nghĩa trong `.cpp`, hoặc dùng `inline` đúng ODR; `#pragma once` chỉ ngăn include lặp trong một translation unit |
 | `LNK1120: unresolved externals` | chỉ là dòng "tổng kết" của các LNK2019 phía trên | sửa từng LNK2019 |
 | Runtime: `stack overflow` | đệ quy vô hạn; mảng khổng lồ trên stack | thêm điều kiện dừng; chuyển sang `std::vector`/heap (mục 7) |
 | UE: `cannot open ... '.generated.h'` | class mới UHT chưa biết; `.generated.h` không phải include **cuối cùng** | Generate project files lại; kiểm tra thứ tự include (mục 31) |

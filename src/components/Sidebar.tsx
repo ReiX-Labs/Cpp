@@ -1,13 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { NavLink, useLocation, useParams } from "react-router-dom";
 import { reference } from "../content/reference";
-import { cardIds } from "../data/cards";
 import { useStore } from "../lib/store";
 import { startOfDay } from "../lib/srs";
+import { curriculumLessons, curriculumUnits, curriculumRange, courseProgressId, courseUrl } from "../content/curriculum";
+import { eligibleReviewCardIds } from "../content/courseReview";
 
-function countDue(srs: Record<string, { due: number }>): number {
+function countDue(srs: Record<string, { due: number }>, eligibleIds: string[]): number {
   const today = startOfDay();
-  return cardIds.filter((id) => {
+  return eligibleIds.filter((id) => {
     const c = srs[id];
     return !c || c.due <= today;
   }).length;
@@ -33,10 +34,10 @@ export default function Sidebar() {
     }
   }, [activePartId]);
 
-  const due = countDue(state.srs);
-  const lessons = reference.lessonSections;
+  const due = countDue(state.srs, eligibleReviewCardIds("learned", state.progress));
+  const lessons = curriculumUnits;
   const totalSections = lessons.length;
-  const totalRead = lessons.filter((s) => state.progress[s.id]?.read).length;
+  const totalRead = lessons.filter((s) => state.progress[courseProgressId(s.id)]?.read).length;
 
   const toggle = (pid: string) =>
     setOpen((prev) => {
@@ -56,8 +57,8 @@ export default function Sidebar() {
       </div>
 
       <nav className="nav">
-        <NavLink to="/fundamentals" className={({ isActive }) => "nav-link" + (isActive ? " active" : "")}>
-          <span className="nav-ico">📖</span> Ôn nền tảng · 01–09
+        <NavLink to={courseUrl("cpp-00")} className={"nav-link" + (location.pathname.startsWith("/course/") || location.pathname === "/fundamentals" ? " active" : "")}>
+          <span className="nav-ico">📖</span> Học C++ · 01–{curriculumRange}
         </NavLink>
         <NavLink to="/" end className={({ isActive }) => "nav-link" + (isActive ? " active" : "")}>
           <span className="nav-ico">◈</span> Tổng quan
@@ -80,7 +81,17 @@ export default function Sidebar() {
         </NavLink>
       </nav>
 
-      <div className="nav-title">Chương trình học</div>
+      <div className="nav-title">Lộ trình theo bài</div>
+      <div className="section-list course-tree">
+        {curriculumLessons.map((lesson) => {
+          const done = state.progress[courseProgressId(lesson.id)]?.read;
+          return <NavLink key={lesson.id} to={courseUrl(lesson.id)} className={({ isActive }) => "section-link" + (isActive ? " active" : "") + (done ? " done" : "")}>
+            <span className="section-num">{lesson.number}</span><span className="course-tree-title">{lesson.title}</span><span className="tick">{done ? "✓" : ""}</span>
+          </NavLink>;
+        })}
+      </div>
+      <details className="library-tree" open={location.pathname.startsWith("/lesson/") || undefined}>
+      <summary className="nav-title">Thư viện tham khảo · {reference.lessonSections.length} mục</summary>
       <div className="tree">
         {reference.parts
           .filter((p) => !p.isAppendix)
@@ -139,10 +150,11 @@ export default function Sidebar() {
           );
         })}
       </div>
+      </details>
 
       <div style={{ marginTop: "auto", padding: "8px 8px 0" }}>
         <div className="row spread" style={{ fontSize: 12, color: "var(--text-faint)", marginBottom: 6 }}>
-          <span>Tiến độ tổng</span>
+          <span>Tiến độ lộ trình</span>
           <span>
             {totalRead}/{totalSections}
           </span>

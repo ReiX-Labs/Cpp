@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { reference } from "../content/reference";
-import { fundamentalsLessons, handoffChapter, studyResources } from "../content/handoff";
+import { curriculumSections, curriculumLessons, courseUrl } from "../content/curriculum";
 import { actions, useStore } from "../lib/store";
 
 function norm(s: string): string {
@@ -23,18 +23,18 @@ export default function Topbar() {
     const query = norm(q.trim());
     if (query.length < 2) return [];
     const searchable = [
-      ...reference.sections.map((s) => ({ ...s, url: `/lesson/${s.id}` })),
-      ...[...fundamentalsLessons, ...studyResources].map((item) => ({
-        ...handoffChapter(item.chapter), id: `handoff-${item.id}`, num: "related" in item ? item.id : "",
-        title: item.title, partTitle: "Ôn nền tảng · Handoff", url: `/fundamentals?topic=${item.id}`,
+      ...curriculumSections.map((item) => ({
+        ...item, num: curriculumLessons.find((lesson) => lesson.id === item.id)?.number ?? "",
+        partTitle: "Lộ trình C++ cơ bản", url: courseUrl(item.id), priority: 1,
       })),
+      ...reference.sections.map((s) => ({ ...s, partTitle: `Thư viện · ${s.partTitle}`, url: `/lesson/${s.id}`, priority: 0 })),
     ];
     return searchable
       .map((s) => {
         const hay = norm(s.title + " " + s.body);
         const inTitle = norm(s.title).includes(query);
         const hit = hay.includes(query);
-        return hit ? { s, score: inTitle ? 2 : 1 } : null;
+        return hit ? { s, score: (inTitle ? 4 : 1) + s.priority } : null;
       })
       .filter((x): x is NonNullable<typeof x> => !!x)
       .sort((a, b) => b.score - a.score)
@@ -72,13 +72,13 @@ export default function Topbar() {
               <div className="search-empty">Không tìm thấy kết quả cho “{q}”.</div>
             ) : (
               results.map((s) => (
-                <a key={s.id} className="search-result" onClick={() => go(s.url)}>
+                <button type="button" key={s.id} className="search-result" onClick={() => go(s.url)}>
                   <div className="sr-title">
                     {s.num ? `${s.num}. ` : ""}
                     {s.title}
                   </div>
                   <div className="sr-part">{s.partTitle}</div>
-                </a>
+                </button>
               ))
             )}
           </div>

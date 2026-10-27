@@ -64,7 +64,7 @@ int main() {
       type: "code",
       title: "Chuyển raw pointer sang smart pointer",
       prompt:
-        "Đoạn code dưới rò rỉ bộ nhớ nếu `mightThrow()` ném exception. Viết lại dùng smart pointer để an toàn (RAII).",
+        "Đoạn code dưới rò rỉ bộ nhớ nếu `mightThrow()` ném exception. Viết lại dùng unique_ptr để quản lý lifetime. Giả sử world.add(Enemy*) chỉ mượn con trỏ trong lời gọi, không lưu lại hoặc nhận ownership.",
       code: `void spawn() {
     Enemy* e = new Enemy();
     mightThrow();        // nếu ném -> rò rỉ e!
@@ -74,9 +74,9 @@ int main() {
       solution: `void spawn() {
     auto e = std::make_unique<Enemy>();
     mightThrow();               // exception -> e tự giải phóng
-    world.add(std::move(e));    // chuyển ownership vào world
+    world.add(e.get());         // mượn trong lời gọi; e vẫn là owner
 }`,
-      hints: ["Dùng `std::make_unique`.", "Chuyển quyền sở hữu bằng `std::move`."],
+      hints: ["Dùng `std::make_unique` và include <memory>.", "`.get()` cung cấp pointer mượn; không gọi delete cho pointer đó.", "Nếu world cần giữ object lâu hơn spawn, API phải nhận quyền sở hữu bằng unique_ptr; đó là hợp đồng khác."],
     },
   ],
   "14": [
@@ -102,7 +102,10 @@ int main() { B b; }`,
       title: "Đa hình runtime",
       prompt: "Chương trình in ra gì?",
       code: `#include <iostream>
-struct Shape { virtual void name() { std::cout << "Shape "; } };
+struct Shape {
+    virtual ~Shape() = default;
+    virtual void name() { std::cout << "Shape "; }
+};
 struct Circle : Shape { void name() override { std::cout << "Circle "; } };
 int main() {
     Shape* s = new Circle();
@@ -110,7 +113,7 @@ int main() {
     delete s;
 }`,
       expected: "Circle ",
-      hints: ["`name()` là virtual → dynamic dispatch.", "Con trỏ base trỏ tới Circle → gọi override của Circle."],
+      hints: ["`name()` là virtual → dynamic dispatch.", "Con trỏ base trỏ tới Circle → gọi override của Circle.", "Virtual destructor làm delete qua Shape* hợp lệ. Nếu bỏ nó, chương trình có UB trong C++17 và không thể chấm một output cố định."],
     },
   ],
   "20": [

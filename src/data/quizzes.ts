@@ -101,7 +101,7 @@ export const quizzes: Record<string, QuizQuestion[]> = {
       q: "Mặc định nên chọn smart pointer nào cho sở hữu đơn?",
       choices: ["shared_ptr", "unique_ptr", "weak_ptr", "raw pointer"],
       answer: 1,
-      explain: "unique_ptr là zero-overhead và diễn đạt đúng ý 'một owner'.",
+      explain: "unique_ptr diễn đạt một owner và không cần bộ đếm sở hữu chung. Kích thước/chi phí còn phụ thuộc deleter và kiểu pointer.",
     },
     {
       id: "q10-2",
@@ -134,21 +134,23 @@ export const quizzes: Record<string, QuizQuestion[]> = {
       choices: [
         "Sao chép x sang chỗ mới",
         "Xóa x khỏi bộ nhớ",
-        "Ép x thành rvalue để chọn move ctor/assign",
+        "Tạo biểu thức xvalue để overload phù hợp có thể được chọn",
         "Đổi kiểu x thành pointer",
       ],
       answer: 2,
+      explain: "std::move không tự chuyển tài nguyên; thao tác tiếp theo có thể move, copy hoặc không biên dịch tùy kiểu/overload.",
     },
     {
       id: "q11-2",
-      q: "Sau khi bị move, object nguồn ở trạng thái nào?",
+      q: "Sau khi move từ một std::vector vào vector khác, quy tắc chung nào đúng về nguồn?",
       choices: [
         "Bị hủy hoàn toàn, không dùng được",
         "Giữ nguyên giá trị cũ",
-        "Valid nhưng unspecified (nên chỉ gán lại hoặc hủy)",
+        "Còn hợp lệ; không giả định giá trị cụ thể, chỉ dùng thao tác thỏa tiền điều kiện",
         "Null pointer",
       ],
       answer: 2,
+      explain: "Có thể gán lại, hủy hoặc dùng thao tác có tiền điều kiện được thỏa mãn. Không suy quy tắc này cho mọi class tự viết; unique_ptr có cam kết riêng là nguồn rỗng sau chuyển quyền sở hữu.",
     },
   ],
   "13": [
@@ -178,7 +180,7 @@ export const quizzes: Record<string, QuizQuestion[]> = {
   "15": [
     {
       id: "q15-1",
-      q: "Vì sao base class đa hình cần virtual destructor?",
+      q: "Vì sao base cho phép delete derived qua con trỏ base cần virtual destructor trong C++17?",
       choices: [
         "Để chạy nhanh hơn",
         "Để delete qua con trỏ base gọi đúng destructor derived",
@@ -186,6 +188,7 @@ export const quizzes: Record<string, QuizQuestion[]> = {
         "Vì compiler bắt buộc",
       ],
       answer: 1,
+      explain: "Nếu delete thông thường một derived qua base pointer thiếu virtual destructor thì là UB; không được dự đoán chỉ destructor base chạy. Thiết kế cấm xóa qua base có thể dùng destructor protected non-virtual.",
     },
     {
       id: "q15-2",
@@ -217,7 +220,7 @@ export const quizzes: Record<string, QuizQuestion[]> = {
       q: "`[&]` trong lambda nghĩa là?",
       choices: [
         "Capture mọi biến by value",
-        "Capture mọi biến by reference",
+        "Capture ngầm định các biến cần dùng theo tham chiếu",
         "Không capture gì",
         "Chỉ capture this",
       ],
@@ -235,7 +238,7 @@ export const quizzes: Record<string, QuizQuestion[]> = {
     },
     {
       id: "q20-2",
-      q: "Cần tra cứu key nhanh nhất, không cần thứ tự — chọn?",
+      q: "Container nào tra cứu theo key trung bình O(1), không bảo đảm thứ tự?",
       choices: ["std::map", "std::unordered_map", "std::vector", "std::set"],
       answer: 1,
     },
@@ -243,10 +246,10 @@ export const quizzes: Record<string, QuizQuestion[]> = {
   "22": [
     {
       id: "q22-1",
-      q: "Khác biệt chính giữa `const` và `constexpr`?",
+      q: "Khác biệt chính giữa một biến `const` và một biến `constexpr`?",
       choices: [
         "Không có khác biệt",
-        "constexpr tính được lúc compile-time",
+        "Biến constexpr cần khởi tạo bằng biểu thức hằng phù hợp",
         "const nhanh hơn constexpr",
         "constexpr chỉ dùng cho hàm",
       ],
@@ -254,14 +257,15 @@ export const quizzes: Record<string, QuizQuestion[]> = {
     },
     {
       id: "q22-2",
-      q: "`void GetHealth() const` — `const` ở đây nghĩa là?",
+      q: "`int GetHealth() const` — `const` ở đây nghĩa là?",
       choices: [
         "Trả về hằng số",
-        "Method không sửa đổi trạng thái object",
+        "Không sửa member thông thường của object qua this",
         "Không thể gọi method này",
         "Method là static",
       ],
       answer: 1,
+      explain: "Const method vẫn có thể sửa mutable member hoặc object khác được trỏ tới. Const không đồng nghĩa hàm thuần hay tự an toàn đa luồng.",
     },
   ],
   "25": [
@@ -377,10 +381,10 @@ export const quizzes: Record<string, QuizQuestion[]> = {
   "46": [
     {
       id: "q46-1",
-      q: "Cast nào là down-cast AN TOÀN, trả nullptr nếu sai kiểu?",
+      q: "Cast nào kiểm tra downcast một pointer tới base đa hình còn sống, trả nullptr khi kiểm tra kiểu thất bại?",
       choices: ["static_cast", "dynamic_cast", "const_cast", "reinterpret_cast"],
       answer: 1,
-      explain: "dynamic_cast kiểm tra runtime (cần RTTI); trả nullptr nếu đối tượng không đúng kiểu.",
+      explain: "dynamic_cast<Derived*>(p) kiểm tra runtime và trả nullptr khi thất bại. Dạng reference thất bại ném std::bad_cast; cast không cứu được pointer dangling.",
     },
     {
       id: "q46-2",

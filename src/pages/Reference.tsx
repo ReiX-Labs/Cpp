@@ -3,6 +3,7 @@ import { reference } from "../content/reference";
 import { actions, useStore } from "../lib/store";
 import Markdown from "../components/Markdown";
 import SyntaxLookup from "../components/SyntaxLookup";
+import { curriculumRange } from "../content/curriculum";
 
 export default function Reference() {
   const state = useStore();
@@ -33,7 +34,7 @@ export default function Reference() {
 
       <div className="tabs" style={{ flexWrap: "wrap" }}>
         <button className={"tab" + (active === "syntax" ? " active" : "")} onClick={() => select("syntax")}>
-          Câu lệnh · Bài 01–09
+          Câu lệnh · Bài 01–{curriculumRange}
         </button>
         {sections.map((s) => (
           <button
