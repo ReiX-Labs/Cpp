@@ -1,8 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { getCard } from "../data/cards";
-import { courseCardLessons, eligibleReviewCardIds, type ReviewScope } from "../content/courseReview";
-import { courseUrl } from "../content/curriculum";
+import { eligibleReviewCardIds, type ReviewScope } from "../content/courseReview";
 import { actions, useStore } from "../lib/store";
 import { newCard, previewInterval, startOfDay, type Grade } from "../lib/srs";
 import Markdown from "../components/Markdown";
@@ -21,26 +20,25 @@ export default function Review() {
   const [params, setParams] = useSearchParams();
   const state = useStore();
   const requested = params.get("scope");
-  const scope: ReviewScope = requested === "course" || requested === "library" ? requested : "learned";
+  const scope: ReviewScope = requested === "course" || requested === "library" ? "course" : "learned";
   const eligibleIds = eligibleReviewCardIds(scope, state.progress);
   return <div className="review-page">
+    <h1>Ôn tập hàng ngày</h1>
     <div className="card pad review-scope">
       <label htmlFor="review-scope">Phạm vi ôn tập</label>
       <select id="review-scope" value={scope} onChange={(event) => setParams({ scope: event.target.value })}>
         <option value="learned">Các bài đã đánh dấu học</option>
-        <option value="course">Toàn bộ lộ trình C++ cơ bản</option>
-        <option value="library">Toàn bộ thư viện, gồm mở rộng</option>
+        <option value="course">Toàn bộ chương trình</option>
       </select>
       <p className="muted">{scope === "learned"
-        ? "Ôn các khái niệm từ những bài bạn đã đánh dấu trong lộ trình. Bạn có thể chọn toàn khóa để ôn kiến thức đã học trước đây."
-        : scope === "course" ? "Ôn các khái niệm nền tảng trong khóa học. Mỗi bài còn có câu tự kiểm tra và phần tự viết để luyện sâu hơn."
-        : "Thư viện có cả kiến thức mở rộng ngoài khóa cơ bản. Lịch ôn và kết quả trước đây của từng thẻ được giữ nguyên."}</p>
+        ? "Ôn kiến thức từ các bài đã học. Lịch ôn và kết quả trước đây của từng thẻ được giữ nguyên."
+        : "Ôn toàn bộ chương trình, từ C++ nền tảng đến game và Unreal. Mỗi thẻ dẫn về bài giải thích tương ứng."}</p>
     </div>
-    <ReviewSession key={scope} scope={scope} eligibleIds={eligibleIds} />
+    <ReviewSession key={scope} eligibleIds={eligibleIds} />
   </div>;
 }
 
-function ReviewSession({ scope, eligibleIds }: { scope: ReviewScope; eligibleIds: string[] }) {
+function ReviewSession({ eligibleIds }: { eligibleIds: string[] }) {
   const state = useStore();
 
   // Build the initial due queue ONCE (snapshot), so grading doesn't reshuffle.
@@ -91,6 +89,7 @@ function ReviewSession({ scope, eligibleIds }: { scope: ReviewScope; eligibleIds
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (finished) return;
+      if (e.target instanceof HTMLElement && (e.target.isContentEditable || /INPUT|TEXTAREA|SELECT|BUTTON/.test(e.target.tagName))) return;
       if (!flipped && (e.code === "Space" || e.code === "Enter")) {
         e.preventDefault();
         setFlipped(true);
@@ -114,11 +113,11 @@ function ReviewSession({ scope, eligibleIds }: { scope: ReviewScope; eligibleIds
           <h3>{eligibleIds.length ? "Đã ôn hết thẻ đến hạn trong phạm vi này" : "Chưa có bài nào trong phạm vi ôn"}</h3>
           <p className="muted">
             {eligibleIds.length ? "Quay lại khi thẻ đến hạn, hoặc chọn phạm vi khác ở phía trên."
-              : "Học và đánh dấu một bài trong lộ trình, hoặc chọn toàn bộ khóa cơ bản nếu bạn đã học những chủ đề này trước đây."}
+              : "Học và đánh dấu một bài trong chương trình, hoặc chọn toàn bộ chương trình nếu bạn muốn ôn các chủ đề đã học trước đây."}
           </p>
           <div className="row center" style={{ justifyContent: "center", marginTop: 8 }}>
-            <Link to={courseUrl("cpp-00")} className="btn primary">
-              Mở lộ trình học
+            <Link to="/" className="btn primary">
+              Mở chương trình học
             </Link>
           </div>
         </div>
@@ -199,7 +198,7 @@ function ReviewSession({ scope, eligibleIds }: { scope: ReviewScope; eligibleIds
       <p className="center muted" style={{ fontSize: 12, marginTop: 14 }}>
         Phím tắt: <b>Space</b> lật thẻ · <b>1-4</b> chấm điểm
       </p>
-      <p className="center"><Link to={scope !== "library" && courseCardLessons[currentId] ? courseUrl(courseCardLessons[currentId]) : `/lesson/${card.sectionId}`}>Đọc lại phần giải thích →</Link></p>
+      <p className="center"><Link to={`/lesson/${card.sectionId}`}>Đọc lại phần giải thích →</Link></p>
     </div>
   );
 }

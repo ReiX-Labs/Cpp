@@ -72,7 +72,7 @@ export function parseCurriculumSyntax(body: string): CurriculumSyntaxEntry[] {
     const cells = line.trim().slice(1, -1).split(/(?<!\\)\|/).map((cell) => cell.trim().replace(/\\\|/g, "|"));
     if (cells.length !== 3) throw new Error(`Invalid curriculum lookup row: ${line}`);
     const syntax = cells[0].replace(/`/g, "");
-    const links = [...cells[2].matchAll(/\[([^\]]+)\]\(#([a-z0-9-]+)\)/g)]
+    const links = [...cells[2].matchAll(/\[((?:[^\[\]]|\[[^\]]*\])+)\]\(#([a-z0-9-]+)\)/g)]
       .map((match) => ({ label: match[1], anchor: match[2] }));
     if (!entries.some((entry) => entry.syntax === syntax && entry.group === group)) entries.push({ syntax, meaning: cells[1], group, links });
   }

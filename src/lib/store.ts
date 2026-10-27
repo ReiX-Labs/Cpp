@@ -1,5 +1,6 @@
 import { useSyncExternalStore } from "react";
 import { dayKey, newCard, schedule, startOfDay, type Grade, type SrsState } from "./srs";
+import { CONTENT_REVISION, lessonProgressStatus, readingReward } from "../content/lessonManifest";
 
 const KEY = "cpp-dojo-state-v1";
 
@@ -7,6 +8,7 @@ export type Theme = "dark" | "light";
 
 export interface SectionProgress {
   read?: boolean;
+  contentRevision?: number;
   quizBest?: number; // 0..1 best quiz score
   practiceDone?: boolean;
   updatedAt: number;
@@ -142,12 +144,13 @@ export const actions = {
 
   markSectionRead(id: string) {
     const prev = state.progress[id];
-    if (prev?.read) return;
+    if (lessonProgressStatus(id, state.progress).read) return;
+    const reward = readingReward(id, state.progress);
     set({
-      progress: { ...state.progress, [id]: { ...prev, read: true, updatedAt: Date.now() } },
+      progress: { ...state.progress, [id]: { ...prev, read: true, contentRevision: CONTENT_REVISION, updatedAt: Date.now() } },
     });
     bumpActivity({ lessons: 1 });
-    addXp(15);
+    if (reward) addXp(reward);
   },
 
   recordQuiz(id: string, score: number) {

@@ -1,14 +1,14 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import ts from 'typescript';
+import { loadContent } from './load-content.mjs';
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 const load = (source) => import('data:text/javascript;base64,' + Buffer.from(ts.transpileModule(source, {
   compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext },
 }).outputText).toString('base64'));
 const baseline = JSON.parse(read('scripts/fixtures/legacy-ids.json'));
-const { parseReference } = await load(read('src/content/parse.ts'));
-const reference = parseReference(read('Cpp_Game_Dev_Reference.md'));
+const { reference } = await loadContent('src/content/reference.ts');
 const { cards } = await load(read('src/data/cards.ts'));
 const { quizzes } = await load(read('src/data/quizzes.ts'));
 const { challenges } = await load(read('src/data/challenges.ts'));
@@ -24,7 +24,8 @@ const current = {
 };
 for (const [kind, ids] of Object.entries(current)) {
   assert.equal(new Set(ids).size, ids.length, `${kind}: duplicate IDs`);
-  assert.deepEqual(ids.filter((id) => baseline[kind].includes(id)), baseline[kind], `${kind}: existing IDs/order must remain stable`);
+  if (kind === 'sections') assert.deepEqual([...ids].sort(), [...baseline[kind]].sort(), 'Reorder lessons without changing their identities');
+  else assert.deepEqual(ids.filter((id) => baseline[kind].includes(id)), baseline[kind], `${kind}: existing IDs/order must remain stable`);
 }
 for (const card of cards) assert.ok(reference.byId[card.sectionId], `Missing card section ${card.sectionId}`);
 for (const [section, questions] of Object.entries(quizzes)) {
@@ -32,4 +33,4 @@ for (const [section, questions] of Object.entries(quizzes)) {
   for (const q of questions) assert.ok(Number.isInteger(q.answer) && q.answer >= 0 && q.answer < q.choices.length, q.id);
 }
 assert.match(read('src/lib/store.ts'), /const KEY = "cpp-dojo-state-v1"/, 'Keep the existing browser storage key');
-console.log(`PASS: retained ${current.sections.length} library sections, ${baseline.cards.length} cards, ${baseline.quizzes.length} questions, ${baseline.challenges.length} challenges and ${baseline.exercises.length} exercise IDs.`);
+console.log(`PASS: retained ${current.sections.length} section IDs, ${baseline.cards.length} cards, ${baseline.quizzes.length} questions, ${baseline.challenges.length} challenges and ${baseline.exercises.length} exercise IDs.`);

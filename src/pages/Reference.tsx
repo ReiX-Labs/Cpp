@@ -1,19 +1,24 @@
-import { useSearchParams } from "react-router-dom";
+import { useEffect } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import { reference } from "../content/reference";
 import { actions, useStore } from "../lib/store";
 import Markdown from "../components/Markdown";
 import SyntaxLookup from "../components/SyntaxLookup";
-import { curriculumRange } from "../content/curriculum";
+import { curriculumResources, curriculumAnchorUrl } from "../content/curriculum";
 
 export default function Reference() {
   const state = useStore();
   const [params, setParams] = useSearchParams();
   const appendix = reference.appendix ?? reference.parts.at(-1);
   const sections = appendix?.sections ?? [];
+  const resources = curriculumResources.filter((resource) => !sections.some((section) => section.id === resource.id));
 
   const requested = params.get("tab");
+  useEffect(() => {
+    if (requested === "a") setParams({ tab: "syntax" }, { replace: true });
+  }, [requested, setParams]);
   const active =
-    (requested && (requested === "syntax" || requested === "settings" || sections.some((s) => s.id === requested))
+    (requested && (requested === "syntax" || requested === "settings" || sections.some((s) => s.id === requested) || resources.some((s) => s.id === requested))
       ? requested
       : null) ??
     "syntax";
@@ -21,37 +26,33 @@ export default function Reference() {
     setParams({ tab: id }, { replace: true });
   };
 
-  const current = sections.find((s) => s.id === active);
+  const current = sections.find((s) => s.id === active) ?? resources.find((s) => s.id === active);
+  const anchor = params.get("anchor");
+  useEffect(() => {
+    if (anchor) {
+      const frame = requestAnimationFrame(() => document.getElementById(anchor)?.scrollIntoView({ block: "start" }));
+      return () => cancelAnimationFrame(frame);
+    }
+  }, [active, anchor]);
 
   return (
     <div className="page narrow fade" style={{ padding: 0 }}>
       <h1 style={{ fontSize: 28, letterSpacing: "-0.02em", margin: "0 0 4px" }}>
-        Tra cứu &amp; Cheat sheet
+        {active === "settings" ? "Cài đặt học tập" : active === "syntax" ? "Tra cứu kiến thức" : "Tra cứu và ôn tập"}
       </h1>
       <p className="muted" style={{ marginTop: 0, marginBottom: 22 }}>
-        Tra nhanh cú pháp, bảng đối chiếu, thuật ngữ — và tùy chỉnh trải nghiệm học.
+        Tra theo chủ đề hoặc thao tác, rồi mở đúng phần giải thích trong chương trình học.
       </p>
 
-      <div className="tabs" style={{ flexWrap: "wrap" }}>
-        <button className={"tab" + (active === "syntax" ? " active" : "")} onClick={() => select("syntax")}>
-          Câu lệnh · Bài 01–{curriculumRange}
-        </button>
-        {sections.map((s) => (
-          <button
-            key={s.id}
-            className={"tab" + (active === s.id ? " active" : "")}
-            onClick={() => select(s.id)}
-          >
-            {s.num ? `${s.num}. ` : ""}
-            {s.title}
-          </button>
-        ))}
-        <button
-          className={"tab" + (active === "settings" ? " active" : "")}
-          onClick={() => select("settings")}
-        >
-          ⚙ Cài đặt
-        </button>
+      <div className="unified-resource-controls">
+        <label htmlFor="reference-view">Nội dung</label>
+        <select id="reference-view" value={active} onChange={(event) => select(event.target.value)}>
+          <option value="syntax">Cú pháp và thao tác theo chủ đề</option>
+          <optgroup label="Bảng đối chiếu và tài nguyên">{sections.filter((s) => !["a", "f"].includes(s.id) || s.id === active).map((s) => <option key={s.id} value={s.id}>{s.title}</option>)}</optgroup>
+          <optgroup label="Thực hành và tự ôn">{resources.map((s) => <option key={s.id} value={s.id}>{s.title}</option>)}</optgroup>
+          <option value="settings">Cài đặt học tập</option>
+        </select>
+        <Link className="btn sm" to="/">Chương trình học</Link>
       </div>
 
       {active === "syntax" ? <SyntaxLookup /> : active === "settings" ? (
@@ -117,7 +118,8 @@ export default function Reference() {
         </div>
       ) : current ? (
         <div className="card pad fade">
-          <Markdown>{current.body}</Markdown>
+          <h2 style={{ marginTop: 0 }}>{current.title}</h2>
+          <Markdown resolveAnchor={curriculumAnchorUrl}>{current.body}</Markdown>
         </div>
       ) : null}
     </div>

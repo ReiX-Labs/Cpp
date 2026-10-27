@@ -1,0 +1,37 @@
+.unified-part-head { width: 100%; border: 0; background: none; text-align: left; font: inherit; }
+.unified-part-copy { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.unified-part-copy .part-title { white-space: normal; }
+.unified-lesson-name { flex: 1; min-width: 0; line-height: 1.45; }
+.unified-tree .section-link { align-items: flex-start; }
+.unified-tree .section-num { padding-top: 2px; }
+.update-dot { color: var(--warning); font-size: 18px; line-height: 1; }
+.unified-sidebar-progress { margin-top: auto; padding: 16px 8px 0; font-size: 12px; color: var(--text-faint); }
+.unified-sidebar-progress .row { margin-bottom: 6px; }
+.unified-progress-notice { padding: 14px 18px; margin-bottom: 20px; border-left: 3px solid var(--warning); }
+.unified-progress-notice p { margin: 5px 0 0; }
+.unified-stage-lessons { display: grid; gap: 8px; margin-top: 14px; }
+.unified-stage-lessons a { display: flex; align-items: baseline; gap: 10px; color: var(--text-dim); font-size: 13px; }
+.unified-stage-lessons .lesson-number { min-width: 24px; color: var(--text-faint); font-family: var(--mono); }
+.unified-stage-lessons .lesson-state { margin-left: auto; flex-shrink: 0; color: var(--text-faint); font-size: 11px; }
+.unified-stage .pc-title { margin: 6px 0 10px; }
+.unified-stage > .btn { margin-top: 16px; }
+.unified-practice-list { display: grid; gap: 8px; }
+.unified-practice-list a { display: block; padding: 9px 12px; border-radius: 8px; background: var(--panel); color: var(--text-dim); }
+.unified-resource-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 22px; }
+.unified-resource-controls label { font-size: 13px; font-weight: 600; }
+.unified-resource-controls select { min-width: 0; max-width: 100%; flex: 1; padding: 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--panel); color: var(--text); font: inherit; }
+.unified-course-tools { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0; }
+.lesson .lesson-completion { margin-top: 24px; }
+.lesson .lesson-completion h3 { margin-top: 0; }
+.lesson .lesson-completion p { color: var(--text-dim); font-size: 14px; line-height: 1.7; }
+.lesson .lesson-footer { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.lesson .lesson-nav { min-width: 0; width: auto; overflow-wrap: anywhere; }
+.toc button { display: block; padding: 5px 0; width: 100%; text-align: left; background: none; border: 0; font: inherit; color: var(--text-dim); cursor: pointer; }
+.toc button:hover { color: var(--accent); }
+.toc button.h3 { padding-left: 12px; font-size: 12px; }
+@media(max-width:900px) {
+  .unified-tree { max-height: 260px; overflow-y: auto; }
+  .unified-sidebar-progress { padding-top: 8px; }
+  .unified-resource-controls { align-items: stretch; }
+  .unified-resource-controls label { width: 100%; }
+}

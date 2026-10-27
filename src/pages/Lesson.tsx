@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { Link, Navigate, useParams } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { Link, Navigate, useParams, useSearchParams } from "react-router-dom";
 import { reference } from "../content/reference";
 import { quizFor } from "../data/quizzes";
 import { challengesFor } from "../data/challenges";
@@ -8,7 +8,7 @@ import { actions, useStore } from "../lib/store";
 import Markdown, { headingSlug } from "../components/Markdown";
 import Quiz from "../components/Quiz";
 import ChallengePanel from "../components/ChallengePanel";
-import { curriculumLessons, courseUrl } from "../content/curriculum";
+import { curriculumAnchorUrl, lessonProgressStatus } from "../content/curriculum";
 
 interface Toc {
   text: string;
@@ -41,11 +41,23 @@ function scrollTo(slug: string) {
 
 export default function Lesson() {
   const { id } = useParams();
+  const [params] = useSearchParams();
   const state = useStore();
-  const [tab, setTab] = useState<"learn" | "practice">("learn");
+  const [tab, setTab] = useState<"learn" | "practice">(params.get("tab") === "practice" ? "practice" : "learn");
   const [revealedCards, setRevealedCards] = useState<Set<string>>(new Set());
 
   const section = id ? reference.byId[id] : undefined;
+  const anchor = params.get("anchor");
+  useEffect(() => {
+    setTab(params.get("tab") === "practice" ? "practice" : "learn");
+    setRevealedCards(new Set());
+  }, [id, params.get("tab")]);
+  useEffect(() => {
+    if (anchor && tab === "learn") {
+      const frame = requestAnimationFrame(() => document.getElementById(anchor)?.scrollIntoView({ block: "start" }));
+      return () => cancelAnimationFrame(frame);
+    }
+  }, [id, anchor, tab]);
 
   const toc = useMemo(() => (section ? buildToc(section.body) : []), [section]);
   const quiz = section ? quizFor(section.id) : [];
@@ -62,8 +74,12 @@ export default function Lesson() {
     flatIndex >= 0 && flatIndex < lessons.length - 1 ? lessons[flatIndex + 1] : undefined;
 
   if (!section) return <Navigate to="/" replace />;
+  if (reference.appendix?.sections.some((item) => item.id === section.id)) {
+    return <Navigate to={`/reference?tab=${section.id === "a" ? "syntax" : section.id}${anchor ? `&anchor=${encodeURIComponent(anchor)}` : ""}`} replace />;
+  }
 
   const progress = state.progress[section.id];
+  const status = lessonProgressStatus(section.id, state.progress);
   const exerciseCount = quiz.length + challenges.length + sectionCards.length;
 
   const toggleCard = (cid: string) =>
@@ -86,7 +102,8 @@ export default function Lesson() {
         <div className="lesson-meta">
           <span>⏱ {section.minutes} phút đọc</span>
           {section.codeBlocks > 0 && <span>· {section.codeBlocks} ví dụ code</span>}
-          {progress?.read && <span style={{ color: "var(--success)" }}>· ✓ Đã học</span>}
+          {status.read && <span style={{ color: "var(--success)" }}>· ✓ Đã học bản hiện tại</span>}
+          {status.needsUpdate && <span style={{ color: "var(--warning)" }}>· Có phần kiến thức cần cập nhật</span>}
           {progress?.quizBest != null && (
             <span>· Quiz tốt nhất: {Math.round(progress.quizBest * 100)}%</span>
           )}
@@ -110,18 +127,15 @@ export default function Lesson() {
 
         {tab === "learn" ? (
           <div className="fade">
-            <Markdown>{section.body}</Markdown>
-
-            {curriculumLessons.some((item) => item.related.includes(section.id)) && (
-              <aside className="card pad" style={{ marginBottom: 20 }}>
-                <strong>Học chủ đề này theo lộ trình</strong>
-                <div className="handoff-related">
-                  {curriculumLessons.filter((item) => item.related.includes(section.id)).map((item) => (
-                    <Link className="chip" key={item.id} to={courseUrl(item.id)}>{item.number === "00" ? "Chuẩn bị" : `Bài ${item.number}`} · {item.title}</Link>
-                  ))}
-                </div>
-              </aside>
-            )}
+            {status.needsUpdate && <aside className="card unified-progress-notice"><strong>Bài học đã được bổ sung</strong><p className="muted">Kết quả và XP trước đây vẫn được giữ. Đọc các phần mới rồi xác nhận đã học ở cuối bài.</p></aside>}
+            <Markdown resolveAnchor={curriculumAnchorUrl}>{section.body}</Markdown>
+            <section className="card pad lesson-completion">
+              <h3>Trước khi chuyển bài</h3>
+              <p>Tự giải thích ví dụ và hoàn thành yêu cầu thực hành. Việc đánh dấu ghi nhận bạn đã học nội dung này; kết quả quiz và bài nộp được lưu riêng.</p>
+              <button className="btn primary" disabled={status.read} onClick={() => actions.markSectionRead(section.id)}>
+                {status.read ? "✓ Đã học bản hiện tại" : status.hasHistory ? "✓ Xác nhận đã học phần cập nhật" : "✓ Đánh dấu đã học (+15 XP)"}
+              </button>
+            </section>
             <div className="lesson-footer">
               {prev ? (
                 <Link className="lesson-nav" to={`/lesson/${prev.id}`}>
@@ -154,12 +168,10 @@ export default function Lesson() {
                 <div className="emoji">🧩</div>
                 <h3>Chưa có bài luyện tập cho mục này</h3>
                 <p className="muted">
-                  Bạn có thể bổ sung câu hỏi trong <code>src/data/quizzes.ts</code>,{" "}
-                  <code>src/data/challenges.ts</code> hoặc thẻ ôn tập trong{" "}
-                  <code>src/data/cards.ts</code>. Trong lúc đó, hãy sang phần ôn tập hàng ngày!
+                  Làm yêu cầu tự viết và tự kiểm tra trong bài học, sau đó chọn bài thực hành cùng chủ đề.
                 </p>
-                <Link to="/review" className="btn primary mt">
-                  ↻ Ôn tập hàng ngày
+                <Link to="/exercises" className="btn primary mt">
+                  Mở bài tập thực hành
                 </Link>
               </div>
             ) : (
@@ -171,7 +183,6 @@ export default function Lesson() {
                       questions={quiz}
                       onComplete={(score) => {
                         actions.recordQuiz(section.id, score);
-                        if (score >= 0.7) actions.markSectionRead(section.id);
                       }}
                     />
                   </div>
@@ -232,9 +243,9 @@ export default function Lesson() {
       <div className="rail">
         <div className="rail-card">
           <h4>Tiến độ bài này</h4>
-          {progress?.read ? (
+          {status.read ? (
             <div className="chip" style={{ color: "var(--success)", marginBottom: 12 }}>
-              ✓ Đã hoàn thành
+              ✓ Đã học bản hiện tại
             </div>
           ) : (
             <button
@@ -242,7 +253,7 @@ export default function Lesson() {
               style={{ marginBottom: 12 }}
               onClick={() => actions.markSectionRead(section.id)}
             >
-              ✓ Đánh dấu đã học (+15 XP)
+              {status.hasHistory ? "✓ Xác nhận đã học phần cập nhật" : "✓ Đánh dấu đã học (+15 XP)"}
             </button>
           )}
           {exerciseCount > 0 && (
@@ -262,18 +273,23 @@ export default function Lesson() {
           <div className="rail-card">
             <h4>Trong bài này</h4>
             <nav className="toc">
-              {toc.map((t) => (
-                <a
-                  key={t.slug}
+              {toc.map((t, index) => (
+                <button
+                  key={`${t.slug}-${index}`}
                   className={t.level === 4 ? "h3" : ""}
-                  onClick={() => scrollTo(t.slug)}
+                  onClick={() => { setTab("learn"); requestAnimationFrame(() => scrollTo(t.slug)); }}
                 >
                   {t.text}
-                </a>
+                </button>
               ))}
             </nav>
           </div>
         )}
+        <div className="rail-card"><h4>Tra cứu và thực hành</h4>
+          <Link className="btn block sm" to="/reference?tab=syntax">Tra cú pháp và thao tác</Link>
+          <Link className="btn block sm" to="/review">Ôn các bài đã học</Link>
+          <Link className="btn block sm" to="/exercises">Bài tập thực hành</Link>
+        </div>
       </div>
     </div>
   );

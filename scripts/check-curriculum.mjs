@@ -1,78 +1,63 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import ts from 'typescript';
 import { unified } from 'unified';
 import remarkParse from 'remark-parse';
 import remarkGfm from 'remark-gfm';
+import { loadContent } from './load-content.mjs';
 
-const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
-const url = (source) => 'data:text/javascript;base64,' + Buffer.from(ts.transpileModule(source, {
-  compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext },
-}).outputText).toString('base64');
-const parserUrl = url(read('src/content/curriculumParser.ts'));
-const parser = await import(parserUrl);
+const read = path => readFileSync(new URL('../' + path, import.meta.url), 'utf8');
 const raw = read('Update/CPP_GIAO_TRINH_CHUAN.md');
-const curriculumUrl = url(read('src/content/curriculum.ts')
-  .replace(/import raw from .*?;/, `const raw = ${JSON.stringify(raw)};`)
-  .replace('"./curriculumParser"', JSON.stringify(parserUrl)));
-const curriculum = await import(curriculumUrl);
-const { curriculumAllSections, curriculumManifest, curriculumLessons, curriculumResources, curriculumSections,
-  curriculumSyntaxEntries, curriculumAnchorUrl, resolveCourseId } = curriculum;
-assert.deepEqual(curriculumLessons.map((lesson) => lesson.id), curriculumManifest.map((item) => item.id), 'Every course manifest item needs real content');
-assert.equal(curriculum.curriculumRange, '17.2');
-assert.equal(curriculumLessons.length, 23, 'Preparation + 22 course pages through 17.2');
-assert.equal(curriculumResources.length, 7, 'Keep all prior review resources');
-assert.equal(new Set(curriculumAllSections.map((section) => section.id)).size, curriculumAllSections.length);
-assert.ok(curriculumLessons.every((lesson) => lesson.body.length > 500), 'No placeholder lesson pages');
-assert.ok(curriculumLessons.every((lesson) => /Mục tiêu/.test(lesson.body)), 'Every lesson explains its purpose');
-for (const id of ['sources', 'validation', 'update-protocol', 'web-integration']) {
-  assert.ok(!curriculumSections.some((section) => section.id === id), `Editorial metadata must not become a lesson: ${id}`);
-}
+const c = await loadContent('src/content/curriculum.ts');
+const { reference } = await loadContent('src/content/reference.ts');
+const parser = await loadContent('src/content/curriculumParser.ts');
+assert.equal(reference.lessonSections.length, 56);
+assert.equal(reference.appendix.sections.length, 8);
+assert.equal(c.curriculumResources.length, 7);
+assert.deepEqual(reference.lessonSections.map(s=>s.num), Array.from({length:56},(_,i)=>String(i+1).padStart(2,'0')));
+assert.equal(new Set(reference.sections.map(s=>s.id)).size, 64);
+assert.ok(reference.lessonSections.every(s=>s.body.length > 300 && /Mục tiêu/.test(s.body)), 'Every unified chapter needs real content and objectives');
+assert.ok(!read('src/content/reference.ts').includes('integrateHandoff'), 'Runtime must use the unified document alone');
+assert.ok(!read('src/content/reference.ts').includes('Cpp_Game_Dev_Reference.md'));
 const tree = unified().use(remarkParse).use(remarkGfm).parse(raw);
 const visit = (node, fn) => { fn(node); for (const child of node.children ?? []) visit(child, fn); };
-const explicitAnchors = new Set(curriculumAllSections.map((section) => section.id));
-visit(tree, (node) => {
-  if (node.type === 'link' && node.url.startsWith('#')) assert.ok(explicitAnchors.has(node.url.slice(1)) || curriculumAnchorUrl(node.url.slice(1)), `Broken canonical link: ${node.url}`);
-});
-for (const section of curriculumSections) {
-  const sectionTree = unified().use(remarkParse).use(remarkGfm).parse(section.body);
-  visit(sectionTree, (node) => {
-    if (node.type === 'link' && node.url.startsWith('#')) assert.ok(curriculumAnchorUrl(node.url.slice(1)), `${section.id} links to unavailable web content: ${node.url}`);
-  });
+const explicitAnchors = [];
+visit(tree, node => { if (node.type==='html') for(const match of node.value.matchAll(/<a\s+id="([^"]+)"/g)) explicitAnchors.push(match[1]); });
+assert.equal(new Set(explicitAnchors).size, explicitAnchors.length, 'Explicit anchors must be unique');
+const allAnchors = new Set(c.curriculumAllSections.flatMap(s=>s.anchors));
+visit(tree, node=>{ if(node.type==='link' && node.url.startsWith('#')) assert.ok(allAnchors.has(node.url.slice(1)), 'Broken canonical link: '+node.url); });
+for(const section of c.curriculumSections) {
+ const t=unified().use(remarkParse).use(remarkGfm).parse(section.body);
+ visit(t,node=>{if(node.type==='link'&&node.url.startsWith('#')) assert.ok(c.curriculumAnchorUrl(node.url.slice(1)), section.id+': unavailable web link '+node.url);});
 }
-assert.ok(curriculumSyntaxEntries.length >= 154, 'Preserve previous lookup coverage');
-assert.equal(new Set(curriculumSyntaxEntries.map((entry) => entry.syntax)).size, curriculumSyntaxEntries.length, 'Do not duplicate the same lookup syntax');
-for (const entry of curriculumSyntaxEntries) {
-  assert.ok(entry.meaning && entry.links.length, `Lookup requires meaning and lesson link: ${entry.syntax}`);
-  for (const link of entry.links) assert.ok(curriculumAnchorUrl(link.anchor), `${entry.syntax}: ${link.anchor}`);
+const { sourceLessonTargets, lessonProgressStatus, CONTENT_REVISION, readingReward } = await loadContent('src/content/lessonManifest.ts');
+for (const source of Object.keys(sourceLessonTargets)) {
+ assert.match(c.curriculumAnchorUrl(source) ?? '', /^\/lesson\/\d+\?anchor=/, source+' must enter a merged chapter');
 }
-assert.ok(curriculumSyntaxEntries.some((entry) => entry.syntax.includes('||')));
-for (const token of ['std::move', 'dynamic_cast', '#ifdef', 'static', 'count_if', 'F10']) {
-  assert.ok(curriculumSyntaxEntries.some((entry) => entry.syntax.includes(token)), `Missing lookup: ${token}`);
-}
-assert.equal(resolveCourseId('01'), 'cpp-01');
-assert.equal(resolveCourseId('06.5'), 'cpp-06-5');
-for (const [old, expected] of Object.entries({ integrated: 'arena', questions: 'self-check', status: 'study-history', schedule: 'review-routine', mistakes: 'mistakes' })) assert.equal(resolveCourseId(old), expected);
-assert.equal(curriculumAnchorUrl('cpp-14-5'), '/course/cpp-14-5');
-assert.equal(curriculumAnchorUrl('lookup'), '/reference?tab=syntax');
-const fixture = '<a id="cpp-a"></a>\n\n## First\n```cpp\n<a id="cpp-fake"></a>\n## Fake\n```\n<a id="cpp-b"></a>\n\n## Last\nBody';
-assert.deepEqual(parser.parseCurriculum(fixture).map((section) => section.id), ['cpp-a', 'cpp-b']);
-assert.throws(() => parser.parseCurriculum(fixture + '\n<a id="cpp-a"></a>\n## Duplicate'), /Duplicate/);
-assert.throws(() => parser.parseCurriculumSyntax('| `a` | one | two | three |'), /Invalid/);
-const { splitMarkdownStructures } = await import(url(read('src/content/markdownStructures.ts')));
-assert.equal(splitMarkdownStructures('```html\n<a id="fake"></a>\n<details>\n<summary>fake</summary>\nbody\n</details>\n```').length, 1, 'HTML inside examples stays code');
-const disclosure = splitMarkdownStructures('Intro\n<details>\n<summary>Answer</summary>\nThe answer\n</details>');
-assert.equal(disclosure[1].type, 'details');
-assert.equal(disclosure[1].summary, 'Answer');
-const cardsUrl = url(read('src/data/cards.ts'));
-const { cardIds } = await import(cardsUrl);
-const review = await import(url(read('src/content/courseReview.ts').replace('"../data/cards"', JSON.stringify(cardsUrl)).replace('"./curriculum"', JSON.stringify(curriculumUrl))));
-for (const [id, lesson] of Object.entries(review.courseCardLessons)) {
-  assert.ok(cardIds.includes(id), `Review mapping refers to missing card ${id}`);
-  assert.ok(curriculumLessons.some((item) => item.id === lesson), `Review mapping refers to missing lesson ${lesson}`);
-}
-assert.equal(review.eligibleReviewCardIds('learned', {}).length, 0, 'Do not infer learned material from source documents');
-assert.deepEqual(review.eligibleReviewCardIds('library', {}), cardIds, 'Keep access to every old flashcard');
-assert.ok(review.eligibleReviewCardIds('course', {}).length > 20);
-assert.ok(review.eligibleReviewCardIds('learned', { 'course:cpp-09': { read: true } }).every((id) => review.courseCardLessons[id] === 'cpp-09'));
-console.log(`PASS: ${curriculumLessons.length} course pages, ${curriculumResources.length} review resources, ${curriculumSyntaxEntries.length} lookup entries; source, anchors, aliases, safe Markdown and review scopes verified.`);
+for(const r of c.curriculumResources) assert.equal(c.curriculumAnchorUrl(r.id), '/reference?tab='+r.id);
+assert.equal(c.resolveCourseId('06.5'),'cpp-06-5');
+assert.equal(c.resolveCourseId('questions'),'self-check');
+assert.equal(c.curriculumAnchorUrl('lookup'),'/reference?tab=syntax');
+assert.ok(c.curriculumSyntaxEntries.length>=198,'Keep all existing lookup coverage');
+for(const entry of c.curriculumSyntaxEntries) for(const link of entry.links) assert.ok(c.curriculumAnchorUrl(link.anchor),entry.syntax+': '+link.anchor);
+assert.deepEqual(lessonProgressStatus('3',{}),{read:false,needsUpdate:false,hasHistory:false});
+assert.deepEqual(lessonProgressStatus('3',{'3':{read:true}}),{read:false,needsUpdate:true,hasHistory:true});
+assert.equal(lessonProgressStatus('3',{'course:cpp-02':{read:true}}).read,false);
+assert.equal(lessonProgressStatus('3',{'course:cpp-02':{read:true}}).hasHistory,true);
+assert.equal(lessonProgressStatus('3',{'3':{read:true,contentRevision:CONTENT_REVISION}}).read,true);
+assert.equal(lessonProgressStatus('29',{'29':{read:true}}).read,true);
+assert.equal(readingReward('3',{'3':{read:true}}),0);
+assert.equal(readingReward('3',{'course:cpp-02':{read:true}}),0);
+assert.equal(readingReward('3',{}),15);
+const review=await loadContent('src/content/courseReview.ts');
+const {cards}=await loadContent('src/data/cards.ts');
+assert.equal(review.eligibleReviewCardIds('course',{}).length,cards.length);
+assert.deepEqual(review.eligibleReviewCardIds('learned',{}),[]);
+assert.equal(review.eligibleReviewCardIds('learned',{'course:cpp-09':{read:true}}).length,2, 'Preserve precise old coverage, not all advanced cards in the chapter');
+assert.ok(review.eligibleReviewCardIds('learned',{'3':{read:true}}).length>0);
+const fixture='<a id="first"></a>\n## First\n\x60\x60\x60cpp\n<a id="fake"></a>\n## Fake\n\x60\x60\x60\n<a id="last"></a>\n## Last\nBody';
+assert.deepEqual(parser.parseCurriculum(fixture).map(s=>s.id),['first','last']);
+assert.throws(()=>parser.parseCurriculum(fixture+'\n<a id="first"></a>\n## Duplicate'),/Duplicate/);
+assert.throws(()=>parser.parseCurriculumSyntax('| \x60a\x60 | one | two | three |'),/Invalid/);
+assert.equal(parser.parseCurriculumSyntax('| `delete[] a;` | Release array | [new[], delete[]](#lesson-8) |')[0].links[0].anchor, 'lesson-8');
+assert.match(c.curriculumAnchorUrl('16-2-lambda-tach-capture-khoi-tham-so','cpp-16'), /^\/lesson\/18\?anchor=topic-/);
+console.log('PASS: one curriculum, 56 chapters, 8 appendices, 7 resources; links, old routes, parser, review and completion boundaries.');

@@ -8,8 +8,8 @@ export default function Layout() {
 
   // scroll to top on navigation (unless jumping to an in-page anchor)
   useEffect(() => {
-    if (!location.hash) window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
-  }, [location.pathname]);
+    if (!new URLSearchParams(location.search).has("anchor")) window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
+  }, [location.pathname, location.search]);
 
   return (
     <div className="app">

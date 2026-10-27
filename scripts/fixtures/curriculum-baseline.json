@@ -1,0 +1,1152 @@
+{
+  "sourceCommit": "f51e45624c04f7ecfe943fd4dc84b0702486e6d7",
+  "originalTopics": [
+    {
+      "source": "0",
+      "heading": "Bộ công cụ chuẩn của team"
+    },
+    {
+      "source": "0",
+      "heading": "Đường 1 — Chương trình C++ thuần đầu tiên"
+    },
+    {
+      "source": "0",
+      "heading": "Đường 2 — Project Unreal Engine C++ đầu tiên"
+    },
+    {
+      "source": "0",
+      "heading": "Live Coding — biên dịch khi editor đang mở"
+    },
+    {
+      "source": "0",
+      "heading": "Cấu trúc thư mục project UE cần biết"
+    },
+    {
+      "source": "0",
+      "heading": "Checklist \"Ngày 0\""
+    },
+    {
+      "source": "1",
+      "heading": "C++ là gì"
+    },
+    {
+      "source": "1",
+      "heading": "Mô hình biên dịch (Compilation Model)"
+    },
+    {
+      "source": "1",
+      "heading": "Chương trình tối thiểu"
+    },
+    {
+      "source": "2",
+      "heading": "Các thành phần"
+    },
+    {
+      "source": "2",
+      "heading": "Header & Source — vì sao tách đôi"
+    },
+    {
+      "source": "2",
+      "heading": "Include Guard"
+    },
+    {
+      "source": "2",
+      "heading": "CMake — build system phổ biến nhất cho C++ thuần"
+    },
+    {
+      "source": "3",
+      "heading": "Khai báo biến"
+    },
+    {
+      "source": "3",
+      "heading": "Fundamental Types & kích thước"
+    },
+    {
+      "source": "3",
+      "heading": "`auto` — để compiler tự suy kiểu"
+    },
+    {
+      "source": "3",
+      "heading": "Toán tử"
+    },
+    {
+      "source": "4",
+      "heading": "if / else"
+    },
+    {
+      "source": "4",
+      "heading": "switch — chọn theo giá trị rời rạc"
+    },
+    {
+      "source": "4",
+      "heading": "Loops (vòng lặp)"
+    },
+    {
+      "source": "4",
+      "heading": "break / continue"
+    },
+    {
+      "source": "5",
+      "heading": "Khai báo & định nghĩa"
+    },
+    {
+      "source": "5",
+      "heading": "Truyền tham số: by value vs by reference vs by const-reference"
+    },
+    {
+      "source": "5",
+      "heading": "Default arguments"
+    },
+    {
+      "source": "5",
+      "heading": "Function Overloading — cùng tên, khác tham số"
+    },
+    {
+      "source": "5",
+      "heading": "`inline` & ý nghĩa thực tế"
+    },
+    {
+      "source": "6",
+      "heading": "Pointer (con trỏ) — biến lưu **địa chỉ** của biến khác"
+    },
+    {
+      "source": "6",
+      "heading": "Reference (tham chiếu) — **bí danh** (alias) cho biến đã có"
+    },
+    {
+      "source": "6",
+      "heading": "Pointer vs Reference — chọn cái nào?"
+    },
+    {
+      "source": "6",
+      "heading": "`nullptr` và bug kinh điển"
+    },
+    {
+      "source": "6",
+      "heading": "`const` với pointer (đọc từ phải sang trái)"
+    },
+    {
+      "source": "6",
+      "heading": "Dangling Pointer — con trỏ \"treo\" (cực nguy hiểm)"
+    },
+    {
+      "source": "8",
+      "heading": "Ba tội lỗi kinh điển của quản lý bộ nhớ thủ công"
+    },
+    {
+      "source": "10",
+      "heading": "`std::unique_ptr` — sở hữu DUY NHẤT (dùng 90% trường hợp)"
+    },
+    {
+      "source": "10",
+      "heading": "`std::shared_ptr` — sở hữu CHIA SẺ (reference counting)"
+    },
+    {
+      "source": "10",
+      "heading": "`std::weak_ptr` — quan sát nhưng KHÔNG sở hữu (phá vỡ vòng tham chiếu)"
+    },
+    {
+      "source": "10",
+      "heading": "Bảng chọn smart pointer"
+    },
+    {
+      "source": "11",
+      "heading": "Lvalue vs Rvalue"
+    },
+    {
+      "source": "11",
+      "heading": "Vấn đề move giải quyết"
+    },
+    {
+      "source": "11",
+      "heading": "`std::move` — tạo biểu thức xvalue, không tự di chuyển tài nguyên"
+    },
+    {
+      "source": "11",
+      "heading": "Move Constructor & Move Assignment (cho class tự định nghĩa)"
+    },
+    {
+      "source": "12",
+      "heading": "Access Specifiers (mức truy cập)"
+    },
+    {
+      "source": "12",
+      "heading": "`struct` vs `class`"
+    },
+    {
+      "source": "13",
+      "heading": "Constructor — khởi tạo object"
+    },
+    {
+      "source": "13",
+      "heading": "Destructor — dọn dẹp khi object bị hủy"
+    },
+    {
+      "source": "13",
+      "heading": "Rule of 0/3/5 — quy tắc cực kỳ quan trọng"
+    },
+    {
+      "source": "14",
+      "heading": "Inheritance (kế thừa) — quan hệ \"is-a\""
+    },
+    {
+      "source": "14",
+      "heading": "Polymorphism (đa hình) — cùng interface, hành vi khác nhau"
+    },
+    {
+      "source": "14",
+      "heading": "Cảnh báo: Virtual Destructor"
+    },
+    {
+      "source": "15",
+      "heading": "Pure Virtual & Abstract Class (interface)"
+    },
+    {
+      "source": "19",
+      "heading": "Function Template"
+    },
+    {
+      "source": "19",
+      "heading": "Class Template"
+    },
+    {
+      "source": "19",
+      "heading": "Template với nhiều tham số & giá trị"
+    },
+    {
+      "source": "21",
+      "heading": "Iterator — \"con trỏ tổng quát\" để duyệt container"
+    },
+    {
+      "source": "22",
+      "heading": "const correctness — đánh dấu cái gì không đổi"
+    },
+    {
+      "source": "22",
+      "heading": "constexpr — tính toán LÚC BIÊN DỊCH"
+    },
+    {
+      "source": "22",
+      "heading": "enum class — enum an toàn về kiểu (scoped enum)"
+    },
+    {
+      "source": "23",
+      "heading": "Exceptions"
+    },
+    {
+      "source": "23",
+      "heading": "Vì sao game thường tránh exception"
+    },
+    {
+      "source": "23",
+      "heading": "Các lựa chọn thay thế (khuyến nghị cho game)"
+    },
+    {
+      "source": "25",
+      "heading": "Delta Time — vì sao quan trọng"
+    },
+    {
+      "source": "25",
+      "heading": "Fixed Timestep (cho physics ổn định)"
+    },
+    {
+      "source": "26",
+      "heading": "Object-Oriented vs Data-Oriented"
+    },
+    {
+      "source": "26",
+      "heading": "ECS — Entity Component System"
+    },
+    {
+      "source": "27",
+      "heading": "CPU Cache — yếu tố hiệu năng số 1 hiện nay"
+    },
+    {
+      "source": "27",
+      "heading": "Nguyên tắc tối ưu"
+    },
+    {
+      "source": "27",
+      "heading": "Một số kỹ thuật phổ biến"
+    },
+    {
+      "source": "28",
+      "heading": "Vector — vị trí, hướng, vận tốc"
+    },
+    {
+      "source": "28",
+      "heading": "Các khái niệm cần biết"
+    },
+    {
+      "source": "29",
+      "heading": "Singleton — một instance toàn cục (DÙNG THẬN TRỌNG)"
+    },
+    {
+      "source": "29",
+      "heading": "Object Pool — tái sử dụng object (tối ưu chống GC/alloc)"
+    },
+    {
+      "source": "29",
+      "heading": "Observer — phát/nhận sự kiện (event system)"
+    },
+    {
+      "source": "29",
+      "heading": "State Machine — quản lý trạng thái (AI, animation, gameplay)"
+    },
+    {
+      "source": "29",
+      "heading": "Command — đóng gói hành động (undo/redo, input remapping, replay)"
+    },
+    {
+      "source": "29",
+      "heading": "Component Pattern — (đã nói ở mục 16) nền tảng của Unreal Actor & ECS."
+    },
+    {
+      "source": "30",
+      "heading": "Quy ước đặt tiền tố (prefix) — BẮT BUỘC trong UE"
+    },
+    {
+      "source": "30",
+      "heading": "File Build cơ bản (`.Build.cs` — viết bằng C#)"
+    },
+    {
+      "source": "31",
+      "heading": "UObject — lớp gốc của hầu hết mọi thứ trong UE"
+    },
+    {
+      "source": "31",
+      "heading": "Reflection & Macros — \"ma thuật\" của UE"
+    },
+    {
+      "source": "31",
+      "heading": "Các specifier UPROPERTY hay dùng"
+    },
+    {
+      "source": "32",
+      "heading": "Tạo UObject đúng cách (KHÔNG dùng new)"
+    },
+    {
+      "source": "33",
+      "heading": "Actor — bất cứ thứ gì đặt được vào level"
+    },
+    {
+      "source": "33",
+      "heading": "Component — khối chức năng gắn vào Actor (Composition!)"
+    },
+    {
+      "source": "33",
+      "heading": "Vòng đời Actor (Actor Lifecycle) — các hàm hay override"
+    },
+    {
+      "source": "36",
+      "heading": "Cho UObject (đã có GC quản lý)"
+    },
+    {
+      "source": "36",
+      "heading": "Cho object KHÔNG phải UObject (struct C++ thường)"
+    },
+    {
+      "source": "37",
+      "heading": "Các loại delegate"
+    },
+    {
+      "source": "38",
+      "heading": "Expose enum/struct cho Blueprint"
+    },
+    {
+      "source": "39",
+      "heading": "Primary Data Asset — cấu hình từng \"thứ\" (vũ khí, skill, item...)"
+    },
+    {
+      "source": "39",
+      "heading": "Data Table — bảng dữ liệu (như spreadsheet), import từ CSV/JSON"
+    },
+    {
+      "source": "40",
+      "heading": "Các thành phần chính"
+    },
+    {
+      "source": "41",
+      "heading": "Nguyên tắc include"
+    },
+    {
+      "source": "41",
+      "heading": "Trong Unreal"
+    },
+    {
+      "source": "42",
+      "heading": "Nguyên tắc clean code"
+    },
+    {
+      "source": "43",
+      "heading": "Kỹ thuật cơ bản"
+    },
+    {
+      "source": "43",
+      "heading": "Breakpoint & Debugger (quan trọng nhất)"
+    },
+    {
+      "source": "43",
+      "heading": "Assertions trong Unreal"
+    },
+    {
+      "source": "43",
+      "heading": "Sanitizers (Standard C++) — phát hiện lỗi bộ nhớ"
+    },
+    {
+      "source": "44",
+      "heading": "Bẫy đặc thù Unreal"
+    },
+    {
+      "source": "45",
+      "heading": "Bộ nhớ & tài nguyên"
+    },
+    {
+      "source": "45",
+      "heading": "An toàn & đúng đắn"
+    },
+    {
+      "source": "45",
+      "heading": "Hiệu năng"
+    },
+    {
+      "source": "45",
+      "heading": "Tổ chức & phong cách"
+    },
+    {
+      "source": "46",
+      "heading": "Chuyển kiểu ngầm (implicit) & narrowing"
+    },
+    {
+      "source": "46",
+      "heading": "4 loại cast tường minh của C++ — đừng dùng C-style cast"
+    },
+    {
+      "source": "46",
+      "heading": "Trong Unreal: dùng `Cast<>()` — KHÔNG dùng dynamic_cast"
+    },
+    {
+      "source": "47",
+      "heading": "Namespace — chống đụng độ tên"
+    },
+    {
+      "source": "47",
+      "heading": "Anonymous namespace — \"private\" cấp file"
+    },
+    {
+      "source": "47",
+      "heading": "3 nghĩa của `static`"
+    },
+    {
+      "source": "47",
+      "heading": "Lưu ý riêng cho Unreal"
+    },
+    {
+      "source": "49",
+      "heading": "std::string — thao tác hay dùng"
+    },
+    {
+      "source": "49",
+      "heading": "std::string_view (C++17) — \"nhìn\" chuỗi mà không copy"
+    },
+    {
+      "source": "49",
+      "heading": "Chuyển đổi std::string ↔ FString (khi UE giao tiếp thư viện ngoài)"
+    },
+    {
+      "source": "49",
+      "heading": "Chọn loại chuỗi trong UE (ôn lại mục 35)"
+    },
+    {
+      "source": "50",
+      "heading": "Data race — loại bug khó chịu nhất"
+    },
+    {
+      "source": "50",
+      "heading": "Hai công cụ tối thiểu: mutex & atomic"
+    },
+    {
+      "source": "50",
+      "heading": "Mô hình thread của Unreal & quy tắc sống còn"
+    },
+    {
+      "source": "52",
+      "heading": "2 loại asset (tạo trong Content Browser → Input)"
+    },
+    {
+      "source": "52",
+      "heading": "ETriggerEvent hay dùng"
+    },
+    {
+      "source": "53",
+      "heading": "FTimerManager — chạy hàm sau X giây / lặp lại"
+    },
+    {
+      "source": "53",
+      "heading": "Overlap & Hit events — chính là dynamic delegate của collision"
+    },
+    {
+      "source": "53",
+      "heading": "Line Trace (raycast) — \"bắn tia\" kiểm tra trúng gì"
+    },
+    {
+      "source": "53",
+      "heading": "UGameplayStatics — \"hộp đồ nghề\" hàm tĩnh (`#include \"Kismet/GameplayStatics.h\"`)"
+    },
+    {
+      "source": "54",
+      "heading": "RPC — gọi hàm \"xuyên mạng\""
+    },
+    {
+      "source": "55",
+      "heading": "C++ thuần — GoogleTest (hoặc Catch2)"
+    },
+    {
+      "source": "55",
+      "heading": "Unreal — Automation Test (chạy: Tools → Session Frontend → Automation)"
+    },
+    {
+      "source": "a",
+      "heading": "Cheat Sheet cú pháp"
+    },
+    {
+      "source": "b",
+      "heading": "STL vs UE — bảng đối chiếu nhanh"
+    },
+    {
+      "source": "c",
+      "heading": "Glossary (thuật ngữ)"
+    },
+    {
+      "source": "d",
+      "heading": "Tài nguyên học tập"
+    },
+    {
+      "source": "e",
+      "heading": "Bảng lỗi build & runtime thường gặp"
+    },
+    {
+      "source": "f",
+      "heading": "Bài tập thực hành theo phần"
+    },
+    {
+      "source": "g",
+      "heading": "Capstone Project — Mini Arena Shooter"
+    },
+    {
+      "source": "h",
+      "heading": "Lộ trình đào tạo & Onboarding Checklist"
+    }
+  ],
+  "supplementTopics": [
+    {
+      "source": "cpp-00",
+      "heading": "00.1. Công cụ"
+    },
+    {
+      "source": "cpp-00",
+      "heading": "00.2. Pipeline build"
+    },
+    {
+      "source": "cpp-00",
+      "heading": "Tự kiểm tra và thực hành"
+    },
+    {
+      "source": "cpp-01",
+      "heading": "01.1. Chương trình C++ tối thiểu"
+    },
+    {
+      "source": "cpp-01",
+      "heading": "01.2. Nhập xuất dữ liệu"
+    },
+    {
+      "source": "cpp-01",
+      "heading": "01.3. Các dấu thường nhầm"
+    },
+    {
+      "source": "cpp-01",
+      "heading": "Tự kiểm tra và thực hành"
+    },
+    {
+      "source": "cpp-02",
+      "heading": "02.1. Kiểu dữ liệu"
+    },
+    {
+      "source": "cpp-02",
+      "heading": "02.2. Khai báo và khởi tạo"
+    },
+    {
+      "source": "cpp-02",
+      "heading": "02.3. `const` và `constexpr`"
+    },
+    {
+      "source": "cpp-02",
+      "heading": "02.4. `auto` — suy luận kiểu"
+    },
+    {
+      "source": "cpp-02",
+      "heading": "02.5. Ép kiểu (Casting) ở mức đã học"
+    },
+    {
+      "source": "cpp-02",
+      "heading": "Tự kiểm tra và thực hành"
+    },
+    {
+      "source": "cpp-03",
+      "heading": "03.1. Số học và gán"
+    },
+    {
+      "source": "cpp-03",
+      "heading": "03.2. So sánh và logic"
+    },
+    {
+      "source": "cpp-03",
+      "heading": "03.3. Tăng/giảm và toán tử ba ngôi"
+    },
+    {
+      "source": "cpp-03",
+      "heading": "03.4. Bitwise"
+    },
+    {
+      "source": "cpp-03",
+      "heading": "03.5. Ưu tiên toán tử"
+    },
+    {
+      "source": "cpp-03",
+      "heading": "Tự kiểm tra và thực hành"
+    },
+    {
+      "source": "cpp-04",
+      "heading": "04.1. `if` / `else if` / `else`"
+    },
+    {
+      "source": "cpp-04",
+      "heading": "04.2. `switch` / `case` / `break` / `default`"
+    },
+    {
+      "source": "cpp-04",
+      "heading": "04.3. Scope"
+    },
+    {
+      "source": "cpp-04",
+      "heading": "Kiểm tra một lần nhập dữ liệu"
+    },
+    {
+      "source": "cpp-04",
+      "heading": "Tự kiểm tra và thực hành"
+    },
+    {
+      "source": "cpp-05",
+      "heading": "05.1. `for`"
+    },
+    {
+      "source": "cpp-05",
+      "heading": "05.2. `while`"
+    },
+    {
+      "source": "cpp-05",
+      "heading": "05.3. `do ... while`"
+    },
+    {
+      "source": "cpp-05",
+      "heading": "05.4. `break`, `continue`"
+    },
+    {
+      "source": "cpp-05",
+      "heading": "Range-based for và container"
+    },
+    {
+      "source": "cpp-05",
+      "heading": "Nhập sai, EOF và chuyển từ >> sang getline"
+    },
+    {
+      "source": "cpp-05",
+      "heading": "Tự kiểm tra và thực hành"
+    },
+    {
+      "source": "cpp-06",
+      "heading": "06.1. Khai báo, định nghĩa, gọi"
+    },
+    {
+      "source": "cpp-06",
+      "heading": "06.2. Pass by value và pass by reference"
+    },
+    {
+      "source": "cpp-06",
+      "heading": "06.3. Function overloading"
+    },
+    {
+      "source": "cpp-06",
+      "heading": "06.4. Tách trách nhiệm"
+    },
+    {
+      "source": "cpp-06",
+      "heading": "Tự kiểm tra và thực hành"
+    },
+    {
+      "source": "cpp-06-5",
+      "heading": "06.5.1. Cấu trúc nhiều file"
+    },
+    {
+      "source": "cpp-06-5",
+      "heading": "06.5.2. Lỗi build phổ biến"
+    },
+    {
+      "source": "cpp-06-5",
+      "heading": "Tự kiểm tra và thực hành"
+    },
+    {
+      "source": "cpp-07",
+      "heading": "07.1. C-style array"
+    },
+    {
+      "source": "cpp-07",
+      "heading": "07.2. `std::array<T, N>` — kích thước cố định"
+    },
+    {
+      "source": "cpp-07",
+      "heading": "07.3. `std::vector<T>` — thay đổi kích thước"
+    },
+    {
+      "source": "cpp-07",
+      "heading": "07.4. `std::string`"
+    },
+    {
+      "source": "cpp-07",
+      "heading": "07.5. Chỉ số mảng và `std::size_t`"
+    },
+    {
+      "source": "cpp-07",
+      "heading": "Range-based for với số nguyên"
+    },
+    {
+      "source": "cpp-07",
+      "heading": "Size, capacity, reserve và resize"
+    },
+    {
+      "source": "cpp-07",
+      "heading": "Tự kiểm tra và thực hành"
+    },
+    {
+      "source": "cpp-08",
+      "heading": "08.1. `struct` — nhóm dữ liệu"
+    },
+    {
+      "source": "cpp-08",
+      "heading": "08.2. `enum class` — trạng thái có tên"
+    },
+    {
+      "source": "cpp-08",
+      "heading": "08.3. Reference"
+    },
+    {
+      "source": "cpp-08",
+      "heading": "Duyệt Player theo mục đích"
+    },
+    {
+      "source": "cpp-08",
+      "heading": "Tự kiểm tra và thực hành"
+    },
+    {
+      "source": "cpp-09",
+      "heading": "09.1. Giá trị, địa chỉ, dereference"
+    },
+    {
+      "source": "cpp-09",
+      "heading": "09.2. `nullptr` và kiểm tra trước khi dùng"
+    },
+    {
+      "source": "cpp-09",
+      "heading": "09.3. Pointer vs Reference"
+    },
+    {
+      "source": "cpp-09",
+      "heading": "Short-circuit và giới hạn kiểm tra null"
+    },
+    {
+      "source": "cpp-09",
+      "heading": "Tự kiểm tra và thực hành"
+    },
+    {
+      "source": "cpp-10",
+      "heading": "10.1. Lifetime và nơi lưu trữ"
+    },
+    {
+      "source": "cpp-10",
+      "heading": "10.2. Ghép đúng `new`, `delete`, `new[]`, `delete[]`"
+    },
+    {
+      "source": "cpp-10",
+      "heading": "10.3. Các lỗi bộ nhớ cần nhận diện"
+    },
+    {
+      "source": "cpp-10",
+      "heading": "10.4. RAII và `std::unique_ptr`"
+    },
+    {
+      "source": "cpp-10",
+      "heading": "10.5. Ví dụ chạy được — owner và pointer mượn"
+    },
+    {
+      "source": "cpp-10",
+      "heading": "10.6. Tự kiểm tra và thực hành"
+    },
+    {
+      "source": "cpp-11",
+      "heading": "11.1. Class và quyền truy cập"
+    },
+    {
+      "source": "cpp-11",
+      "heading": "11.2. Constructor và member initializer list"
+    },
+    {
+      "source": "cpp-11",
+      "heading": "11.3. Method, getter và `const`"
+    },
+    {
+      "source": "cpp-11",
+      "heading": "11.4. Ví dụ chạy được — Player giữ bất biến HP"
+    },
+    {
+      "source": "cpp-11",
+      "heading": "11.5. Tự kiểm tra và thực hành"
+    },
+    {
+      "source": "cpp-12-1",
+      "heading": "12.1.1. Kế thừa công khai thể hiện quan hệ “là một loại”"
+    },
+    {
+      "source": "cpp-12-1",
+      "heading": "12.1.2. Không virtual: chọn hàm theo kiểu tĩnh"
+    },
+    {
+      "source": "cpp-12-1",
+      "heading": "12.1.3. Có virtual: chọn hành vi theo đối tượng thực"
+    },
+    {
+      "source": "cpp-12-1",
+      "heading": "12.1.4. Tự kiểm tra và thực hành"
+    },
+    {
+      "source": "cpp-12-2",
+      "heading": "12.2.1. Khởi tạo phần lớp cha"
+    },
+    {
+      "source": "cpp-12-2",
+      "heading": "12.2.2. Destructor và `= default`"
+    },
+    {
+      "source": "cpp-12-2",
+      "heading": "12.2.3. `this` chỉ tới object đang được gọi"
+    },
+    {
+      "source": "cpp-12-2",
+      "heading": "12.2.4. Ví dụ chạy được — quan sát đầy đủ vòng đời"
+    },
+    {
+      "source": "cpp-12-2",
+      "heading": "12.2.5. Tự kiểm tra và thực hành"
+    },
+    {
+      "source": "cpp-13",
+      "heading": "13.1. Function template: một khuôn hàm, nhiều kiểu phù hợp"
+    },
+    {
+      "source": "cpp-13",
+      "heading": "13.2. Class template"
+    },
+    {
+      "source": "cpp-13",
+      "heading": "13.3. `std::array` và `std::vector` cũng là template"
+    },
+    {
+      "source": "cpp-13",
+      "heading": "13.4. Template thường được định nghĩa trong header"
+    },
+    {
+      "source": "cpp-13",
+      "heading": "13.5. Hợp đồng của ClampValue và `std::clamp`"
+    },
+    {
+      "source": "cpp-13",
+      "heading": "13.6. Ví dụ chạy được — GameMath và Stat"
+    },
+    {
+      "source": "cpp-13",
+      "heading": "13.7. Tự kiểm tra và thực hành"
+    },
+    {
+      "source": "cpp-14",
+      "heading": "14.1. Cùng từ khóa static, ý nghĩa phụ thuộc vị trí"
+    },
+    {
+      "source": "cpp-14",
+      "heading": "14.2. Ví dụ chạy được — đếm đúng điều được đặt tên"
+    },
+    {
+      "source": "cpp-14",
+      "heading": "14.3. Const bảo vệ đường truy cập nào?"
+    },
+    {
+      "source": "cpp-14",
+      "heading": "14.4. Namespace và phạm vi tên"
+    },
+    {
+      "source": "cpp-14",
+      "heading": "Tự kiểm tra và thực hành"
+    },
+    {
+      "source": "cpp-14-5",
+      "heading": "14.5.1. Chuyển kiểu không tự kiểm tra đúng yêu cầu gameplay"
+    },
+    {
+      "source": "cpp-14-5",
+      "heading": "14.5.2. Bốn named casts, bốn ý định khác nhau"
+    },
+    {
+      "source": "cpp-14-5",
+      "heading": "14.5.3. Ví dụ chạy được — kiểm tra Boss thật"
+    },
+    {
+      "source": "cpp-14-5",
+      "heading": "14.5.4. Explicit không phải một phép cast"
+    },
+    {
+      "source": "cpp-14-5",
+      "heading": "Tự kiểm tra và thực hành"
+    },
+    {
+      "source": "cpp-15",
+      "heading": "15.1. Tiền xử lý diễn ra trước compiler C++"
+    },
+    {
+      "source": "cpp-15",
+      "heading": "15.2. Khai báo một kiểu tồn tại khác với biết cấu trúc kiểu"
+    },
+    {
+      "source": "cpp-15",
+      "heading": "15.3. Ví dụ chạy được — Enemy biết giao diện tối thiểu"
+    },
+    {
+      "source": "cpp-15",
+      "heading": "15.4. Tìm lỗi theo đúng giai đoạn"
+    },
+    {
+      "source": "cpp-16",
+      "heading": "16.1. Copy construction, copy assignment và move"
+    },
+    {
+      "source": "cpp-16",
+      "heading": "16.1.1. Ví dụ chạy được — Inventory và owner"
+    },
+    {
+      "source": "cpp-16",
+      "heading": "16.2. Lambda: tách capture khỏi tham số"
+    },
+    {
+      "source": "cpp-16",
+      "heading": "16.2.1. Iterator và hợp đồng của thuật toán"
+    },
+    {
+      "source": "cpp-16",
+      "heading": "16.2.2. Ví dụ chạy được — AOE damage"
+    },
+    {
+      "source": "cpp-16",
+      "heading": "Tự kiểm tra và thực hành"
+    },
+    {
+      "source": "cpp-17",
+      "heading": "17.1. Build được chưa đồng nghĩa logic đúng"
+    },
+    {
+      "source": "cpp-17",
+      "heading": "17.2. Phím tắt theo thao tác thực tế"
+    },
+    {
+      "source": "cpp-17",
+      "heading": "17.3. Chọn cửa sổ theo câu hỏi"
+    },
+    {
+      "source": "cpp-17",
+      "heading": "17.4. Quy trình tìm lỗi có bằng chứng"
+    },
+    {
+      "source": "cpp-17",
+      "heading": "Tự kiểm tra và thực hành"
+    },
+    {
+      "source": "cpp-17-1",
+      "heading": "17.1.1. Ba triệu chứng, ba nguyên nhân"
+    },
+    {
+      "source": "cpp-17-1",
+      "heading": "17.1.2. Mẫu đã sửa để đối chiếu sau khi tự thử"
+    },
+    {
+      "source": "cpp-17-1",
+      "heading": "17.1.3. Tự chứng minh bản sửa"
+    },
+    {
+      "source": "cpp-17-2",
+      "heading": "17.2.1. Nguồn và giới hạn của bản tham khảo"
+    },
+    {
+      "source": "cpp-17-2",
+      "heading": "17.2.2. Luật chơi trước khi viết code"
+    },
+    {
+      "source": "cpp-17-2",
+      "heading": "17.2.3. Trách nhiệm và ownership của từng file"
+    },
+    {
+      "source": "cpp-17-2",
+      "heading": "17.2.4. Đọc hợp đồng thật của code"
+    },
+    {
+      "source": "cpp-17-2",
+      "heading": "17.2.5. Kết quả và cách tự đối chiếu"
+    },
+    {
+      "source": "cpp-17-2",
+      "heading": "Tự ôn và tiêu chí đọc hiểu"
+    }
+  ],
+  "examples": [
+    {
+      "id": "cpp-01-hello",
+      "file": "Main.cpp",
+      "sha256": "9ac96225e5a9231b42030b0ddc297129092736121cf84326712915de0203245f"
+    },
+    {
+      "id": "cpp-01-input",
+      "file": "Main.cpp",
+      "sha256": "6f4fe34ef648a4c81780afa5a1da7e44f75c13c50600410d695b8e47abb3b0b8"
+    },
+    {
+      "id": "cpp-04-input-check",
+      "file": "Main.cpp",
+      "sha256": "a55537157dd090085ffaf9eaf9dbc09a92c50f39452fa30683278bafb2f98309"
+    },
+    {
+      "id": "cpp-05-input-loop",
+      "file": "Main.cpp",
+      "sha256": "7754387806e9b6c699601c827035f2402f552d0b97b00c47ee409027f8af35ac"
+    },
+    {
+      "id": "cpp-06-functions",
+      "file": "Main.cpp",
+      "sha256": "c490e035249bfa54b3f1aef025cd10af20902688dfab35a49200978a5064f6d4"
+    },
+    {
+      "id": "cpp-06-5-files",
+      "file": "Arena.h",
+      "sha256": "92b05a6d3f3186f1ed342441a82ac637af3af4949ff499f44db6bd547050f291"
+    },
+    {
+      "id": "cpp-06-5-files",
+      "file": "Arena.cpp",
+      "sha256": "71314e7399465d9aee74084887b4d51e960f8aff1bfdaaf88b507c170dc5d9d7"
+    },
+    {
+      "id": "cpp-06-5-files",
+      "file": "Main.cpp",
+      "sha256": "2b6a44e69991fe11e925d9de0f1105f5e74433f3be3b8641f3fb37fc46dc0680"
+    },
+    {
+      "id": "cpp-07-capacity",
+      "file": "Main.cpp",
+      "sha256": "717d10e14fdb3cfcaa4590304b1ccd0917ff76208bed60c75186b4c9b00708a0"
+    },
+    {
+      "id": "cpp-10-ownership",
+      "file": "Main.cpp",
+      "sha256": "fc5851e65352136250436fcd4038b8bf0782899cd82c7e448a988c1838654583"
+    },
+    {
+      "id": "cpp-11-player",
+      "file": "Main.cpp",
+      "sha256": "746e8a08a12eeba9466c612adee73e54053334357cbb4c8b7e5fd62da791c702"
+    },
+    {
+      "id": "cpp-12-1-static-dispatch",
+      "file": "Main.cpp",
+      "sha256": "8c54ba1c42d2d1d6042bd3508dd6d21ffe037047c8460fdca9fb5ab6123d48a1"
+    },
+    {
+      "id": "cpp-12-1-virtual-dispatch",
+      "file": "Main.cpp",
+      "sha256": "a252371fe9c6b0e4b800ea25a29631eb15a5ffdee36278793ef4a8be9a15088d"
+    },
+    {
+      "id": "cpp-12-2-lifetime",
+      "file": "Main.cpp",
+      "sha256": "9b6a5009b52e874aa2a546c327061fa44113abe7c97f0af20d1d531a5fa8e5a0"
+    },
+    {
+      "id": "cpp-13-gamemath",
+      "file": "Main.cpp",
+      "sha256": "cbf6cbf08193a4b7e2518557a6514ec97085785234d5b471d12449a91b35f0eb"
+    },
+    {
+      "id": "cpp-14-static",
+      "file": "Main.cpp",
+      "sha256": "d0aeda894ce71ac38ad62fc4b6d441ed64693960499f42004a57fc0ed5a7931e"
+    },
+    {
+      "id": "cpp-14-5-casts",
+      "file": "Main.cpp",
+      "sha256": "0d1f239d098be807613e762c7f7998362ad5402694396f6b5d0a85b8df291110"
+    },
+    {
+      "id": "cpp-15-dependencies",
+      "file": "Player.h",
+      "sha256": "f819f2d86233d0a6036d066557333904edde473150b68b6a87e214157eda7480"
+    },
+    {
+      "id": "cpp-15-dependencies",
+      "file": "Enemy.h",
+      "sha256": "610f5f365ef148a5960aa76a87c17f11f883609d32b28991e72b3439b583c70e"
+    },
+    {
+      "id": "cpp-15-dependencies",
+      "file": "Enemy.cpp",
+      "sha256": "42b03006812662bd649eb395cbcc5d0636004b2cda894a364a74513271f8f956"
+    },
+    {
+      "id": "cpp-15-dependencies",
+      "file": "Main.cpp",
+      "sha256": "c585c1bb7360975da835f4456954f263903bbb56fc8be09fd5c1699087ff2f63"
+    },
+    {
+      "id": "cpp-16-inventory",
+      "file": "Main.cpp",
+      "sha256": "458102755d0a2eeddad1cbc1b1df434e4cf16526954b30809272dd26e097544d"
+    },
+    {
+      "id": "cpp-16-lambda",
+      "file": "Main.cpp",
+      "sha256": "cf6f2e5f1f35d8453c58cb6f278cba0a34aa6bd1b6547a9ed9bcec1b7d8533e3"
+    },
+    {
+      "id": "cpp-17-1-debug",
+      "file": "Main.cpp",
+      "sha256": "b452206fd2446237d5fe075f36e58c6aa23bb5cd2a7b2470eaa4351a185c7e61"
+    },
+    {
+      "id": "arena-review",
+      "file": "Arena.h",
+      "sha256": "69957b5da464507fed9ab509ff6279bceb523b5ee21d8c5e7465d4388750fa33"
+    },
+    {
+      "id": "arena-review",
+      "file": "Arena.cpp",
+      "sha256": "8e86b5f021df40c450faa18fb16bef0a12a8faab4415feb1ab11abf263c6f98a"
+    },
+    {
+      "id": "arena-review",
+      "file": "Main.cpp",
+      "sha256": "77209974ab9244b07981c3a3270eda2fb7dd4f6408aca3abba78398159e8fe15"
+    }
+  ]
+}

@@ -1,0 +1,2439 @@
+{
+  "version": 3,
+  "date": "2026-10-28",
+  "sourceCommit": "f51e45624c04f7ecfe943fd4dc84b0702486e6d7",
+  "canonical": "Update/CPP_GIAO_TRINH_CHUAN.md",
+  "groups": [
+    {
+      "id": "foundations",
+      "title": "Nền tảng và dữ liệu",
+      "ids": [
+        "0",
+        "1",
+        "3",
+        "4",
+        "5",
+        "20",
+        "49",
+        "6",
+        "12"
+      ]
+    },
+    {
+      "id": "ownership-oop",
+      "title": "Vòng đời, sở hữu và OOP",
+      "ids": [
+        "13",
+        "7",
+        "8",
+        "9",
+        "10",
+        "14",
+        "15",
+        "16"
+      ]
+    },
+    {
+      "id": "modern",
+      "title": "C++ hiện đại và thư viện chuẩn",
+      "ids": [
+        "17",
+        "22",
+        "47",
+        "46",
+        "19",
+        "11",
+        "18",
+        "21",
+        "23",
+        "48"
+      ]
+    },
+    {
+      "id": "engineering",
+      "title": "Tổ chức chương trình và kiểm chứng",
+      "ids": [
+        "2",
+        "41",
+        "42",
+        "43",
+        "44",
+        "45",
+        "55",
+        "50"
+      ]
+    },
+    {
+      "id": "game",
+      "title": "Lập trình game",
+      "ids": [
+        "24",
+        "25",
+        "26",
+        "27",
+        "28",
+        "29"
+      ]
+    },
+    {
+      "id": "unreal",
+      "title": "Unreal Engine C++",
+      "ids": [
+        "30",
+        "31",
+        "32",
+        "33",
+        "34",
+        "35",
+        "36",
+        "37",
+        "38",
+        "39",
+        "40",
+        "51",
+        "52",
+        "53",
+        "54"
+      ]
+    }
+  ],
+  "courseAliases": {
+    "cpp-00": "0",
+    "cpp-01": "1",
+    "cpp-02": "3",
+    "cpp-03": "3",
+    "cpp-04": "4",
+    "cpp-05": "4",
+    "cpp-06": "5",
+    "cpp-06-5": "2",
+    "cpp-07": "20",
+    "cpp-08": "12",
+    "cpp-09": "6",
+    "cpp-10": "7",
+    "cpp-11": "12",
+    "cpp-12-1": "14",
+    "cpp-12-2": "13",
+    "cpp-13": "19",
+    "cpp-14": "47",
+    "cpp-14-5": "46",
+    "cpp-15": "41",
+    "cpp-16": "11",
+    "cpp-17": "43",
+    "cpp-17-1": "43",
+    "cpp-17-2": "45"
+  },
+  "courseCoverage": {
+    "cpp-00": [
+      "0",
+      "1"
+    ],
+    "cpp-01": [
+      "1"
+    ],
+    "cpp-02": [
+      "3",
+      "22",
+      "17",
+      "46"
+    ],
+    "cpp-03": [
+      "3"
+    ],
+    "cpp-04": [
+      "4"
+    ],
+    "cpp-05": [
+      "4",
+      "17"
+    ],
+    "cpp-06": [
+      "5"
+    ],
+    "cpp-06-5": [
+      "2"
+    ],
+    "cpp-07": [
+      "20",
+      "49",
+      "17"
+    ],
+    "cpp-08": [
+      "12",
+      "22",
+      "6",
+      "17"
+    ],
+    "cpp-09": [
+      "6"
+    ],
+    "cpp-10": [
+      "7",
+      "8",
+      "9",
+      "10"
+    ],
+    "cpp-11": [
+      "12",
+      "13"
+    ],
+    "cpp-12-1": [
+      "14"
+    ],
+    "cpp-12-2": [
+      "13",
+      "14"
+    ],
+    "cpp-13": [
+      "19"
+    ],
+    "cpp-14": [
+      "47",
+      "6"
+    ],
+    "cpp-14-5": [
+      "46"
+    ],
+    "cpp-15": [
+      "41"
+    ],
+    "cpp-16": [
+      "11",
+      "18",
+      "21"
+    ],
+    "cpp-17": [
+      "43"
+    ],
+    "cpp-17-1": [
+      "43"
+    ],
+    "cpp-17-2": [
+      "45"
+    ]
+  },
+  "originalTopics": [
+    {
+      "source": "1",
+      "heading": "C++ là gì",
+      "destination": "lesson-1",
+      "action": "retained"
+    },
+    {
+      "source": "2",
+      "heading": "Các thành phần",
+      "destination": "lesson-2",
+      "action": "retained"
+    },
+    {
+      "source": "2",
+      "heading": "Include Guard",
+      "destination": "lesson-2",
+      "action": "retained"
+    },
+    {
+      "source": "2",
+      "heading": "CMake — build system phổ biến nhất cho C++ thuần",
+      "destination": "lesson-2",
+      "action": "retained"
+    },
+    {
+      "source": "3",
+      "heading": "Fundamental Types & kích thước",
+      "destination": "lesson-3",
+      "action": "retained"
+    },
+    {
+      "source": "5",
+      "heading": "Default arguments",
+      "destination": "lesson-5",
+      "action": "retained"
+    },
+    {
+      "source": "5",
+      "heading": "`inline` & ý nghĩa thực tế",
+      "destination": "lesson-5",
+      "action": "retained"
+    },
+    {
+      "source": "6",
+      "heading": "Dangling Pointer — con trỏ \"treo\" (cực nguy hiểm)",
+      "destination": "lesson-6",
+      "action": "retained"
+    },
+    {
+      "source": "7",
+      "heading": "Introduction",
+      "destination": "lesson-7",
+      "action": "retained"
+    },
+    {
+      "source": "9",
+      "heading": "Introduction",
+      "destination": "lesson-9",
+      "action": "retained"
+    },
+    {
+      "source": "10",
+      "heading": "`std::shared_ptr` — sở hữu CHIA SẺ (reference counting)",
+      "destination": "lesson-10",
+      "action": "retained"
+    },
+    {
+      "source": "10",
+      "heading": "`std::weak_ptr` — quan sát nhưng KHÔNG sở hữu (phá vỡ vòng tham chiếu)",
+      "destination": "lesson-10",
+      "action": "retained"
+    },
+    {
+      "source": "10",
+      "heading": "Bảng chọn smart pointer",
+      "destination": "lesson-10",
+      "action": "retained"
+    },
+    {
+      "source": "11",
+      "heading": "Lvalue vs Rvalue",
+      "destination": "lesson-11",
+      "action": "retained"
+    },
+    {
+      "source": "11",
+      "heading": "Vấn đề move giải quyết",
+      "destination": "lesson-11",
+      "action": "retained"
+    },
+    {
+      "source": "11",
+      "heading": "`std::move` — tạo biểu thức xvalue, không tự di chuyển tài nguyên",
+      "destination": "lesson-11",
+      "action": "retained"
+    },
+    {
+      "source": "11",
+      "heading": "Move Constructor & Move Assignment (cho class tự định nghĩa)",
+      "destination": "lesson-11",
+      "action": "retained"
+    },
+    {
+      "source": "13",
+      "heading": "Rule of 0/3/5 — quy tắc cực kỳ quan trọng",
+      "destination": "lesson-13",
+      "action": "retained"
+    },
+    {
+      "source": "14",
+      "heading": "Polymorphism (đa hình) — cùng interface, hành vi khác nhau",
+      "destination": "lesson-14",
+      "action": "retained"
+    },
+    {
+      "source": "14",
+      "heading": "Cảnh báo: Virtual Destructor",
+      "destination": "lesson-14",
+      "action": "retained"
+    },
+    {
+      "source": "15",
+      "heading": "Pure Virtual & Abstract Class (interface)",
+      "destination": "lesson-15",
+      "action": "retained"
+    },
+    {
+      "source": "16",
+      "heading": "Introduction",
+      "destination": "lesson-16",
+      "action": "retained"
+    },
+    {
+      "source": "19",
+      "heading": "Template với nhiều tham số & giá trị",
+      "destination": "lesson-19",
+      "action": "retained"
+    },
+    {
+      "source": "20",
+      "heading": "Introduction",
+      "destination": "lesson-20",
+      "action": "retained"
+    },
+    {
+      "source": "21",
+      "heading": "Introduction",
+      "destination": "lesson-21",
+      "action": "retained"
+    },
+    {
+      "source": "21",
+      "heading": "Iterator — \"con trỏ tổng quát\" để duyệt container",
+      "destination": "lesson-21",
+      "action": "retained"
+    },
+    {
+      "source": "22",
+      "heading": "const correctness — đánh dấu cái gì không đổi",
+      "destination": "lesson-22",
+      "action": "retained"
+    },
+    {
+      "source": "22",
+      "heading": "constexpr — tính toán LÚC BIÊN DỊCH",
+      "destination": "lesson-22",
+      "action": "retained"
+    },
+    {
+      "source": "23",
+      "heading": "Introduction",
+      "destination": "lesson-23",
+      "action": "retained"
+    },
+    {
+      "source": "23",
+      "heading": "Exceptions",
+      "destination": "lesson-23",
+      "action": "retained"
+    },
+    {
+      "source": "23",
+      "heading": "Vì sao game thường tránh exception",
+      "destination": "lesson-23",
+      "action": "retained"
+    },
+    {
+      "source": "23",
+      "heading": "Các lựa chọn thay thế (khuyến nghị cho game)",
+      "destination": "lesson-23",
+      "action": "retained"
+    },
+    {
+      "source": "24",
+      "heading": "Introduction",
+      "destination": "lesson-24",
+      "action": "retained"
+    },
+    {
+      "source": "25",
+      "heading": "Introduction",
+      "destination": "lesson-25",
+      "action": "retained"
+    },
+    {
+      "source": "25",
+      "heading": "Delta Time — vì sao quan trọng",
+      "destination": "lesson-25",
+      "action": "retained"
+    },
+    {
+      "source": "25",
+      "heading": "Fixed Timestep (cho physics ổn định)",
+      "destination": "lesson-25",
+      "action": "retained"
+    },
+    {
+      "source": "26",
+      "heading": "Object-Oriented vs Data-Oriented",
+      "destination": "lesson-26",
+      "action": "retained"
+    },
+    {
+      "source": "26",
+      "heading": "ECS — Entity Component System",
+      "destination": "lesson-26",
+      "action": "retained"
+    },
+    {
+      "source": "27",
+      "heading": "CPU Cache — yếu tố hiệu năng số 1 hiện nay",
+      "destination": "lesson-27",
+      "action": "retained"
+    },
+    {
+      "source": "27",
+      "heading": "Nguyên tắc tối ưu",
+      "destination": "lesson-27",
+      "action": "retained"
+    },
+    {
+      "source": "27",
+      "heading": "Một số kỹ thuật phổ biến",
+      "destination": "lesson-27",
+      "action": "retained"
+    },
+    {
+      "source": "28",
+      "heading": "Introduction",
+      "destination": "lesson-28",
+      "action": "retained"
+    },
+    {
+      "source": "28",
+      "heading": "Vector — vị trí, hướng, vận tốc",
+      "destination": "lesson-28",
+      "action": "retained"
+    },
+    {
+      "source": "28",
+      "heading": "Các khái niệm cần biết",
+      "destination": "lesson-28",
+      "action": "retained"
+    },
+    {
+      "source": "29",
+      "heading": "Introduction",
+      "destination": "lesson-29",
+      "action": "retained"
+    },
+    {
+      "source": "29",
+      "heading": "Singleton — một instance toàn cục (DÙNG THẬN TRỌNG)",
+      "destination": "lesson-29",
+      "action": "retained"
+    },
+    {
+      "source": "29",
+      "heading": "Object Pool — tái sử dụng object (tối ưu chống GC/alloc)",
+      "destination": "lesson-29",
+      "action": "retained"
+    },
+    {
+      "source": "29",
+      "heading": "Observer — phát/nhận sự kiện (event system)",
+      "destination": "lesson-29",
+      "action": "retained"
+    },
+    {
+      "source": "29",
+      "heading": "State Machine — quản lý trạng thái (AI, animation, gameplay)",
+      "destination": "lesson-29",
+      "action": "retained"
+    },
+    {
+      "source": "29",
+      "heading": "Command — đóng gói hành động (undo/redo, input remapping, replay)",
+      "destination": "lesson-29",
+      "action": "retained"
+    },
+    {
+      "source": "29",
+      "heading": "Component Pattern — (đã nói ở mục 16) nền tảng của Unreal Actor & ECS.",
+      "destination": "lesson-29",
+      "action": "retained"
+    },
+    {
+      "source": "30",
+      "heading": "Introduction",
+      "destination": "lesson-30",
+      "action": "retained"
+    },
+    {
+      "source": "30",
+      "heading": "Quy ước đặt tiền tố (prefix) — BẮT BUỘC trong UE",
+      "destination": "lesson-30",
+      "action": "retained"
+    },
+    {
+      "source": "30",
+      "heading": "File Build cơ bản (`.Build.cs` — viết bằng C#)",
+      "destination": "lesson-30",
+      "action": "retained"
+    },
+    {
+      "source": "31",
+      "heading": "UObject — lớp gốc của hầu hết mọi thứ trong UE",
+      "destination": "lesson-31",
+      "action": "retained"
+    },
+    {
+      "source": "31",
+      "heading": "Reflection & Macros — \"ma thuật\" của UE",
+      "destination": "lesson-31",
+      "action": "retained"
+    },
+    {
+      "source": "31",
+      "heading": "Các specifier UPROPERTY hay dùng",
+      "destination": "lesson-31",
+      "action": "retained"
+    },
+    {
+      "source": "32",
+      "heading": "Introduction",
+      "destination": "lesson-32",
+      "action": "retained"
+    },
+    {
+      "source": "32",
+      "heading": "Tạo UObject đúng cách (KHÔNG dùng new)",
+      "destination": "lesson-32",
+      "action": "retained"
+    },
+    {
+      "source": "33",
+      "heading": "Actor — bất cứ thứ gì đặt được vào level",
+      "destination": "lesson-33",
+      "action": "retained"
+    },
+    {
+      "source": "33",
+      "heading": "Component — khối chức năng gắn vào Actor (Composition!)",
+      "destination": "lesson-33",
+      "action": "retained"
+    },
+    {
+      "source": "33",
+      "heading": "Vòng đời Actor (Actor Lifecycle) — các hàm hay override",
+      "destination": "lesson-33",
+      "action": "retained"
+    },
+    {
+      "source": "34",
+      "heading": "Introduction",
+      "destination": "lesson-34",
+      "action": "retained"
+    },
+    {
+      "source": "35",
+      "heading": "Introduction",
+      "destination": "lesson-35",
+      "action": "retained"
+    },
+    {
+      "source": "36",
+      "heading": "Introduction",
+      "destination": "lesson-36",
+      "action": "retained"
+    },
+    {
+      "source": "36",
+      "heading": "Cho UObject (đã có GC quản lý)",
+      "destination": "lesson-36",
+      "action": "retained"
+    },
+    {
+      "source": "36",
+      "heading": "Cho object KHÔNG phải UObject (struct C++ thường)",
+      "destination": "lesson-36",
+      "action": "retained"
+    },
+    {
+      "source": "37",
+      "heading": "Introduction",
+      "destination": "lesson-37",
+      "action": "retained"
+    },
+    {
+      "source": "37",
+      "heading": "Các loại delegate",
+      "destination": "lesson-37",
+      "action": "retained"
+    },
+    {
+      "source": "38",
+      "heading": "Introduction",
+      "destination": "lesson-38",
+      "action": "retained"
+    },
+    {
+      "source": "38",
+      "heading": "Expose enum/struct cho Blueprint",
+      "destination": "lesson-38",
+      "action": "retained"
+    },
+    {
+      "source": "39",
+      "heading": "Introduction",
+      "destination": "lesson-39",
+      "action": "retained"
+    },
+    {
+      "source": "39",
+      "heading": "Primary Data Asset — cấu hình từng \"thứ\" (vũ khí, skill, item...)",
+      "destination": "lesson-39",
+      "action": "retained"
+    },
+    {
+      "source": "39",
+      "heading": "Data Table — bảng dữ liệu (như spreadsheet), import từ CSV/JSON",
+      "destination": "lesson-39",
+      "action": "retained"
+    },
+    {
+      "source": "40",
+      "heading": "Introduction",
+      "destination": "lesson-40",
+      "action": "retained"
+    },
+    {
+      "source": "40",
+      "heading": "Các thành phần chính",
+      "destination": "lesson-40",
+      "action": "retained"
+    },
+    {
+      "source": "41",
+      "heading": "Nguyên tắc include",
+      "destination": "lesson-41",
+      "action": "replaced-equivalent",
+      "replacement": "Ví dụ Enemy/Player hoàn chỉnh, bảng complete-type và quy tắc include trực tiếp",
+      "evidence": [
+        "topic-cpp-15-15-1-tien-xu-ly-dien-ra-truoc-compiler-c",
+        "topic-cpp-15-15-2-khai-bao-mot-kieu-ton-tai-khac-voi-biet-cau-truc-kieu",
+        "topic-cpp-15-15-3-vi-du-chay-duoc-enemy-biet-giao-dien-toi-thieu",
+        "topic-cpp-15-15-4-tim-loi-theo-dung-giai-doan"
+      ]
+    },
+    {
+      "source": "41",
+      "heading": "Trong Unreal",
+      "destination": "lesson-41",
+      "action": "retained"
+    },
+    {
+      "source": "42",
+      "heading": "Introduction",
+      "destination": "lesson-42",
+      "action": "retained"
+    },
+    {
+      "source": "42",
+      "heading": "Nguyên tắc clean code",
+      "destination": "lesson-42",
+      "action": "retained"
+    },
+    {
+      "source": "43",
+      "heading": "Assertions trong Unreal",
+      "destination": "lesson-43",
+      "action": "retained"
+    },
+    {
+      "source": "43",
+      "heading": "Sanitizers (Standard C++) — phát hiện lỗi bộ nhớ",
+      "destination": "lesson-43",
+      "action": "retained"
+    },
+    {
+      "source": "44",
+      "heading": "Introduction",
+      "destination": "lesson-44",
+      "action": "retained"
+    },
+    {
+      "source": "44",
+      "heading": "Bẫy đặc thù Unreal",
+      "destination": "lesson-44",
+      "action": "retained"
+    },
+    {
+      "source": "45",
+      "heading": "Introduction",
+      "destination": "lesson-45",
+      "action": "retained"
+    },
+    {
+      "source": "45",
+      "heading": "Bộ nhớ & tài nguyên",
+      "destination": "lesson-45",
+      "action": "retained"
+    },
+    {
+      "source": "45",
+      "heading": "An toàn & đúng đắn",
+      "destination": "lesson-45",
+      "action": "retained"
+    },
+    {
+      "source": "45",
+      "heading": "Hiệu năng",
+      "destination": "lesson-45",
+      "action": "retained"
+    },
+    {
+      "source": "45",
+      "heading": "Tổ chức & phong cách",
+      "destination": "lesson-45",
+      "action": "retained"
+    },
+    {
+      "source": "46",
+      "heading": "Trong Unreal: dùng `Cast<>()` — KHÔNG dùng dynamic_cast",
+      "destination": "lesson-46",
+      "action": "retained"
+    },
+    {
+      "source": "47",
+      "heading": "Anonymous namespace — \"private\" cấp file",
+      "destination": "lesson-47",
+      "action": "retained"
+    },
+    {
+      "source": "47",
+      "heading": "Lưu ý riêng cho Unreal",
+      "destination": "lesson-47",
+      "action": "retained"
+    },
+    {
+      "source": "48",
+      "heading": "Introduction",
+      "destination": "lesson-48",
+      "action": "retained"
+    },
+    {
+      "source": "49",
+      "heading": "std::string — thao tác hay dùng",
+      "destination": "lesson-49",
+      "action": "retained"
+    },
+    {
+      "source": "49",
+      "heading": "std::string_view (C++17) — \"nhìn\" chuỗi mà không copy",
+      "destination": "lesson-49",
+      "action": "retained"
+    },
+    {
+      "source": "49",
+      "heading": "Chuyển đổi std::string ↔ FString (khi UE giao tiếp thư viện ngoài)",
+      "destination": "lesson-49",
+      "action": "retained"
+    },
+    {
+      "source": "49",
+      "heading": "Chọn loại chuỗi trong UE (ôn lại mục 35)",
+      "destination": "lesson-49",
+      "action": "retained"
+    },
+    {
+      "source": "50",
+      "heading": "Introduction",
+      "destination": "lesson-50",
+      "action": "retained"
+    },
+    {
+      "source": "50",
+      "heading": "Data race — loại bug khó chịu nhất",
+      "destination": "lesson-50",
+      "action": "retained"
+    },
+    {
+      "source": "50",
+      "heading": "Hai công cụ tối thiểu: mutex & atomic",
+      "destination": "lesson-50",
+      "action": "retained"
+    },
+    {
+      "source": "50",
+      "heading": "Mô hình thread của Unreal & quy tắc sống còn",
+      "destination": "lesson-50",
+      "action": "retained"
+    },
+    {
+      "source": "51",
+      "heading": "Introduction",
+      "destination": "lesson-51",
+      "action": "retained"
+    },
+    {
+      "source": "52",
+      "heading": "Introduction",
+      "destination": "lesson-52",
+      "action": "retained"
+    },
+    {
+      "source": "52",
+      "heading": "2 loại asset (tạo trong Content Browser → Input)",
+      "destination": "lesson-52",
+      "action": "retained"
+    },
+    {
+      "source": "52",
+      "heading": "ETriggerEvent hay dùng",
+      "destination": "lesson-52",
+      "action": "retained"
+    },
+    {
+      "source": "53",
+      "heading": "Introduction",
+      "destination": "lesson-53",
+      "action": "retained"
+    },
+    {
+      "source": "53",
+      "heading": "FTimerManager — chạy hàm sau X giây / lặp lại",
+      "destination": "lesson-53",
+      "action": "retained"
+    },
+    {
+      "source": "53",
+      "heading": "Overlap & Hit events — chính là dynamic delegate của collision",
+      "destination": "lesson-53",
+      "action": "retained"
+    },
+    {
+      "source": "53",
+      "heading": "Line Trace (raycast) — \"bắn tia\" kiểm tra trúng gì",
+      "destination": "lesson-53",
+      "action": "retained"
+    },
+    {
+      "source": "53",
+      "heading": "UGameplayStatics — \"hộp đồ nghề\" hàm tĩnh (`#include \"Kismet/GameplayStatics.h\"`)",
+      "destination": "lesson-53",
+      "action": "retained"
+    },
+    {
+      "source": "54",
+      "heading": "Introduction",
+      "destination": "lesson-54",
+      "action": "retained"
+    },
+    {
+      "source": "54",
+      "heading": "RPC — gọi hàm \"xuyên mạng\"",
+      "destination": "lesson-54",
+      "action": "retained"
+    },
+    {
+      "source": "55",
+      "heading": "Introduction",
+      "destination": "lesson-55",
+      "action": "retained"
+    },
+    {
+      "source": "55",
+      "heading": "C++ thuần — GoogleTest (hoặc Catch2)",
+      "destination": "lesson-55",
+      "action": "retained"
+    },
+    {
+      "source": "55",
+      "heading": "Unreal — Automation Test (chạy: Tools → Session Frontend → Automation)",
+      "destination": "lesson-55",
+      "action": "retained"
+    },
+    {
+      "source": "0",
+      "heading": "Đường 2 — Project Unreal Engine C++ đầu tiên",
+      "destination": "lesson-30",
+      "action": "retained"
+    },
+    {
+      "source": "0",
+      "heading": "Live Coding — biên dịch khi editor đang mở",
+      "destination": "lesson-30",
+      "action": "retained"
+    },
+    {
+      "source": "0",
+      "heading": "Cấu trúc thư mục project UE cần biết",
+      "destination": "lesson-30",
+      "action": "retained"
+    },
+    {
+      "source": "0",
+      "heading": "Introduction",
+      "destination": "lesson-0",
+      "action": "replaced-equivalent",
+      "replacement": "Công cụ và thực hành khởi tạo project",
+      "evidence": [
+        "topic-cpp-00-00-1-cong-cu"
+      ]
+    },
+    {
+      "source": "0",
+      "heading": "Bộ công cụ chuẩn của team",
+      "destination": "lesson-0",
+      "action": "replaced-equivalent",
+      "replacement": "Công cụ và thực hành khởi tạo project",
+      "additionalDestinations": [
+        "lesson-30"
+      ],
+      "evidence": [
+        "topic-cpp-00-00-1-cong-cu"
+      ]
+    },
+    {
+      "source": "0",
+      "heading": "Đường 1 — Chương trình C++ thuần đầu tiên",
+      "destination": "lesson-0",
+      "action": "replaced-equivalent",
+      "replacement": "Công cụ và thực hành khởi tạo project",
+      "evidence": [
+        "topic-cpp-00-00-1-cong-cu"
+      ]
+    },
+    {
+      "source": "0",
+      "heading": "Checklist \"Ngày 0\"",
+      "destination": "lesson-0",
+      "action": "replaced-equivalent",
+      "replacement": "Công cụ và thực hành khởi tạo project",
+      "additionalDestinations": [
+        "lesson-30"
+      ],
+      "evidence": [
+        "topic-cpp-00-00-1-cong-cu"
+      ]
+    },
+    {
+      "source": "1",
+      "heading": "Mô hình biên dịch (Compilation Model)",
+      "destination": "lesson-1",
+      "action": "replaced-equivalent",
+      "replacement": "Chương trình tối thiểu, pipeline build và nhập/xuất đầy đủ",
+      "evidence": [
+        "topic-cpp-00-00-2-pipeline-build",
+        "topic-cpp-01-01-1-chuong-trinh-c-toi-thieu",
+        "topic-cpp-01-01-2-nhap-xuat-du-lieu",
+        "topic-cpp-01-01-3-cac-dau-thuong-nham"
+      ]
+    },
+    {
+      "source": "1",
+      "heading": "Chương trình tối thiểu",
+      "destination": "lesson-1",
+      "action": "replaced-equivalent",
+      "replacement": "Chương trình tối thiểu, pipeline build và nhập/xuất đầy đủ",
+      "evidence": [
+        "topic-cpp-00-00-2-pipeline-build",
+        "topic-cpp-01-01-1-chuong-trinh-c-toi-thieu",
+        "topic-cpp-01-01-2-nhap-xuat-du-lieu",
+        "topic-cpp-01-01-3-cac-dau-thuong-nham"
+      ]
+    },
+    {
+      "source": "2",
+      "heading": "Header & Source — vì sao tách đôi",
+      "destination": "lesson-2",
+      "action": "replaced-equivalent",
+      "replacement": "Ví dụ nhiều file có declaration/definition và kiểm tra linker",
+      "evidence": [
+        "topic-cpp-06-5-06-5-1-cau-truc-nhieu-file",
+        "topic-cpp-06-5-06-5-2-loi-build-pho-bien"
+      ]
+    },
+    {
+      "source": "3",
+      "heading": "Khai báo biến",
+      "destination": "lesson-3",
+      "action": "replaced-equivalent",
+      "replacement": "Lý thuyết biến/kiểu/toán tử có ví dụ đầy đủ",
+      "evidence": [
+        "topic-cpp-02-02-1-kieu-du-lieu",
+        "topic-cpp-02-02-2-khai-bao-va-khoi-tao",
+        "topic-cpp-03-03-1-so-hoc-va-gan",
+        "topic-cpp-03-03-2-so-sanh-va-logic",
+        "topic-cpp-03-03-3-tang-giam-va-toan-tu-ba-ngoi",
+        "topic-cpp-03-03-4-bitwise",
+        "topic-cpp-03-03-5-uu-tien-toan-tu"
+      ]
+    },
+    {
+      "source": "3",
+      "heading": "`auto` — để compiler tự suy kiểu",
+      "destination": "lesson-17",
+      "action": "replaced-equivalent",
+      "replacement": "Lý thuyết biến/kiểu/toán tử có ví dụ đầy đủ",
+      "evidence": [
+        "topic-cpp-02-02-4-auto-suy-luan-kieu",
+        "topic-cpp-05-range-based-for-va-container",
+        "topic-cpp-07-range-based-for-voi-so-nguyen",
+        "topic-cpp-08-duyet-player-theo-muc-dich"
+      ]
+    },
+    {
+      "source": "3",
+      "heading": "Toán tử",
+      "destination": "lesson-3",
+      "action": "replaced-equivalent",
+      "replacement": "Lý thuyết biến/kiểu/toán tử có ví dụ đầy đủ",
+      "evidence": [
+        "topic-cpp-02-02-1-kieu-du-lieu",
+        "topic-cpp-02-02-2-khai-bao-va-khoi-tao",
+        "topic-cpp-03-03-1-so-hoc-va-gan",
+        "topic-cpp-03-03-2-so-sanh-va-logic",
+        "topic-cpp-03-03-3-tang-giam-va-toan-tu-ba-ngoi",
+        "topic-cpp-03-03-4-bitwise",
+        "topic-cpp-03-03-5-uu-tien-toan-tu"
+      ]
+    },
+    {
+      "source": "4",
+      "heading": "if / else",
+      "destination": "lesson-4",
+      "action": "replaced-equivalent",
+      "replacement": "Các điều kiện, vòng lặp, scope và ca nhập sai/EOF",
+      "evidence": [
+        "topic-cpp-04-04-1-if-else-if-else",
+        "topic-cpp-04-04-2-switch-case-break-default",
+        "topic-cpp-04-04-3-scope",
+        "topic-cpp-04-kiem-tra-mot-lan-nhap-du-lieu",
+        "topic-cpp-05-05-1-for",
+        "topic-cpp-05-05-2-while",
+        "topic-cpp-05-05-3-do-while",
+        "topic-cpp-05-05-4-break-continue",
+        "topic-cpp-05-nhap-sai-eof-va-chuyen-tu-sang-getline"
+      ]
+    },
+    {
+      "source": "4",
+      "heading": "switch — chọn theo giá trị rời rạc",
+      "destination": "lesson-4",
+      "action": "replaced-equivalent",
+      "replacement": "Các điều kiện, vòng lặp, scope và ca nhập sai/EOF",
+      "evidence": [
+        "topic-cpp-04-04-1-if-else-if-else",
+        "topic-cpp-04-04-2-switch-case-break-default",
+        "topic-cpp-04-04-3-scope",
+        "topic-cpp-04-kiem-tra-mot-lan-nhap-du-lieu",
+        "topic-cpp-05-05-1-for",
+        "topic-cpp-05-05-2-while",
+        "topic-cpp-05-05-3-do-while",
+        "topic-cpp-05-05-4-break-continue",
+        "topic-cpp-05-nhap-sai-eof-va-chuyen-tu-sang-getline"
+      ]
+    },
+    {
+      "source": "4",
+      "heading": "Loops (vòng lặp)",
+      "destination": "lesson-4",
+      "action": "replaced-equivalent",
+      "replacement": "Các điều kiện, vòng lặp, scope và ca nhập sai/EOF",
+      "evidence": [
+        "topic-cpp-04-04-1-if-else-if-else",
+        "topic-cpp-04-04-2-switch-case-break-default",
+        "topic-cpp-04-04-3-scope",
+        "topic-cpp-04-kiem-tra-mot-lan-nhap-du-lieu",
+        "topic-cpp-05-05-1-for",
+        "topic-cpp-05-05-2-while",
+        "topic-cpp-05-05-3-do-while",
+        "topic-cpp-05-05-4-break-continue",
+        "topic-cpp-05-nhap-sai-eof-va-chuyen-tu-sang-getline"
+      ]
+    },
+    {
+      "source": "4",
+      "heading": "break / continue",
+      "destination": "lesson-4",
+      "action": "replaced-equivalent",
+      "replacement": "Các điều kiện, vòng lặp, scope và ca nhập sai/EOF",
+      "evidence": [
+        "topic-cpp-04-04-1-if-else-if-else",
+        "topic-cpp-04-04-2-switch-case-break-default",
+        "topic-cpp-04-04-3-scope",
+        "topic-cpp-04-kiem-tra-mot-lan-nhap-du-lieu",
+        "topic-cpp-05-05-1-for",
+        "topic-cpp-05-05-2-while",
+        "topic-cpp-05-05-3-do-while",
+        "topic-cpp-05-05-4-break-continue",
+        "topic-cpp-05-nhap-sai-eof-va-chuyen-tu-sang-getline"
+      ]
+    },
+    {
+      "source": "5",
+      "heading": "Khai báo & định nghĩa",
+      "destination": "lesson-5",
+      "action": "replaced-equivalent",
+      "replacement": "Khai báo/định nghĩa, truyền tham số và overload",
+      "evidence": [
+        "topic-cpp-06-06-1-khai-bao-dinh-nghia-goi",
+        "topic-cpp-06-06-2-pass-by-value-va-pass-by-reference",
+        "topic-cpp-06-06-3-function-overloading",
+        "topic-cpp-06-06-4-tach-trach-nhiem"
+      ]
+    },
+    {
+      "source": "5",
+      "heading": "Truyền tham số: by value vs by reference vs by const-reference",
+      "destination": "lesson-5",
+      "action": "replaced-equivalent",
+      "replacement": "Khai báo/định nghĩa, truyền tham số và overload",
+      "evidence": [
+        "topic-cpp-06-06-1-khai-bao-dinh-nghia-goi",
+        "topic-cpp-06-06-2-pass-by-value-va-pass-by-reference",
+        "topic-cpp-06-06-3-function-overloading",
+        "topic-cpp-06-06-4-tach-trach-nhiem"
+      ]
+    },
+    {
+      "source": "5",
+      "heading": "Function Overloading — cùng tên, khác tham số",
+      "destination": "lesson-5",
+      "action": "replaced-equivalent",
+      "replacement": "Khai báo/định nghĩa, truyền tham số và overload",
+      "evidence": [
+        "topic-cpp-06-06-1-khai-bao-dinh-nghia-goi",
+        "topic-cpp-06-06-2-pass-by-value-va-pass-by-reference",
+        "topic-cpp-06-06-3-function-overloading",
+        "topic-cpp-06-06-4-tach-trach-nhiem"
+      ]
+    },
+    {
+      "source": "6",
+      "heading": "Introduction",
+      "destination": "lesson-6",
+      "action": "replaced-equivalent",
+      "replacement": "Reference, pointer, nullptr, const và lifetime",
+      "evidence": [
+        "topic-cpp-08-08-3-reference",
+        "topic-cpp-09-09-1-gia-tri-dia-chi-dereference",
+        "topic-cpp-09-09-2-nullptr-va-kiem-tra-truoc-khi-dung",
+        "topic-cpp-09-09-3-pointer-vs-reference",
+        "topic-cpp-09-short-circuit-va-gioi-han-kiem-tra-null",
+        "topic-cpp-14-14-3-const-bao-ve-duong-truy-cap-nao"
+      ]
+    },
+    {
+      "source": "6",
+      "heading": "Pointer (con trỏ) — biến lưu **địa chỉ** của biến khác",
+      "destination": "lesson-6",
+      "action": "replaced-equivalent",
+      "replacement": "Reference, pointer, nullptr, const và lifetime",
+      "evidence": [
+        "topic-cpp-08-08-3-reference",
+        "topic-cpp-09-09-1-gia-tri-dia-chi-dereference",
+        "topic-cpp-09-09-2-nullptr-va-kiem-tra-truoc-khi-dung",
+        "topic-cpp-09-09-3-pointer-vs-reference",
+        "topic-cpp-09-short-circuit-va-gioi-han-kiem-tra-null",
+        "topic-cpp-14-14-3-const-bao-ve-duong-truy-cap-nao"
+      ]
+    },
+    {
+      "source": "6",
+      "heading": "Reference (tham chiếu) — **bí danh** (alias) cho biến đã có",
+      "destination": "lesson-6",
+      "action": "replaced-equivalent",
+      "replacement": "Reference, pointer, nullptr, const và lifetime",
+      "evidence": [
+        "topic-cpp-08-08-3-reference",
+        "topic-cpp-09-09-1-gia-tri-dia-chi-dereference",
+        "topic-cpp-09-09-2-nullptr-va-kiem-tra-truoc-khi-dung",
+        "topic-cpp-09-09-3-pointer-vs-reference",
+        "topic-cpp-09-short-circuit-va-gioi-han-kiem-tra-null",
+        "topic-cpp-14-14-3-const-bao-ve-duong-truy-cap-nao"
+      ]
+    },
+    {
+      "source": "6",
+      "heading": "Pointer vs Reference — chọn cái nào?",
+      "destination": "lesson-6",
+      "action": "replaced-equivalent",
+      "replacement": "Reference, pointer, nullptr, const và lifetime",
+      "evidence": [
+        "topic-cpp-08-08-3-reference",
+        "topic-cpp-09-09-1-gia-tri-dia-chi-dereference",
+        "topic-cpp-09-09-2-nullptr-va-kiem-tra-truoc-khi-dung",
+        "topic-cpp-09-09-3-pointer-vs-reference",
+        "topic-cpp-09-short-circuit-va-gioi-han-kiem-tra-null",
+        "topic-cpp-14-14-3-const-bao-ve-duong-truy-cap-nao"
+      ]
+    },
+    {
+      "source": "6",
+      "heading": "`nullptr` và bug kinh điển",
+      "destination": "lesson-6",
+      "action": "replaced-equivalent",
+      "replacement": "Reference, pointer, nullptr, const và lifetime",
+      "evidence": [
+        "topic-cpp-08-08-3-reference",
+        "topic-cpp-09-09-1-gia-tri-dia-chi-dereference",
+        "topic-cpp-09-09-2-nullptr-va-kiem-tra-truoc-khi-dung",
+        "topic-cpp-09-09-3-pointer-vs-reference",
+        "topic-cpp-09-short-circuit-va-gioi-han-kiem-tra-null",
+        "topic-cpp-14-14-3-const-bao-ve-duong-truy-cap-nao"
+      ]
+    },
+    {
+      "source": "6",
+      "heading": "`const` với pointer (đọc từ phải sang trái)",
+      "destination": "lesson-6",
+      "action": "replaced-equivalent",
+      "replacement": "Reference, pointer, nullptr, const và lifetime",
+      "evidence": [
+        "topic-cpp-08-08-3-reference",
+        "topic-cpp-09-09-1-gia-tri-dia-chi-dereference",
+        "topic-cpp-09-09-2-nullptr-va-kiem-tra-truoc-khi-dung",
+        "topic-cpp-09-09-3-pointer-vs-reference",
+        "topic-cpp-09-short-circuit-va-gioi-han-kiem-tra-null",
+        "topic-cpp-14-14-3-const-bao-ve-duong-truy-cap-nao"
+      ]
+    },
+    {
+      "source": "8",
+      "heading": "Introduction",
+      "destination": "lesson-8",
+      "action": "replaced-equivalent",
+      "replacement": "new/delete, leak, dangling và double delete",
+      "evidence": [
+        "topic-cpp-10-10-2-ghep-dung-new-delete-new-delete",
+        "topic-cpp-10-10-3-cac-loi-bo-nho-can-nhan-dien"
+      ]
+    },
+    {
+      "source": "8",
+      "heading": "Ba tội lỗi kinh điển của quản lý bộ nhớ thủ công",
+      "destination": "lesson-8",
+      "action": "replaced-equivalent",
+      "replacement": "new/delete, leak, dangling và double delete",
+      "evidence": [
+        "topic-cpp-10-10-2-ghep-dung-new-delete-new-delete",
+        "topic-cpp-10-10-3-cac-loi-bo-nho-can-nhan-dien"
+      ]
+    },
+    {
+      "source": "10",
+      "heading": "Introduction",
+      "destination": "lesson-10",
+      "action": "replaced-equivalent",
+      "replacement": "Ví dụ unique_ptr, chuyển ownership và pointer mượn",
+      "evidence": [
+        "topic-cpp-10-10-5-vi-du-chay-duoc-owner-va-pointer-muon"
+      ]
+    },
+    {
+      "source": "10",
+      "heading": "`std::unique_ptr` — sở hữu DUY NHẤT (dùng 90% trường hợp)",
+      "destination": "lesson-10",
+      "action": "replaced-equivalent",
+      "replacement": "Ví dụ unique_ptr, chuyển ownership và pointer mượn",
+      "evidence": [
+        "topic-cpp-10-10-5-vi-du-chay-duoc-owner-va-pointer-muon"
+      ]
+    },
+    {
+      "source": "11",
+      "heading": "Introduction",
+      "destination": "lesson-11",
+      "action": "replaced-equivalent",
+      "replacement": "Copy/move và value category",
+      "evidence": [
+        "topic-cpp-16-16-1-copy-construction-copy-assignment-va-move",
+        "topic-cpp-16-16-1-1-vi-du-chay-duoc-inventory-va-owner"
+      ]
+    },
+    {
+      "source": "12",
+      "heading": "Introduction",
+      "destination": "lesson-12",
+      "action": "replaced-equivalent",
+      "replacement": "Struct/class, quyền truy cập, HP invariant và ví dụ chạy được",
+      "evidence": [
+        "topic-cpp-08-08-1-struct-nhom-du-lieu",
+        "topic-cpp-11-11-1-class-va-quyen-truy-cap",
+        "topic-cpp-11-11-3-method-getter-va-const",
+        "topic-cpp-11-11-4-vi-du-chay-duoc-player-giu-bat-bien-hp"
+      ]
+    },
+    {
+      "source": "12",
+      "heading": "Access Specifiers (mức truy cập)",
+      "destination": "lesson-12",
+      "action": "replaced-equivalent",
+      "replacement": "Struct/class, quyền truy cập, HP invariant và ví dụ chạy được",
+      "evidence": [
+        "topic-cpp-08-08-1-struct-nhom-du-lieu",
+        "topic-cpp-11-11-1-class-va-quyen-truy-cap",
+        "topic-cpp-11-11-3-method-getter-va-const",
+        "topic-cpp-11-11-4-vi-du-chay-duoc-player-giu-bat-bien-hp"
+      ]
+    },
+    {
+      "source": "12",
+      "heading": "`struct` vs `class`",
+      "destination": "lesson-12",
+      "action": "replaced-equivalent",
+      "replacement": "Struct/class, quyền truy cập, HP invariant và ví dụ chạy được",
+      "evidence": [
+        "topic-cpp-08-08-1-struct-nhom-du-lieu",
+        "topic-cpp-11-11-1-class-va-quyen-truy-cap",
+        "topic-cpp-11-11-3-method-getter-va-const",
+        "topic-cpp-11-11-4-vi-du-chay-duoc-player-giu-bat-bien-hp"
+      ]
+    },
+    {
+      "source": "13",
+      "heading": "Constructor — khởi tạo object",
+      "destination": "lesson-13",
+      "action": "replaced-equivalent",
+      "replacement": "Constructor/destructor, base/derived và Rule of Zero",
+      "evidence": [
+        "topic-cpp-11-11-2-constructor-va-member-initializer-list",
+        "topic-cpp-12-2-12-2-2-destructor-va-default",
+        "topic-cpp-12-2-12-2-3-this-chi-toi-object-dang-duoc-goi"
+      ]
+    },
+    {
+      "source": "13",
+      "heading": "Destructor — dọn dẹp khi object bị hủy",
+      "destination": "lesson-13",
+      "action": "replaced-equivalent",
+      "replacement": "Constructor/destructor, base/derived và Rule of Zero",
+      "evidence": [
+        "topic-cpp-11-11-2-constructor-va-member-initializer-list",
+        "topic-cpp-12-2-12-2-2-destructor-va-default",
+        "topic-cpp-12-2-12-2-3-this-chi-toi-object-dang-duoc-goi"
+      ]
+    },
+    {
+      "source": "14",
+      "heading": "Inheritance (kế thừa) — quan hệ \"is-a\"",
+      "destination": "lesson-14",
+      "action": "replaced-equivalent",
+      "replacement": "Ví dụ dispatch có/không virtual",
+      "evidence": [
+        "topic-cpp-12-1-12-1-1-ke-thua-cong-khai-the-hien-quan-he-la-mot-loai",
+        "topic-cpp-12-1-12-1-2-khong-virtual-chon-ham-theo-kieu-tinh",
+        "topic-cpp-12-1-12-1-3-co-virtual-chon-hanh-vi-theo-doi-tuong-thuc",
+        "topic-cpp-12-2-12-2-1-khoi-tao-phan-lop-cha",
+        "topic-cpp-12-2-12-2-4-vi-du-chay-duoc-quan-sat-day-du-vong-doi"
+      ]
+    },
+    {
+      "source": "17",
+      "heading": "Introduction",
+      "destination": "lesson-17",
+      "action": "replaced-equivalent",
+      "replacement": "auto, range-for và structured bindings",
+      "evidence": [
+        "topic-cpp-02-02-4-auto-suy-luan-kieu",
+        "topic-cpp-05-range-based-for-va-container",
+        "topic-cpp-07-range-based-for-voi-so-nguyen",
+        "topic-cpp-08-duyet-player-theo-muc-dich"
+      ]
+    },
+    {
+      "source": "18",
+      "heading": "Introduction",
+      "destination": "lesson-18",
+      "action": "replaced-equivalent",
+      "replacement": "Lambda/capture và ví dụ AOE",
+      "evidence": [
+        "topic-cpp-16-16-2-lambda-tach-capture-khoi-tham-so",
+        "topic-cpp-16-16-2-2-vi-du-chay-duoc-aoe-damage"
+      ]
+    },
+    {
+      "source": "19",
+      "heading": "Introduction",
+      "destination": "lesson-19",
+      "action": "replaced-equivalent",
+      "replacement": "Function/class template và ví dụ ClampValue/Stat",
+      "evidence": [
+        "topic-cpp-13-13-1-function-template-mot-khuon-ham-nhieu-kieu-phu-hop",
+        "topic-cpp-13-13-2-class-template",
+        "topic-cpp-13-13-3-std-array-va-std-vector-cung-la-template",
+        "topic-cpp-13-13-4-template-thuong-duoc-dinh-nghia-trong-header",
+        "topic-cpp-13-13-5-hop-dong-cua-clampvalue-va-std-clamp",
+        "topic-cpp-13-13-6-vi-du-chay-duoc-gamemath-va-stat"
+      ]
+    },
+    {
+      "source": "19",
+      "heading": "Function Template",
+      "destination": "lesson-19",
+      "action": "replaced-equivalent",
+      "replacement": "Function/class template và ví dụ ClampValue/Stat",
+      "evidence": [
+        "topic-cpp-13-13-1-function-template-mot-khuon-ham-nhieu-kieu-phu-hop",
+        "topic-cpp-13-13-2-class-template",
+        "topic-cpp-13-13-3-std-array-va-std-vector-cung-la-template",
+        "topic-cpp-13-13-4-template-thuong-duoc-dinh-nghia-trong-header",
+        "topic-cpp-13-13-5-hop-dong-cua-clampvalue-va-std-clamp",
+        "topic-cpp-13-13-6-vi-du-chay-duoc-gamemath-va-stat"
+      ]
+    },
+    {
+      "source": "19",
+      "heading": "Class Template",
+      "destination": "lesson-19",
+      "action": "replaced-equivalent",
+      "replacement": "Function/class template và ví dụ ClampValue/Stat",
+      "evidence": [
+        "topic-cpp-13-13-1-function-template-mot-khuon-ham-nhieu-kieu-phu-hop",
+        "topic-cpp-13-13-2-class-template",
+        "topic-cpp-13-13-3-std-array-va-std-vector-cung-la-template",
+        "topic-cpp-13-13-4-template-thuong-duoc-dinh-nghia-trong-header",
+        "topic-cpp-13-13-5-hop-dong-cua-clampvalue-va-std-clamp",
+        "topic-cpp-13-13-6-vi-du-chay-duoc-gamemath-va-stat"
+      ]
+    },
+    {
+      "source": "22",
+      "heading": "enum class — enum an toàn về kiểu (scoped enum)",
+      "destination": "lesson-22",
+      "action": "replaced-equivalent",
+      "replacement": "Const/constexpr và enum class",
+      "evidence": [
+        "topic-cpp-02-02-3-const-va-constexpr",
+        "topic-cpp-08-08-2-enum-class-trang-thai-co-ten"
+      ]
+    },
+    {
+      "source": "43",
+      "heading": "Kỹ thuật cơ bản",
+      "destination": "lesson-43",
+      "action": "replaced-equivalent",
+      "replacement": "Công cụ debugger, thực hành bug và ca biên",
+      "evidence": [
+        "topic-cpp-17-17-1-build-duoc-chua-dong-nghia-logic-dung",
+        "topic-cpp-17-17-2-phim-tat-theo-thao-tac-thuc-te",
+        "topic-cpp-17-17-3-chon-cua-so-theo-cau-hoi",
+        "topic-cpp-17-17-4-quy-trinh-tim-loi-co-bang-chung",
+        "topic-cpp-17-1-17-1-1-ba-trieu-chung-ba-nguyen-nhan",
+        "topic-cpp-17-1-17-1-2-mau-da-sua-de-doi-chieu-sau-khi-tu-thu",
+        "topic-cpp-17-1-17-1-3-tu-chung-minh-ban-sua"
+      ]
+    },
+    {
+      "source": "43",
+      "heading": "Breakpoint & Debugger (quan trọng nhất)",
+      "destination": "lesson-43",
+      "action": "replaced-equivalent",
+      "replacement": "Công cụ debugger, thực hành bug và ca biên",
+      "evidence": [
+        "topic-cpp-17-17-1-build-duoc-chua-dong-nghia-logic-dung",
+        "topic-cpp-17-17-2-phim-tat-theo-thao-tac-thuc-te",
+        "topic-cpp-17-17-3-chon-cua-so-theo-cau-hoi",
+        "topic-cpp-17-17-4-quy-trinh-tim-loi-co-bang-chung",
+        "topic-cpp-17-1-17-1-1-ba-trieu-chung-ba-nguyen-nhan",
+        "topic-cpp-17-1-17-1-2-mau-da-sua-de-doi-chieu-sau-khi-tu-thu",
+        "topic-cpp-17-1-17-1-3-tu-chung-minh-ban-sua"
+      ]
+    },
+    {
+      "source": "46",
+      "heading": "Chuyển kiểu ngầm (implicit) & narrowing",
+      "destination": "lesson-46",
+      "action": "replaced-equivalent",
+      "replacement": "Named casts, explicit và runtime check",
+      "evidence": [
+        "topic-cpp-02-02-5-ep-kieu-casting-o-muc-da-hoc",
+        "topic-cpp-14-5-14-5-1-chuyen-kieu-khong-tu-kiem-tra-dung-yeu-cau-gameplay",
+        "topic-cpp-14-5-14-5-2-bon-named-casts-bon-y-dinh-khac-nhau",
+        "topic-cpp-14-5-14-5-3-vi-du-chay-duoc-kiem-tra-boss-that",
+        "topic-cpp-14-5-14-5-4-explicit-khong-phai-mot-phep-cast"
+      ]
+    },
+    {
+      "source": "46",
+      "heading": "4 loại cast tường minh của C++ — đừng dùng C-style cast",
+      "destination": "lesson-46",
+      "action": "replaced-equivalent",
+      "replacement": "Named casts, explicit và runtime check",
+      "evidence": [
+        "topic-cpp-02-02-5-ep-kieu-casting-o-muc-da-hoc",
+        "topic-cpp-14-5-14-5-1-chuyen-kieu-khong-tu-kiem-tra-dung-yeu-cau-gameplay",
+        "topic-cpp-14-5-14-5-2-bon-named-casts-bon-y-dinh-khac-nhau",
+        "topic-cpp-14-5-14-5-3-vi-du-chay-duoc-kiem-tra-boss-that",
+        "topic-cpp-14-5-14-5-4-explicit-khong-phai-mot-phep-cast"
+      ]
+    },
+    {
+      "source": "47",
+      "heading": "Namespace — chống đụng độ tên",
+      "destination": "lesson-47",
+      "action": "replaced-equivalent",
+      "replacement": "Static, namespace và linkage",
+      "evidence": [
+        "topic-cpp-14-14-1-cung-tu-khoa-static-y-nghia-phu-thuoc-vi-tri",
+        "topic-cpp-14-14-2-vi-du-chay-duoc-dem-dung-dieu-duoc-dat-ten",
+        "topic-cpp-14-14-4-namespace-va-pham-vi-ten"
+      ]
+    },
+    {
+      "source": "47",
+      "heading": "3 nghĩa của `static`",
+      "destination": "lesson-47",
+      "action": "replaced-equivalent",
+      "replacement": "Static, namespace và linkage",
+      "evidence": [
+        "topic-cpp-14-14-1-cung-tu-khoa-static-y-nghia-phu-thuoc-vi-tri",
+        "topic-cpp-14-14-2-vi-du-chay-duoc-dem-dung-dieu-duoc-dat-ten",
+        "topic-cpp-14-14-4-namespace-va-pham-vi-ten"
+      ]
+    },
+    {
+      "source": "a",
+      "heading": "Cheat Sheet cú pháp",
+      "destination": "appendix-a",
+      "action": "consolidated-lookup"
+    },
+    {
+      "source": "b",
+      "heading": "STL vs UE — bảng đối chiếu nhanh",
+      "destination": "appendix-b",
+      "action": "retained"
+    },
+    {
+      "source": "c",
+      "heading": "Glossary (thuật ngữ)",
+      "destination": "appendix-c",
+      "action": "retained"
+    },
+    {
+      "source": "d",
+      "heading": "Tài nguyên học tập",
+      "destination": "appendix-d",
+      "action": "retained"
+    },
+    {
+      "source": "e",
+      "heading": "Bảng lỗi build & runtime thường gặp",
+      "destination": "appendix-e",
+      "action": "retained"
+    },
+    {
+      "source": "f",
+      "heading": "Bài tập thực hành theo phần",
+      "destination": "appendix-f",
+      "action": "retained"
+    },
+    {
+      "source": "g",
+      "heading": "Capstone Project — Mini Arena Shooter",
+      "destination": "appendix-g",
+      "action": "retained"
+    },
+    {
+      "source": "h",
+      "heading": "Lộ trình đào tạo & Onboarding Checklist",
+      "destination": "appendix-h",
+      "action": "retained"
+    }
+  ],
+  "supplementTopics": [
+    {
+      "source": "cpp-00",
+      "heading": "00.1. Công cụ",
+      "destination": "lesson-0",
+      "anchor": "topic-cpp-00-00-1-cong-cu",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-00",
+      "heading": "00.2. Pipeline build",
+      "destination": "lesson-1",
+      "anchor": "topic-cpp-00-00-2-pipeline-build",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-00",
+      "heading": "Tự kiểm tra và thực hành",
+      "destination": "lesson-0",
+      "anchor": "topic-cpp-00-tu-kiem-tra-va-thuc-hanh",
+      "kind": "practice"
+    },
+    {
+      "source": "cpp-01",
+      "heading": "01.1. Chương trình C++ tối thiểu",
+      "destination": "lesson-1",
+      "anchor": "topic-cpp-01-01-1-chuong-trinh-c-toi-thieu",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-01",
+      "heading": "01.2. Nhập xuất dữ liệu",
+      "destination": "lesson-1",
+      "anchor": "topic-cpp-01-01-2-nhap-xuat-du-lieu",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-01",
+      "heading": "01.3. Các dấu thường nhầm",
+      "destination": "lesson-1",
+      "anchor": "topic-cpp-01-01-3-cac-dau-thuong-nham",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-01",
+      "heading": "Tự kiểm tra và thực hành",
+      "destination": "lesson-1",
+      "anchor": "topic-cpp-01-tu-kiem-tra-va-thuc-hanh",
+      "kind": "practice"
+    },
+    {
+      "source": "cpp-02",
+      "heading": "02.1. Kiểu dữ liệu",
+      "destination": "lesson-3",
+      "anchor": "topic-cpp-02-02-1-kieu-du-lieu",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-02",
+      "heading": "02.2. Khai báo và khởi tạo",
+      "destination": "lesson-3",
+      "anchor": "topic-cpp-02-02-2-khai-bao-va-khoi-tao",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-02",
+      "heading": "02.3. `const` và `constexpr`",
+      "destination": "lesson-22",
+      "anchor": "topic-cpp-02-02-3-const-va-constexpr",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-02",
+      "heading": "02.4. `auto` — suy luận kiểu",
+      "destination": "lesson-17",
+      "anchor": "topic-cpp-02-02-4-auto-suy-luan-kieu",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-02",
+      "heading": "02.5. Ép kiểu (Casting) ở mức đã học",
+      "destination": "lesson-46",
+      "anchor": "topic-cpp-02-02-5-ep-kieu-casting-o-muc-da-hoc",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-02",
+      "heading": "Tự kiểm tra và thực hành",
+      "destination": "lesson-3",
+      "anchor": "topic-cpp-02-tu-kiem-tra-va-thuc-hanh",
+      "kind": "practice"
+    },
+    {
+      "source": "cpp-03",
+      "heading": "03.1. Số học và gán",
+      "destination": "lesson-3",
+      "anchor": "topic-cpp-03-03-1-so-hoc-va-gan",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-03",
+      "heading": "03.2. So sánh và logic",
+      "destination": "lesson-3",
+      "anchor": "topic-cpp-03-03-2-so-sanh-va-logic",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-03",
+      "heading": "03.3. Tăng/giảm và toán tử ba ngôi",
+      "destination": "lesson-3",
+      "anchor": "topic-cpp-03-03-3-tang-giam-va-toan-tu-ba-ngoi",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-03",
+      "heading": "03.4. Bitwise",
+      "destination": "lesson-3",
+      "anchor": "topic-cpp-03-03-4-bitwise",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-03",
+      "heading": "03.5. Ưu tiên toán tử",
+      "destination": "lesson-3",
+      "anchor": "topic-cpp-03-03-5-uu-tien-toan-tu",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-03",
+      "heading": "Tự kiểm tra và thực hành",
+      "destination": "lesson-3",
+      "anchor": "topic-cpp-03-tu-kiem-tra-va-thuc-hanh",
+      "kind": "practice"
+    },
+    {
+      "source": "cpp-04",
+      "heading": "04.1. `if` / `else if` / `else`",
+      "destination": "lesson-4",
+      "anchor": "topic-cpp-04-04-1-if-else-if-else",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-04",
+      "heading": "04.2. `switch` / `case` / `break` / `default`",
+      "destination": "lesson-4",
+      "anchor": "topic-cpp-04-04-2-switch-case-break-default",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-04",
+      "heading": "04.3. Scope",
+      "destination": "lesson-4",
+      "anchor": "topic-cpp-04-04-3-scope",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-04",
+      "heading": "Kiểm tra một lần nhập dữ liệu",
+      "destination": "lesson-4",
+      "anchor": "topic-cpp-04-kiem-tra-mot-lan-nhap-du-lieu",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-04",
+      "heading": "Tự kiểm tra và thực hành",
+      "destination": "lesson-4",
+      "anchor": "topic-cpp-04-tu-kiem-tra-va-thuc-hanh",
+      "kind": "practice"
+    },
+    {
+      "source": "cpp-05",
+      "heading": "05.1. `for`",
+      "destination": "lesson-4",
+      "anchor": "topic-cpp-05-05-1-for",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-05",
+      "heading": "05.2. `while`",
+      "destination": "lesson-4",
+      "anchor": "topic-cpp-05-05-2-while",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-05",
+      "heading": "05.3. `do ... while`",
+      "destination": "lesson-4",
+      "anchor": "topic-cpp-05-05-3-do-while",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-05",
+      "heading": "05.4. `break`, `continue`",
+      "destination": "lesson-4",
+      "anchor": "topic-cpp-05-05-4-break-continue",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-05",
+      "heading": "Range-based for và container",
+      "destination": "lesson-17",
+      "anchor": "topic-cpp-05-range-based-for-va-container",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-05",
+      "heading": "Nhập sai, EOF và chuyển từ >> sang getline",
+      "destination": "lesson-4",
+      "anchor": "topic-cpp-05-nhap-sai-eof-va-chuyen-tu-sang-getline",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-05",
+      "heading": "Tự kiểm tra và thực hành",
+      "destination": "lesson-4",
+      "anchor": "topic-cpp-05-tu-kiem-tra-va-thuc-hanh",
+      "kind": "practice"
+    },
+    {
+      "source": "cpp-06",
+      "heading": "06.1. Khai báo, định nghĩa, gọi",
+      "destination": "lesson-5",
+      "anchor": "topic-cpp-06-06-1-khai-bao-dinh-nghia-goi",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-06",
+      "heading": "06.2. Pass by value và pass by reference",
+      "destination": "lesson-5",
+      "anchor": "topic-cpp-06-06-2-pass-by-value-va-pass-by-reference",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-06",
+      "heading": "06.3. Function overloading",
+      "destination": "lesson-5",
+      "anchor": "topic-cpp-06-06-3-function-overloading",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-06",
+      "heading": "06.4. Tách trách nhiệm",
+      "destination": "lesson-5",
+      "anchor": "topic-cpp-06-06-4-tach-trach-nhiem",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-06",
+      "heading": "Tự kiểm tra và thực hành",
+      "destination": "lesson-5",
+      "anchor": "topic-cpp-06-tu-kiem-tra-va-thuc-hanh",
+      "kind": "practice"
+    },
+    {
+      "source": "cpp-06-5",
+      "heading": "06.5.1. Cấu trúc nhiều file",
+      "destination": "lesson-2",
+      "anchor": "topic-cpp-06-5-06-5-1-cau-truc-nhieu-file",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-06-5",
+      "heading": "06.5.2. Lỗi build phổ biến",
+      "destination": "lesson-2",
+      "anchor": "topic-cpp-06-5-06-5-2-loi-build-pho-bien",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-06-5",
+      "heading": "Tự kiểm tra và thực hành",
+      "destination": "lesson-2",
+      "anchor": "topic-cpp-06-5-tu-kiem-tra-va-thuc-hanh",
+      "kind": "practice"
+    },
+    {
+      "source": "cpp-07",
+      "heading": "07.1. C-style array",
+      "destination": "lesson-20",
+      "anchor": "topic-cpp-07-07-1-c-style-array",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-07",
+      "heading": "07.2. `std::array<T, N>` — kích thước cố định",
+      "destination": "lesson-20",
+      "anchor": "topic-cpp-07-07-2-std-array-t-n-kich-thuoc-co-dinh",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-07",
+      "heading": "07.3. `std::vector<T>` — thay đổi kích thước",
+      "destination": "lesson-20",
+      "anchor": "topic-cpp-07-07-3-std-vector-t-thay-doi-kich-thuoc",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-07",
+      "heading": "07.4. `std::string`",
+      "destination": "lesson-49",
+      "anchor": "topic-cpp-07-07-4-std-string",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-07",
+      "heading": "07.5. Chỉ số mảng và `std::size_t`",
+      "destination": "lesson-20",
+      "anchor": "topic-cpp-07-07-5-chi-so-mang-va-std-size-t",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-07",
+      "heading": "Range-based for với số nguyên",
+      "destination": "lesson-17",
+      "anchor": "topic-cpp-07-range-based-for-voi-so-nguyen",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-07",
+      "heading": "Size, capacity, reserve và resize",
+      "destination": "lesson-20",
+      "anchor": "topic-cpp-07-size-capacity-reserve-va-resize",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-07",
+      "heading": "Tự kiểm tra và thực hành",
+      "destination": "lesson-20",
+      "anchor": "topic-cpp-07-tu-kiem-tra-va-thuc-hanh",
+      "kind": "practice"
+    },
+    {
+      "source": "cpp-08",
+      "heading": "08.1. `struct` — nhóm dữ liệu",
+      "destination": "lesson-12",
+      "anchor": "topic-cpp-08-08-1-struct-nhom-du-lieu",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-08",
+      "heading": "08.2. `enum class` — trạng thái có tên",
+      "destination": "lesson-22",
+      "anchor": "topic-cpp-08-08-2-enum-class-trang-thai-co-ten",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-08",
+      "heading": "08.3. Reference",
+      "destination": "lesson-6",
+      "anchor": "topic-cpp-08-08-3-reference",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-08",
+      "heading": "Duyệt Player theo mục đích",
+      "destination": "lesson-17",
+      "anchor": "topic-cpp-08-duyet-player-theo-muc-dich",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-08",
+      "heading": "Tự kiểm tra và thực hành",
+      "destination": "lesson-12",
+      "anchor": "topic-cpp-08-tu-kiem-tra-va-thuc-hanh",
+      "kind": "practice"
+    },
+    {
+      "source": "cpp-09",
+      "heading": "09.1. Giá trị, địa chỉ, dereference",
+      "destination": "lesson-6",
+      "anchor": "topic-cpp-09-09-1-gia-tri-dia-chi-dereference",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-09",
+      "heading": "09.2. `nullptr` và kiểm tra trước khi dùng",
+      "destination": "lesson-6",
+      "anchor": "topic-cpp-09-09-2-nullptr-va-kiem-tra-truoc-khi-dung",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-09",
+      "heading": "09.3. Pointer vs Reference",
+      "destination": "lesson-6",
+      "anchor": "topic-cpp-09-09-3-pointer-vs-reference",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-09",
+      "heading": "Short-circuit và giới hạn kiểm tra null",
+      "destination": "lesson-6",
+      "anchor": "topic-cpp-09-short-circuit-va-gioi-han-kiem-tra-null",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-09",
+      "heading": "Tự kiểm tra và thực hành",
+      "destination": "lesson-6",
+      "anchor": "topic-cpp-09-tu-kiem-tra-va-thuc-hanh",
+      "kind": "practice"
+    },
+    {
+      "source": "cpp-10",
+      "heading": "10.1. Lifetime và nơi lưu trữ",
+      "destination": "lesson-7",
+      "anchor": "topic-cpp-10-10-1-lifetime-va-noi-luu-tru",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-10",
+      "heading": "10.2. Ghép đúng `new`, `delete`, `new[]`, `delete[]`",
+      "destination": "lesson-8",
+      "anchor": "topic-cpp-10-10-2-ghep-dung-new-delete-new-delete",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-10",
+      "heading": "10.3. Các lỗi bộ nhớ cần nhận diện",
+      "destination": "lesson-8",
+      "anchor": "topic-cpp-10-10-3-cac-loi-bo-nho-can-nhan-dien",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-10",
+      "heading": "10.4. RAII và `std::unique_ptr`",
+      "destination": "lesson-9",
+      "anchor": "topic-cpp-10-10-4-raii-va-std-unique-ptr",
+      "kind": "theory",
+      "additionalDestinations": [
+        "lesson-10"
+      ]
+    },
+    {
+      "source": "cpp-10",
+      "heading": "10.5. Ví dụ chạy được — owner và pointer mượn",
+      "destination": "lesson-10",
+      "anchor": "topic-cpp-10-10-5-vi-du-chay-duoc-owner-va-pointer-muon",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-10",
+      "heading": "10.6. Tự kiểm tra và thực hành",
+      "destination": "lesson-10",
+      "anchor": "topic-cpp-10-10-6-tu-kiem-tra-va-thuc-hanh",
+      "kind": "practice"
+    },
+    {
+      "source": "cpp-11",
+      "heading": "11.1. Class và quyền truy cập",
+      "destination": "lesson-12",
+      "anchor": "topic-cpp-11-11-1-class-va-quyen-truy-cap",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-11",
+      "heading": "11.2. Constructor và member initializer list",
+      "destination": "lesson-13",
+      "anchor": "topic-cpp-11-11-2-constructor-va-member-initializer-list",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-11",
+      "heading": "11.3. Method, getter và `const`",
+      "destination": "lesson-12",
+      "anchor": "topic-cpp-11-11-3-method-getter-va-const",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-11",
+      "heading": "11.4. Ví dụ chạy được — Player giữ bất biến HP",
+      "destination": "lesson-12",
+      "anchor": "topic-cpp-11-11-4-vi-du-chay-duoc-player-giu-bat-bien-hp",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-11",
+      "heading": "11.5. Tự kiểm tra và thực hành",
+      "destination": "lesson-12",
+      "anchor": "topic-cpp-11-11-5-tu-kiem-tra-va-thuc-hanh",
+      "kind": "practice"
+    },
+    {
+      "source": "cpp-12-1",
+      "heading": "12.1.1. Kế thừa công khai thể hiện quan hệ “là một loại”",
+      "destination": "lesson-14",
+      "anchor": "topic-cpp-12-1-12-1-1-ke-thua-cong-khai-the-hien-quan-he-la-mot-loai",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-12-1",
+      "heading": "12.1.2. Không virtual: chọn hàm theo kiểu tĩnh",
+      "destination": "lesson-14",
+      "anchor": "topic-cpp-12-1-12-1-2-khong-virtual-chon-ham-theo-kieu-tinh",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-12-1",
+      "heading": "12.1.3. Có virtual: chọn hành vi theo đối tượng thực",
+      "destination": "lesson-14",
+      "anchor": "topic-cpp-12-1-12-1-3-co-virtual-chon-hanh-vi-theo-doi-tuong-thuc",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-12-1",
+      "heading": "12.1.4. Tự kiểm tra và thực hành",
+      "destination": "lesson-14",
+      "anchor": "topic-cpp-12-1-12-1-4-tu-kiem-tra-va-thuc-hanh",
+      "kind": "practice"
+    },
+    {
+      "source": "cpp-12-2",
+      "heading": "12.2.1. Khởi tạo phần lớp cha",
+      "destination": "lesson-14",
+      "anchor": "topic-cpp-12-2-12-2-1-khoi-tao-phan-lop-cha",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-12-2",
+      "heading": "12.2.2. Destructor và `= default`",
+      "destination": "lesson-13",
+      "anchor": "topic-cpp-12-2-12-2-2-destructor-va-default",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-12-2",
+      "heading": "12.2.3. `this` chỉ tới object đang được gọi",
+      "destination": "lesson-13",
+      "anchor": "topic-cpp-12-2-12-2-3-this-chi-toi-object-dang-duoc-goi",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-12-2",
+      "heading": "12.2.4. Ví dụ chạy được — quan sát đầy đủ vòng đời",
+      "destination": "lesson-14",
+      "anchor": "topic-cpp-12-2-12-2-4-vi-du-chay-duoc-quan-sat-day-du-vong-doi",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-12-2",
+      "heading": "12.2.5. Tự kiểm tra và thực hành",
+      "destination": "lesson-14",
+      "anchor": "topic-cpp-12-2-12-2-5-tu-kiem-tra-va-thuc-hanh",
+      "kind": "practice"
+    },
+    {
+      "source": "cpp-13",
+      "heading": "13.1. Function template: một khuôn hàm, nhiều kiểu phù hợp",
+      "destination": "lesson-19",
+      "anchor": "topic-cpp-13-13-1-function-template-mot-khuon-ham-nhieu-kieu-phu-hop",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-13",
+      "heading": "13.2. Class template",
+      "destination": "lesson-19",
+      "anchor": "topic-cpp-13-13-2-class-template",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-13",
+      "heading": "13.3. `std::array` và `std::vector` cũng là template",
+      "destination": "lesson-19",
+      "anchor": "topic-cpp-13-13-3-std-array-va-std-vector-cung-la-template",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-13",
+      "heading": "13.4. Template thường được định nghĩa trong header",
+      "destination": "lesson-19",
+      "anchor": "topic-cpp-13-13-4-template-thuong-duoc-dinh-nghia-trong-header",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-13",
+      "heading": "13.5. Hợp đồng của ClampValue và `std::clamp`",
+      "destination": "lesson-19",
+      "anchor": "topic-cpp-13-13-5-hop-dong-cua-clampvalue-va-std-clamp",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-13",
+      "heading": "13.6. Ví dụ chạy được — GameMath và Stat",
+      "destination": "lesson-19",
+      "anchor": "topic-cpp-13-13-6-vi-du-chay-duoc-gamemath-va-stat",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-13",
+      "heading": "13.7. Tự kiểm tra và thực hành",
+      "destination": "lesson-19",
+      "anchor": "topic-cpp-13-13-7-tu-kiem-tra-va-thuc-hanh",
+      "kind": "practice"
+    },
+    {
+      "source": "cpp-14",
+      "heading": "14.1. Cùng từ khóa static, ý nghĩa phụ thuộc vị trí",
+      "destination": "lesson-47",
+      "anchor": "topic-cpp-14-14-1-cung-tu-khoa-static-y-nghia-phu-thuoc-vi-tri",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-14",
+      "heading": "14.2. Ví dụ chạy được — đếm đúng điều được đặt tên",
+      "destination": "lesson-47",
+      "anchor": "topic-cpp-14-14-2-vi-du-chay-duoc-dem-dung-dieu-duoc-dat-ten",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-14",
+      "heading": "14.3. Const bảo vệ đường truy cập nào?",
+      "destination": "lesson-6",
+      "anchor": "topic-cpp-14-14-3-const-bao-ve-duong-truy-cap-nao",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-14",
+      "heading": "14.4. Namespace và phạm vi tên",
+      "destination": "lesson-47",
+      "anchor": "topic-cpp-14-14-4-namespace-va-pham-vi-ten",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-14",
+      "heading": "Tự kiểm tra và thực hành",
+      "destination": "lesson-47",
+      "anchor": "topic-cpp-14-tu-kiem-tra-va-thuc-hanh",
+      "kind": "practice"
+    },
+    {
+      "source": "cpp-14-5",
+      "heading": "14.5.1. Chuyển kiểu không tự kiểm tra đúng yêu cầu gameplay",
+      "destination": "lesson-46",
+      "anchor": "topic-cpp-14-5-14-5-1-chuyen-kieu-khong-tu-kiem-tra-dung-yeu-cau-gameplay",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-14-5",
+      "heading": "14.5.2. Bốn named casts, bốn ý định khác nhau",
+      "destination": "lesson-46",
+      "anchor": "topic-cpp-14-5-14-5-2-bon-named-casts-bon-y-dinh-khac-nhau",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-14-5",
+      "heading": "14.5.3. Ví dụ chạy được — kiểm tra Boss thật",
+      "destination": "lesson-46",
+      "anchor": "topic-cpp-14-5-14-5-3-vi-du-chay-duoc-kiem-tra-boss-that",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-14-5",
+      "heading": "14.5.4. Explicit không phải một phép cast",
+      "destination": "lesson-46",
+      "anchor": "topic-cpp-14-5-14-5-4-explicit-khong-phai-mot-phep-cast",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-14-5",
+      "heading": "Tự kiểm tra và thực hành",
+      "destination": "lesson-46",
+      "anchor": "topic-cpp-14-5-tu-kiem-tra-va-thuc-hanh",
+      "kind": "practice"
+    },
+    {
+      "source": "cpp-15",
+      "heading": "15.1. Tiền xử lý diễn ra trước compiler C++",
+      "destination": "lesson-41",
+      "anchor": "topic-cpp-15-15-1-tien-xu-ly-dien-ra-truoc-compiler-c",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-15",
+      "heading": "15.2. Khai báo một kiểu tồn tại khác với biết cấu trúc kiểu",
+      "destination": "lesson-41",
+      "anchor": "topic-cpp-15-15-2-khai-bao-mot-kieu-ton-tai-khac-voi-biet-cau-truc-kieu",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-15",
+      "heading": "15.3. Ví dụ chạy được — Enemy biết giao diện tối thiểu",
+      "destination": "lesson-41",
+      "anchor": "topic-cpp-15-15-3-vi-du-chay-duoc-enemy-biet-giao-dien-toi-thieu",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-15",
+      "heading": "15.4. Tìm lỗi theo đúng giai đoạn",
+      "destination": "lesson-41",
+      "anchor": "topic-cpp-15-15-4-tim-loi-theo-dung-giai-doan",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-16",
+      "heading": "16.1. Copy construction, copy assignment và move",
+      "destination": "lesson-11",
+      "anchor": "topic-cpp-16-16-1-copy-construction-copy-assignment-va-move",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-16",
+      "heading": "16.1.1. Ví dụ chạy được — Inventory và owner",
+      "destination": "lesson-11",
+      "anchor": "topic-cpp-16-16-1-1-vi-du-chay-duoc-inventory-va-owner",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-16",
+      "heading": "16.2. Lambda: tách capture khỏi tham số",
+      "destination": "lesson-18",
+      "anchor": "topic-cpp-16-16-2-lambda-tach-capture-khoi-tham-so",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-16",
+      "heading": "16.2.1. Iterator và hợp đồng của thuật toán",
+      "destination": "lesson-21",
+      "anchor": "topic-cpp-16-16-2-1-iterator-va-hop-dong-cua-thuat-toan",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-16",
+      "heading": "16.2.2. Ví dụ chạy được — AOE damage",
+      "destination": "lesson-18",
+      "anchor": "topic-cpp-16-16-2-2-vi-du-chay-duoc-aoe-damage",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-16",
+      "heading": "Tự kiểm tra và thực hành",
+      "destination": "lesson-11",
+      "anchor": "topic-cpp-16-tu-kiem-tra-va-thuc-hanh",
+      "kind": "practice"
+    },
+    {
+      "source": "cpp-17",
+      "heading": "17.1. Build được chưa đồng nghĩa logic đúng",
+      "destination": "lesson-43",
+      "anchor": "topic-cpp-17-17-1-build-duoc-chua-dong-nghia-logic-dung",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-17",
+      "heading": "17.2. Phím tắt theo thao tác thực tế",
+      "destination": "lesson-43",
+      "anchor": "topic-cpp-17-17-2-phim-tat-theo-thao-tac-thuc-te",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-17",
+      "heading": "17.3. Chọn cửa sổ theo câu hỏi",
+      "destination": "lesson-43",
+      "anchor": "topic-cpp-17-17-3-chon-cua-so-theo-cau-hoi",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-17",
+      "heading": "17.4. Quy trình tìm lỗi có bằng chứng",
+      "destination": "lesson-43",
+      "anchor": "topic-cpp-17-17-4-quy-trinh-tim-loi-co-bang-chung",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-17",
+      "heading": "Tự kiểm tra và thực hành",
+      "destination": "lesson-43",
+      "anchor": "topic-cpp-17-tu-kiem-tra-va-thuc-hanh",
+      "kind": "practice"
+    },
+    {
+      "source": "cpp-17-1",
+      "heading": "17.1.1. Ba triệu chứng, ba nguyên nhân",
+      "destination": "lesson-43",
+      "anchor": "topic-cpp-17-1-17-1-1-ba-trieu-chung-ba-nguyen-nhan",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-17-1",
+      "heading": "17.1.2. Mẫu đã sửa để đối chiếu sau khi tự thử",
+      "destination": "lesson-43",
+      "anchor": "topic-cpp-17-1-17-1-2-mau-da-sua-de-doi-chieu-sau-khi-tu-thu",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-17-1",
+      "heading": "17.1.3. Tự chứng minh bản sửa",
+      "destination": "lesson-43",
+      "anchor": "topic-cpp-17-1-17-1-3-tu-chung-minh-ban-sua",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-17-2",
+      "heading": "17.2.1. Nguồn và giới hạn của bản tham khảo",
+      "destination": "lesson-45",
+      "anchor": "topic-cpp-17-2-17-2-1-nguon-va-gioi-han-cua-ban-tham-khao",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-17-2",
+      "heading": "17.2.2. Luật chơi trước khi viết code",
+      "destination": "lesson-45",
+      "anchor": "topic-cpp-17-2-17-2-2-luat-choi-truoc-khi-viet-code",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-17-2",
+      "heading": "17.2.3. Trách nhiệm và ownership của từng file",
+      "destination": "lesson-45",
+      "anchor": "topic-cpp-17-2-17-2-3-trach-nhiem-va-ownership-cua-tung-file",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-17-2",
+      "heading": "17.2.4. Đọc hợp đồng thật của code",
+      "destination": "lesson-45",
+      "anchor": "topic-cpp-17-2-17-2-4-doc-hop-dong-that-cua-code",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-17-2",
+      "heading": "17.2.5. Kết quả và cách tự đối chiếu",
+      "destination": "lesson-45",
+      "anchor": "topic-cpp-17-2-17-2-5-ket-qua-va-cach-tu-doi-chieu",
+      "kind": "theory"
+    },
+    {
+      "source": "cpp-17-2",
+      "heading": "Tự ôn và tiêu chí đọc hiểu",
+      "destination": "lesson-45",
+      "anchor": "topic-cpp-17-2-tu-on-va-tieu-chi-doc-hieu",
+      "kind": "practice"
+    }
+  ],
+  "editorialNotes": [
+    "Các đoạn tương đương được thay bằng giải thích chi tiết có source topic anchor; unique details (STL/UE, linkage, Rule0/3/5, game topics, appendix exercises) giữ trong chương tương ứng.",
+    "Setup Unreal chuyển từ bài0 sang30; ví dụ virtual lifetime chuyển từ13 sang14 sau smart pointer/inheritance.",
+    "Lookup là bảng tra cứu chung; appendix-a trở thành chỉ mục ký hiệu trỏ tới bài và cùng catalog.",
+    "Các phần advanced container, string_view và string Unreal được ghi rõ prerequisite/lần đọc tiếp trong bài."
+  ]
+}

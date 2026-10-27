@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { reference } from "../content/reference";
-import { curriculumSections, curriculumLessons, courseUrl } from "../content/curriculum";
+import { curriculumResources, curriculumAnchorUrl } from "../content/curriculum";
 import { actions, useStore } from "../lib/store";
 
 function norm(s: string): string {
@@ -23,18 +23,17 @@ export default function Topbar() {
     const query = norm(q.trim());
     if (query.length < 2) return [];
     const searchable = [
-      ...curriculumSections.map((item) => ({
-        ...item, num: curriculumLessons.find((lesson) => lesson.id === item.id)?.number ?? "",
-        partTitle: "Lộ trình C++ cơ bản", url: courseUrl(item.id), priority: 1,
+      ...reference.sections.filter((s) => s.id !== "a").map((s) => ({ ...s, url: reference.lessonSections.some((lesson) => lesson.id === s.id) ? `/lesson/${s.id}` : `/reference?tab=${s.id}` })),
+      ...curriculumResources.filter((item) => !reference.byId[item.id]).map((item) => ({
+        ...item, num: "", partTitle: "Ôn tập và thực hành", url: curriculumAnchorUrl(item.id) ?? `/reference?tab=${item.id}`,
       })),
-      ...reference.sections.map((s) => ({ ...s, partTitle: `Thư viện · ${s.partTitle}`, url: `/lesson/${s.id}`, priority: 0 })),
     ];
     return searchable
       .map((s) => {
         const hay = norm(s.title + " " + s.body);
         const inTitle = norm(s.title).includes(query);
         const hit = hay.includes(query);
-        return hit ? { s, score: (inTitle ? 4 : 1) + s.priority } : null;
+        return hit ? { s, score: inTitle ? 4 : 1 } : null;
       })
       .filter((x): x is NonNullable<typeof x> => !!x)
       .sort((a, b) => b.score - a.score)

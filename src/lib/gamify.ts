@@ -47,10 +47,16 @@ export function totalLessonsRead(s: AppState): number {
   return reference.lessonSections.filter((sec) => s.progress[sec.id]?.read).length;
 }
 export function partsCompleted(s: AppState): number {
-  return reference.parts
+  const current = reference.parts
     .filter((p) => !p.isAppendix)
     .filter((p) => p.sections.length > 0 && p.sections.every((sec) => s.progress[sec.id]?.read))
     .length;
+  // Reordering lessons cannot revoke an achievement already earned under the
+  // original eight-part curriculum. This does not mark new content as complete.
+  const oldRanges = [[0, 6], [7, 11], [12, 16], [17, 23], [24, 29], [30, 40], [41, 45], [46, 55]];
+  const historical = oldRanges.filter(([first, last]) =>
+    Array.from({ length: last - first + 1 }, (_, i) => String(first + i)).every(id => s.progress[id]?.read)).length;
+  return Math.max(current, historical);
 }
 export function bestQuizAces(s: AppState): number {
   return Object.values(s.progress).filter((p) => (p.quizBest ?? 0) >= 1).length;

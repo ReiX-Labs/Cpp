@@ -1,9 +1,8 @@
-import { cardIds } from "../data/cards";
-import { courseProgressId, curriculumLessons } from "./curriculum";
+import { cards } from "../data/cards";
 
-// Only cards whose concepts are taught in the course are in this deck. Legacy
-// IDs and their existing SRS schedules stay unchanged; no inferred completion.
-export const courseCardLessons: Record<string, string> = {
+// Exact historical coverage: a small source lesson must not unlock every
+// advanced card in the larger merged chapter.
+const sourceCardLessons: Record<string, string> = {
   "c-compile-model": "cpp-06-5", "c-compiler-vs-linker": "cpp-06-5",
   "c-header-source": "cpp-06-5", "c-include-guard": "cpp-06-5",
   "c-brace-init": "cpp-02", "c-auto": "cpp-02", "c-constexpr": "cpp-02",
@@ -17,12 +16,11 @@ export const courseCardLessons: Record<string, string> = {
   "c-casts-4": "cpp-14-5", "c-forward-decl": "cpp-15",
   "c-move-semantics": "cpp-16", "c-std-move": "cpp-16", "c-lambda-capture": "cpp-16",
 };
-export type ReviewScope = "learned" | "course" | "library";
+
+export type ReviewScope = "learned" | "course";
+// Prior reading can retain access to review cards without completing new material.
 export function eligibleReviewCardIds(scope: ReviewScope, progress: Record<string, { read?: boolean }>): string[] {
-  if (scope === "library") return cardIds;
-  const available = new Set(curriculumLessons.map((lesson) => lesson.id));
-  return cardIds.filter((id) => {
-    const lesson = courseCardLessons[id];
-    return lesson && available.has(lesson) && (scope === "course" || progress[courseProgressId(lesson)]?.read);
-  });
+  return cards.filter((card) => scope === "course" || progress[card.sectionId]?.read
+    || progress[`course:${sourceCardLessons[card.id]}`]?.read)
+    .map((card) => card.id);
 }

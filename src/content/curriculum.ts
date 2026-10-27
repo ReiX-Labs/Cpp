@@ -1,63 +1,71 @@
 import raw from "../../Update/CPP_GIAO_TRINH_CHUAN.md?raw";
-import { parseCurriculum, parseCurriculumSyntax } from "./curriculumParser";
+import { parseCurriculum, parseCurriculumSyntax, curriculumSlug } from "./curriculumParser";
+import { supplementTopics } from "../../Update/curriculum-coverage.json";
+import { lessonGroups } from "./lessonManifest";
+import type { Part, Reference, Section } from "./parse";
+export { lessonProgressStatus } from "./lessonManifest";
 
 export const curriculumAllSections = parseCurriculum(raw);
-const byId = Object.fromEntries(curriculumAllSections.map((section) => [section.id, section]));
-
-// IDs are strings, independent of legacy reference numbers and persisted progress.
-export const curriculumManifest = [
-  { id: "cpp-00", number: "00", group: "Chuẩn bị", related: ["0", "1", "2", "43"] },
-  { id: "cpp-01", number: "01", group: "Cú pháp và luồng chương trình", related: ["0", "2"] },
-  { id: "cpp-02", number: "02", group: "Cú pháp và luồng chương trình", related: ["3", "22"] },
-  { id: "cpp-03", number: "03", group: "Cú pháp và luồng chương trình", related: ["3"] },
-  { id: "cpp-04", number: "04", group: "Cú pháp và luồng chương trình", related: ["4"] },
-  { id: "cpp-05", number: "05", group: "Cú pháp và luồng chương trình", related: ["4", "17"] },
-  { id: "cpp-06", number: "06", group: "Hàm, dữ liệu và tổ chức code", related: ["5"] },
-  { id: "cpp-06-5", number: "06.5", group: "Hàm, dữ liệu và tổ chức code", related: ["1", "2", "41"] },
-  { id: "cpp-07", number: "07", group: "Hàm, dữ liệu và tổ chức code", related: ["20", "49"] },
-  { id: "cpp-08", number: "08", group: "Hàm, dữ liệu và tổ chức code", related: ["6", "12"] },
-  { id: "cpp-09", number: "09", group: "Bộ nhớ và thiết kế đối tượng", related: ["6"] },
-  { id: "cpp-10", number: "10", group: "Bộ nhớ và thiết kế đối tượng", related: ["7", "8", "9", "10"] },
-  { id: "cpp-11", number: "11", group: "Bộ nhớ và thiết kế đối tượng", related: ["12", "13"] },
-  { id: "cpp-12-1", number: "12.1", group: "Bộ nhớ và thiết kế đối tượng", related: ["14", "15"] },
-  { id: "cpp-12-2", number: "12.2", group: "Bộ nhớ và thiết kế đối tượng", related: ["13", "15"] },
-  { id: "cpp-13", number: "13", group: "C++ hiện đại và công cụ", related: ["19", "41"] },
-  { id: "cpp-14", number: "14", group: "C++ hiện đại và công cụ", related: ["22", "47"] },
-  { id: "cpp-14-5", number: "14.5", group: "C++ hiện đại và công cụ", related: ["46"] },
-  { id: "cpp-15", number: "15", group: "C++ hiện đại và công cụ", related: ["2", "41"] },
-  { id: "cpp-16", number: "16", group: "C++ hiện đại và công cụ", related: ["11", "18"] },
-  { id: "cpp-17", number: "17", group: "C++ hiện đại và công cụ", related: ["43", "44"] },
-  { id: "cpp-17-1", number: "17.1", group: "C++ hiện đại và công cụ", related: ["43", "44"] },
-  { id: "cpp-17-2", number: "17.2", group: "C++ hiện đại và công cụ", related: ["43", "44", "45"] },
-];
-
-export const curriculumLessons = curriculumManifest.filter((item) => byId[item.id])
-  .map((item) => ({ ...byId[item.id], ...item, title: byId[item.id].title.replace(/^(?:Bài\s+[\d.]+|Chuẩn bị)\s*[—–-]\s*/, "").replace(/`/g, "") }));
-export const curriculumUnits = curriculumLessons.filter((item) => item.id !== "cpp-00");
-export const curriculumGroups = [...new Set(curriculumUnits.map((item) => item.group))];
+const byAnchor = Object.fromEntries(curriculumAllSections.map((section) => [section.id, section]));
+let displayNumber = 0;
+function sectionFrom(anchor: string, id: string, part: Pick<Part, "id" | "title">, num: string): Section {
+  const source = byAnchor[anchor];
+  if (!source) throw new Error(`Missing unified curriculum chapter: ${anchor}`);
+  return { id, num, title: source.title.replace(/^(?:\d+|[A-H])\.\s*/, "").replace(/`/g, ""),
+    body: source.body, partId: part.id, partTitle: part.title,
+    minutes: Math.max(1, Math.round(source.body.split(/\s+/).length / 180)),
+    codeBlocks: Math.floor((source.body.match(/^```/gm)?.length ?? 0) / 2) };
+}
+const parts: Part[] = lessonGroups.map((group, index) => {
+  const part: Part = { id: group.id, title: group.title, label: `Chặng ${index + 1}`, isAppendix: false, sections: [] };
+  part.sections = group.ids.map((id) => sectionFrom(`lesson-${id}`, String(id), part, String(++displayNumber).padStart(2, "0")));
+  return part;
+});
+const appendix: Part = { id: "appendices", title: "Bảng đối chiếu và thực hành", label: "Phụ lục", isAppendix: true, sections: [] };
+appendix.sections = [..."abcdefgh"].map((id) => sectionFrom(`appendix-${id}`, id, appendix, id.toUpperCase()));
+parts.push(appendix);
+const sections = parts.flatMap((part) => part.sections);
+export const unifiedReference: Reference = {
+  title: "C++ cho lập trình game và Unreal Engine", intro: "Một chương trình học từ nền tảng đến ứng dụng.",
+  parts, sections, lessonSections: parts.filter((part) => !part.isAppendix).flatMap((part) => part.sections),
+  appendix, byId: Object.fromEntries(sections.map((section) => [section.id, section])),
+};
 
 const resourceIds = ["healing", "arena", "self-check", "mistakes", "study-history", "review-routine", "roadmap"];
-export const curriculumResources = resourceIds.filter((id) => byId[id]).map((id) => ({ ...byId[id], title: byId[id].title.replace(/`/g, "") }));
-export const curriculumSections = [...curriculumLessons, ...curriculumResources];
-export const curriculumSyntaxEntries = parseCurriculumSyntax(byId.lookup?.body ?? "");
-export const curriculumRange = curriculumUnits.at(-1)?.number ?? "13";
-export const courseProgressId = (id: string) => `course:${id}`;
-export const courseUrl = (id: string) => `/course/${id}`;
+export const curriculumResources = resourceIds.map((id) => byAnchor[id]).filter(Boolean)
+  .map((item) => ({ ...item, title: item.title.replace(/`/g, "") }));
+export const curriculumLessons = unifiedReference.lessonSections;
+export const curriculumSections = [...sections.map((section) => byAnchor[/^\d+$/.test(section.id) ? `lesson-${section.id}` : `appendix-${section.id}`]), ...curriculumResources];
+export const curriculumSyntaxEntries = parseCurriculumSyntax(byAnchor.lookup?.body ?? "");
 
-const legacyAliases: Record<string, string> = {
+const aliases: Record<string, string> = {
   integrated: "arena", questions: "self-check", status: "study-history", schedule: "review-routine",
 };
 export function resolveCourseId(id?: string | null): string {
   if (!id) return "cpp-00";
-  const candidate = legacyAliases[id] ?? (id.match(/^\d+(?:\.\d+)?$/) ? `cpp-${id.replace(".", "-")}` : id);
-  return curriculumSections.some((item) => item.id === candidate) ? candidate : "cpp-00";
+  if (aliases[id]) return aliases[id];
+  if (/^\d+(?:\.\d+)?$/.test(id)) {
+    const [major, minor] = id.split(".");
+    return `cpp-${major.padStart(2, "0")}${minor ? `-${minor}` : ""}`;
+  }
+  return id;
 }
 
-/** Resolve canonical anchors to split pages, never to a HashRouter fragment alone. */
-export function curriculumAnchorUrl(anchor: string): string | undefined {
-  if (anchor === "lookup") return "/reference?tab=syntax";
-  const exact = curriculumSections.find((item) => item.id === anchor);
-  if (exact) return courseUrl(exact.id);
-  const parent = curriculumSections.find((item) => item.anchors.includes(anchor));
-  return parent ? `${courseUrl(parent.id)}?anchor=${encodeURIComponent(anchor)}` : undefined;
+/** Old course URLs enter the same chapters as the main navigation. */
+export function curriculumAnchorUrl(anchor: string, sourceId?: string): string | undefined {
+  if (anchor === "lookup" || anchor === "appendix-a") return "/reference?tab=syntax";
+  const oldTopic = supplementTopics.find(topic => (!sourceId || topic.source === sourceId)
+    && curriculumSlug(topic.heading.replace(/`/g, "")) === anchor);
+  if (oldTopic) anchor = oldTopic.anchor;
+  const owner = curriculumAllSections.find((section) => section.id === anchor)
+    ?? curriculumAllSections.find((section) => section.body.includes(`<a id="${anchor}"></a>`))
+    ?? (() => { const candidates = curriculumAllSections.filter(section => section.anchors.includes(anchor)); return candidates.length === 1 ? candidates[0] : undefined; })();
+  if (!owner) return undefined;
+  const lesson = owner.id.match(/^lesson-(\d+)$/);
+  if (lesson) return `/lesson/${lesson[1]}${anchor === owner.id ? "" : `?anchor=${encodeURIComponent(anchor)}`}`;
+  const appendixId = owner.id.match(/^appendix-([a-h])$/);
+  if (appendixId) return `/reference?tab=${appendixId[1]}${anchor === owner.id ? "" : `&anchor=${encodeURIComponent(anchor)}`}`;
+  if (resourceIds.includes(owner.id)) return `/reference?tab=${owner.id}${anchor === owner.id ? "" : `&anchor=${encodeURIComponent(anchor)}`}`;
+  return undefined;
 }
+export const rawCurriculumMarkdown = raw;

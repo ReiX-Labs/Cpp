@@ -5,7 +5,7 @@
   "type": "module",
   "description": "Website học & luyện tập C++ cho Game Development (nội bộ).",
   "scripts": {
-    "check": "npm run check:handoff && npm run check:curriculum && npm run check:compatibility",
+    "check": "npm run check:curriculum && npm run check:compatibility && node scripts/check-coverage.mjs && node scripts/check-progress.mjs && node scripts/check-lookup.mjs",
     "check:handoff": "node scripts/check-handoff.mjs",
     "check:curriculum": "node scripts/check-curriculum.mjs",
     "check:compatibility": "node scripts/check-compatibility.mjs",

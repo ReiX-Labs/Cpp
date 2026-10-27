@@ -1,57 +1,55 @@
-# 🥋 C++ Dojo
+# C++ Dojo
 
-Web học &amp; luyện tập **C++ cho lập trình game** — học có hệ thống, luyện tập ngay trong từng mục, và **ôn tập hằng ngày** kiểu spaced-repetition (giống Anki) để kiến thức không rơi rụng.
+Website học C++ cho lập trình game và Unreal Engine: lý thuyết, tự viết code, kiểm tra và ôn tập có lịch.
 
-🔗 **Bản demo:** https://reix-labs.github.io/Cpp/
----
+[Bản đang triển khai](https://reix-labs.github.io/Cpp/)
 
-## ✨ Tính năng
+## Một chương trình học
 
-- **Bài học C++** trình bày mạch lạc, chia theo từng phần, có tô màu code &amp; nút sao chép; phụ lục tách sang khu **Tra cứu**.
-- **Luyện tập đa dạng:** trắc nghiệm, "đoán output", và thử thách viết code — mở thẳng trong Compiler Explorer để chạy thử.
-- **Ôn tập hằng ngày** theo thuật toán spaced-repetition (SM-2): nhắc lại đúng lúc bạn sắp quên, nhớ lâu hơn.
-- **Bài tập thực hành** — đánh dấu hoàn thành và lưu link PR/commit của bạn (ngay trên máy).
-- **Tạo động lực:** cấp độ + XP, huy hiệu (achievements), lịch hoạt động kiểu GitHub, chuỗi ngày 🔥, mục tiêu ngày, thanh tiến độ từng phần.
-- **Tìm kiếm nhanh**, cheat sheet &amp; glossary.
-- **Giao diện sáng/tối**, tối ưu cho desktop.
-- Tiến độ lưu ngay trên trình duyệt — không cần đăng nhập, không cần server.
+Toàn bộ 56 chủ đề của website và nội dung Completion Pack được biên tập trong **[Update/CPP_GIAO_TRINH_CHUAN.md](Update/CPP_GIAO_TRINH_CHUAN.md)**. Đây là nguồn duy nhất mà các bài học, phụ lục và dữ liệu tra cứu trên web đọc khi build.
 
-## Giáo trình đã tích hợp
+Sáu chặng: nền tảng/hàm/dữ liệu → vòng đời/tài nguyên/OOP → C++ hiện đại/STL → tổ chức code/debugging/kiểm thử → lập trình game → Unreal. Số hiển thị theo thứ tự học; ID nội bộ vẫn giữ để bảo toàn dữ liệu.
 
-- **Học C++ · 01–17.2** lấy lý thuyết, ví dụ, yêu cầu thực hành và tài nguyên ôn từ một nguồn: `Update/CPP_GIAO_TRINH_CHUAN.md`. Thứ tự đi từ cú pháp → hàm và dữ liệu → ownership/OOP → các tính năng C++17 → debugging và bài tổng kết.
-- **Câu lệnh → Ý nghĩa → Bài giải thích** hỗ trợ tìm có/không dấu, tìm toán tử, lọc nhóm và mở đúng bài học. Tìm kiếm trên thanh đầu trang bao gồm toàn bộ giáo trình.
-- Giữ Pointer-Based Healing, Arena ba file, 23 câu tự kiểm tra có mở đáp án, lịch ôn và lịch sử thực hành có nguồn. Bản Arena Combat đã được chỉnh sửa sau bài nộp có [ZIP tải về](public/downloads/ArenaCombat_Final_Reviewed.zip), tách rõ với bài tự nộp được chấm 9.5/10.
-- Thư viện cũ giữ nguyên ID và đường dẫn `/lesson/:id`; `/fundamentals?topic=...` vẫn mở đúng bài tương ứng. Khóa học mới dùng `/course/:id` với anchor ổn định.
-- Giữ khóa lưu trữ `cpp-dojo-state-v1`, XP, streak, SRS, kết quả và link bài nộp cũ. Tiến độ lộ trình mới dùng tiền tố `course:` và chỉ ghi nhận khi người học chủ động đánh dấu; nhập tài liệu không tự hoàn thành bài.
-- Ôn tập mặc định theo bài đã đánh dấu trong khóa; có thể chọn toàn khóa hoặc thư viện mở rộng. Các bài tập thư viện cũ vẫn có phạm vi riêng.
+- Lý thuyết bổ sung đi vào đúng chủ đề; không còn hai chương trình cũ/mới.
+- Bài học có mục tiêu, kiến thức cần biết, giải thích, ví dụ và yêu cầu tự luyện.
+- Tra cứu đi theo chủ đề → đối tượng → thao tác; tìm được tên API, ký hiệu và ý định bằng tiếng Việt có/không dấu.
+- Ví dụ hoàn chỉnh có nhãn để biên dịch C++17 độc lập. Snippet minh họa không được coi là chương trình độc lập.
+- Pointer-Based Healing, Arena nhiều file, Arena Combat tổng kết và Mini Arena Shooter có phạm vi thực hành riêng. [ZIP Arena Combat đã được chỉnh sửa sau bài nộp](public/downloads/ArenaCombat_Final_Reviewed.zip) giữ nguyên nguồn gốc; không đồng nhất với bài tự nộp.
 
-## Tài liệu để cập nhật tiếp
+## Tương thích dữ liệu học tập
 
-- [CPP_GIAO_TRINH_CHUAN.md](Update/CPP_GIAO_TRINH_CHUAN.md): bản biên tập chính mà khóa học và bảng tra cứu trên web đang đọc. Hợp nhất tài liệu mới vào file này; không tạo giáo trình song song.
-- [Completion Pack](Update/README.md): handbook, handoff chuyển sang Unreal và mã nguồn bài tổng kết do người học cung cấp; giữ nguyên để đối chiếu nguồn. Phần Unreal là hướng học tiếp, chưa phải khóa mới đã triển khai.
-- [CPP_Fundamentals_Review_01-09_AI_Handoff.md](Update/CPP_Fundamentals_Review_01-09_AI_Handoff.md): vẫn được adapter của **thư viện cũ** sử dụng để giữ phần lý thuyết đã tích hợp; không phải nguồn của khóa học chính nữa.
-- [Update_2026-10-26.zip](Archive/Update_2026-10-26.zip): lưu nguyên bản 5 tài liệu nguồn/báo cáo cũ đã dọn khỏi `Update`, gồm `CONTENT_AUDIT.md`, hai file `CPlusPlus_*`, báo cáo rà soát 23/10 và kế hoạch 24/10. Nội dung lưu trữ đã được kiểm tra SHA-256 với bản gốc.
+Giữ khóa trình duyệt `cpp-dojo-state-v1`, XP, streak, lịch SRS, kết quả quiz, bài thực hành và link bài nộp. Dữ liệu không bị ghi lại khi chỉ mở trang.
 
-## 🛠 Công nghệ
+Bài đã có lịch sử học nhưng được bổ sung kiến thức sẽ hiện **cần cập nhật**. Người học xác nhận sau khi học phần mới; xác nhận lại không nhận thêm XP. Lịch sử khóa có tiền tố `course:` vẫn được giữ nguyên và đối chiếu vào chương hợp nhất, không tự hoàn thành cả chương rộng hơn. Bài chưa có lịch sử nhận 15 XP khi chủ động đánh dấu; điểm quiz không tự đánh dấu đã đọc.
 
-React + TypeScript + Vite.
+Đường dẫn `/lesson/:id` giữ nguyên. `/course/:id` và `/fundamentals?topic=...` chuyển tới chương/đoạn tương ứng. Một bộ thẻ ôn dùng lịch SRS cũ, với phạm vi bài đã học hoặc toàn chương trình.
 
-## 🚀 Chạy thử tại máy
+## Cập nhật kiến thức tiếp theo
+
+1. Đối chiếu nội dung mới với chủ đề trong bản chuẩn; xác định phần trùng, phần cần sửa và phần thiếu.
+2. Biên tập trực tiếp vào bài tương ứng; giữ anchor ổn định và ví dụ có nhãn.
+3. Bổ sung bảng tra cứu trong bản chuẩn; metadata tìm kiếm/thao tác nằm ở `src/content/syntaxCatalog.ts`.
+4. Khi thêm chủ đề, cập nhật `src/content/lessonManifest.ts`. Khi mở rộng kiến thức của bài đã có, cập nhật quy tắc revision để không tự công nhận nội dung chưa học.
+5. Chạy các kiểm tra và xem thử trên trình duyệt trước khi triển khai.
+
+`Cpp_Knowledge_Handbook.md`, `Cpp_To_Unreal_Handoff.md`, handoff 01–09 và `Cpp_Game_Dev_Reference.md` là nguồn đối chiếu lịch sử, không phải giáo trình song song trên web. Năm tài liệu nguồn/báo cáo cũ đã được lưu trong [Archive/Update_2026-10-26.zip](Archive/Update_2026-10-26.zip).
+
+## Chạy và kiểm tra
+
+React + TypeScript + Vite. CI dùng Node 20.
 
 ```bash
 npm install
-npm run dev       # mở http://localhost:5173
-npm run check     # nội dung, liên kết, parser, phạm vi ôn và ID tương thích
-npm run build     # build production vào dist/
-npm run preview   # xem bản production tại /Cpp/
+npm run dev
+npm run check
+npm run check:cpp
+npm run build
+npm run preview
 ```
 
-Chạy `npm run check:cpp` trong **Developer PowerShell/Command Prompt của VS2022** để biên dịch C++17 và đối chiếu kết quả ví dụ, bài tổng kết, các ca biên và câu đoán output. Trên Linux, lệnh dùng `g++`; có thể chọn compiler bằng biến môi trường `CXX`. File build thử nằm trong thư mục tạm, không sửa bài nộp.
+- `check`: nội dung hợp nhất, liên kết, đường dẫn cũ, tra cứu, ID và tương thích tiến độ.
+- `check:cpp`: ví dụ C++17, ca biên/EOF, mã nguồn Arena Combat và câu đoán output. Windows cần Developer PowerShell của Visual Studio 2022; Linux dùng g++. Có thể chọn compiler qua `CXX`.
+- `build`: TypeScript và production bundle; `preview` phục vụ tại `/Cpp/`.
+- `check:handoff` là kiểm tra nguồn đầu vào lịch sử, không thay kiểm tra giáo trình hiện tại.
 
-GitHub Actions chạy kiểm tra nội dung, C++ và build trước khi deploy GitHub Pages từ `main`. Khi thêm bài: giữ anchor cũ, bổ sung manifest trong `src/content/curriculum.ts`, kiểm tra các liên kết và cập nhật giới hạn phạm vi trong `scripts/check-curriculum.mjs` khi cần.
-
-> CI dùng Node 20. Dự án hiện yêu cầu Node 18+.
-
----
-
-<p align="center"><sub>Sản phẩm của <strong>ReiX&nbsp;Labs</strong> · © 2026 ReiX Labs</sub></p>
+GitHub Actions chạy kiểm tra và build trước khi deploy GitHub Pages từ `main`. Tiến độ học nằm trên trình duyệt của người học; việc deploy không chạm dữ liệu đó.
