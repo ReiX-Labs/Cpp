@@ -8,7 +8,7 @@ import { actions, useStore } from "../lib/store";
 import Markdown, { headingSlug } from "../components/Markdown";
 import Quiz from "../components/Quiz";
 import ChallengePanel from "../components/ChallengePanel";
-import { curriculumAnchorUrl, lessonProgressStatus } from "../content/curriculum";
+import { curriculumAnchorUrl, lessonProgressStatus, lessonProjectExamples } from "../content/curriculum";
 
 interface Toc {
   text: string;
@@ -79,6 +79,7 @@ export default function Lesson() {
   }
 
   const progress = state.progress[section.id];
+  const projectExamples = lessonProjectExamples[section.id] ?? [];
   const status = lessonProgressStatus(section.id, state.progress);
   const exerciseCount = quiz.length + challenges.length + sectionCards.length;
 
@@ -128,6 +129,17 @@ export default function Lesson() {
         {tab === "learn" ? (
           <div className="fade">
             {status.needsUpdate && <aside className="card unified-progress-notice"><strong>Bài học đã được bổ sung</strong><p className="muted">Kết quả và XP trước đây vẫn được giữ. Đọc các phần mới rồi xác nhận đã học ở cuối bài.</p></aside>}
+            {projectExamples.length > 0 && <nav className="card lesson-project-examples" aria-label="Ví dụ dự án trong bài">
+              <strong>Ví dụ từ dự án trong bài này</strong>
+              <ul>{projectExamples.map(example => <li key={example.anchor}>
+                <Link to={curriculumAnchorUrl(example.anchor)!} onClick={event => {
+                  if (anchor === example.anchor && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey) {
+                    event.preventDefault();
+                    scrollTo(example.anchor);
+                  }
+                }}>{example.title}</Link>
+              </li>)}</ul>
+            </nav>}
             <Markdown resolveAnchor={curriculumAnchorUrl}>{section.body}</Markdown>
             <section className="card pad lesson-completion">
               <h3>Trước khi chuyển bài</h3>

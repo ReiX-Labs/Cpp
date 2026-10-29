@@ -35,6 +35,11 @@ const resourceIds = ["healing", "arena", "self-check", "mistakes", "study-histor
 export const curriculumResources = resourceIds.map((id) => byAnchor[id]).filter(Boolean)
   .map((item) => ({ ...item, title: item.title.replace(/`/g, "") }));
 export const curriculumLessons = unifiedReference.lessonSections;
+/** Jump links come from the same lesson Markdown, never a separate project course. */
+export const lessonProjectExamples = Object.fromEntries(curriculumLessons.map(section => [section.id,
+  [...section.body.matchAll(/^<a id="(project-(?:cube|reix)-[^"]+)"><\/a>\s*\n### (.+)$/gm)]
+    .map(match => ({ anchor: match[1], title: match[2].replace(/`/g, "") })),
+]));
 export const curriculumSections = [...sections.map((section) => byAnchor[/^\d+$/.test(section.id) ? `lesson-${section.id}` : `appendix-${section.id}`]), ...curriculumResources];
 export const curriculumSyntaxEntries = parseCurriculumSyntax(byAnchor.lookup?.body ?? "");
 

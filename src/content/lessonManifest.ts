@@ -13,15 +13,22 @@ export const lessonGroups = [
 /** Source reading can cover parts of several merged chapters, never certify a
  * whole expanded chapter. Keep this mapping aligned with the editorial audit. */
 export const sourceLessonTargets: Record<string, string[]> = courseCoverage;
-export const CONTENT_REVISION = 3;
-export const revisedLessonIds = new Set([...Object.values(sourceLessonTargets).flat(), "24", "30", "31", "32", "36"]);
+export const CONTENT_REVISION = 4;
+const mergedLessonIds = new Set([...Object.values(sourceLessonTargets).flat(), "24", "30", "31", "32", "36"]);
+export const projectRevisedLessonIds = new Set(["5","12","15","16","18","20","25","27","28","29","30","34","36","37","50","53","55"]);
+export const revisedLessonIds = new Set([...mergedLessonIds, ...projectRevisedLessonIds]);
+/** A new release only reopens chapters whose content actually changed. */
+export function requiredReadingRevision(id: string): number {
+  if (projectRevisedLessonIds.has(id)) return 4;
+  return mergedLessonIds.has(id) ? 3 : 0;
+}
 export interface ReadingRecord { read?: boolean; contentRevision?: number }
 export function lessonProgressStatus(id: string, progress: Record<string, ReadingRecord>) {
   const prior = progress[id];
   const sourceRead = Object.entries(sourceLessonTargets)
     .some(([source, targets]) => targets.includes(id) && progress[`course:${source}`]?.read);
   const hasHistory = !!prior?.read || sourceRead;
-  const read = !!prior?.read && (!revisedLessonIds.has(id) || (prior.contentRevision ?? 0) >= CONTENT_REVISION);
+  const read = !!prior?.read && (prior.contentRevision ?? 0) >= requiredReadingRevision(id);
   return { read, needsUpdate: hasHistory && !read, hasHistory };
 }
 

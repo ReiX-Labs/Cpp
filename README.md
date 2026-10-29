@@ -14,6 +14,7 @@ Sáu chặng: nền tảng/hàm/dữ liệu → vòng đời/tài nguyên/OOP �
 - Bài học có mục tiêu, kiến thức cần biết, giải thích, ví dụ và yêu cầu tự luyện.
 - Tra cứu đi theo chủ đề → đối tượng → thao tác; tìm được tên API, ký hiệu và ý định bằng tiếng Việt có/không dấu.
 - Ví dụ hoàn chỉnh có nhãn để biên dịch C++17 độc lập. Snippet minh họa không được coi là chương trình độc lập.
+- Ví dụ từ CubeCubev2 và ReiXHome được đặt ngay trong bài tương ứng, kèm bối cảnh source, luật đơn giản hóa và ca tự kiểm tra. Hai bản đồ kiến thức dự án trong `Update/` là nguồn đối chiếu, không được import thành chương trình riêng.
 - Pointer-Based Healing, Arena nhiều file, Arena Combat tổng kết và Mini Arena Shooter có phạm vi thực hành riêng. [ZIP Arena Combat đã được chỉnh sửa sau bài nộp](public/downloads/ArenaCombat_Final_Reviewed.zip) giữ nguyên nguồn gốc; không đồng nhất với bài tự nộp.
 
 ## Tương thích dữ liệu học tập
@@ -21,6 +22,8 @@ Sáu chặng: nền tảng/hàm/dữ liệu → vòng đời/tài nguyên/OOP �
 Giữ khóa trình duyệt `cpp-dojo-state-v1`, XP, streak, lịch SRS, kết quả quiz, bài thực hành và link bài nộp. Dữ liệu không bị ghi lại khi chỉ mở trang.
 
 Bài đã có lịch sử học nhưng được bổ sung kiến thức sẽ hiện **cần cập nhật**. Người học xác nhận sau khi học phần mới; xác nhận lại không nhận thêm XP. Lịch sử khóa có tiền tố `course:` vẫn được giữ nguyên và đối chiếu vào chương hợp nhất, không tự hoàn thành cả chương rộng hơn. Bài chưa có lịch sử nhận 15 XP khi chủ động đánh dấu; điểm quiz không tự đánh dấu đã đọc.
+
+Revision được đối chiếu theo từng bài: bản cập nhật ví dụ dự án chỉ yêu cầu học lại phần mới ở các bài có thay đổi; bài đã hoàn thành ở revision 3 và không đổi vẫn được công nhận.
 
 Đường dẫn `/lesson/:id` giữ nguyên. `/course/:id` và `/fundamentals?topic=...` chuyển tới chương/đoạn tương ứng. Một bộ thẻ ôn dùng lịch SRS cũ, với phạm vi bài đã học hoặc toàn chương trình.
 

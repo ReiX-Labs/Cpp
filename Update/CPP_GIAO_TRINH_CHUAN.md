@@ -1,12 +1,14 @@
 # GIÁO TRÌNH C++ CHO GAME VÀ UNREAL — NGUỒN HỢP NHẤT
 
-**Mã tài liệu:** `cpp-curriculum` · **Phiên bản:** `3.0.0` · **Cập nhật:** 28/10/2026
+**Mã tài liệu:** `cpp-curriculum` · **Phiên bản:** `3.1.0` · **Cập nhật:** 29/10/2026
 
 **Một chương trình học:** nền tảng C++ → ownership/OOP → C++ hiện đại và STL → kỹ thuật kiểm chứng → lập trình game → Unreal Engine C++. Nội dung mới được biên tập vào đúng chủ đề của chương trình website; không có khóa bổ sung độc lập.
 
 **Nguồn làm việc duy nhất:** `Update/CPP_GIAO_TRINH_CHUAN.md`. Các handbook/handoff và bản website trước hợp nhất giữ để truy vết, không chỉnh song song hoặc import thành một lớp nội dung thứ hai.
 
 **Chuẩn ví dụ:** C++17 / Visual Studio 2022 cho chương trình console. Ví dụ Unreal yêu cầu project engine phù hợp; API/menu cần kiểm tra theo phiên bản đang sử dụng. Nội dung có trong tài liệu không tự chứng minh người học đã làm hoặc đã được chấm.
+
+**Ví dụ dự án:** CubeCubev2 và ReiXHome (nguồn UE 5.5) được biên tập vào từng chủ đề. Đoạn C++ console, API Unreal và quy tắc riêng của dự án được phân biệt; ví dụ giản lược không tự xác nhận dự án đã được kiểm thử.
 
 ## Cách học và dùng ví dụ
 
@@ -785,6 +787,67 @@ SpawnEnemy(5, 500.0f, true);   // truyền đủ
 inline int Square(int x) { return x * x; }   // hợp lệ đặt trong .h
 ```
 
+<a id="project-cube-star-contract"></a>
+
+### Tình huống CubeCubev2: hàm tính sao có hợp đồng đầu vào
+
+Trong `PuzzleTypes.h`, `FPuzzleLevelData::CalculateStarRating()` thử mốc 3 sao trước, rồi 2 sao và 1 sao. Thứ tự này quan trọng: thời gian đạt 3 sao cũng nhỏ hơn mốc 1 sao. Dấu `<=` quyết định kết quả ngay tại ngưỡng.
+
+**Phân biệt ba tầng:** `if`, tham số và `return` là C++; `ECubeStarRating` là kiểu do dự án đặt tên; các mốc 60/120/180 giây là quy tắc chấm của trò chơi. Hàm trong source chưa tự từ chối thời gian âm hoặc bộ ngưỡng không hợp lệ.
+
+Ví dụ C++17 dưới đây chỉ kiểm tra **một mốc thời gian**, để học tham số, điều kiện biên và mã trả về. Quy ước minh họa: thời gian hữu hạn/không âm, mốc hữu hạn/dương; trả `-1` khi dữ liệu sai, `1` khi đạt mốc, `0` khi quá mốc. Đây là hợp đồng bổ sung cho bài học, không phải hàm chấm sao trong source.
+
+```cpp
+// example: project-cube-time-target; file: Main.cpp
+#include <cmath>
+#include <iostream>
+
+int CheckTimeTarget(double elapsed, double target) {
+    if (!std::isfinite(elapsed) || !std::isfinite(target) ||
+        elapsed < 0.0 || target <= 0.0) {
+        return -1;
+    }
+    return elapsed <= target ? 1 : 0;
+}
+
+int main() {
+    std::cout << "Within target: " << CheckTimeTarget(0.0, 60.0) << ' '
+              << CheckTimeTarget(60.0, 60.0) << ' '
+              << CheckTimeTarget(60.1, 60.0) << '\n';
+    std::cout << "Invalid: " << CheckTimeTarget(-1.0, 60.0) << ' '
+              << CheckTimeTarget(10.0, 0.0) << '\n';
+}
+```
+
+**Kết quả mong đợi:**
+
+```text
+Within target: 1 1 0
+Invalid: -1 -1
+```
+
+**Bài tự làm — bộ tính sao:** trước mắt truyền ba mốc qua tham số; sau khi học [struct](#lesson-12), gom chúng vào một kiểu dữ liệu. Yêu cầu các mốc hữu hạn, dương và tăng nghiêm ngặt; tách nhập/in khỏi logic. Với mốc 60/120/180 giây, các thời gian `0, 60, 60.1, 120, 120.1, 180, 180.1` phải cho `3, 3, 2, 2, 1, 1, 0` sao. Tự thiết kế báo lỗi cho thời gian âm, NaN/vô cực, mốc bằng nhau hoặc sai thứ tự; không trả kết quả hợp lệ im lặng. Sau này chuyển mã lỗi sang [kiểu kết quả có thể thiếu](#lesson-23). Ôn [kiểu số](#lesson-3), [điều kiện](#lesson-4) và [enum class](#lesson-22).
+
+Một hợp đồng khác trong `GoalVolume.cpp` là `WorldToGrid(WorldPos, OutCell)`: `bool` báo thành công, reference là nơi ghi kết quả. Hàm có thể đã ghi ô ứng viên nhưng vẫn trả false vì ô không thuộc goal; chỉ sử dụng `OutCell` như ô hợp lệ khi kết quả là true. `const` getter của `CubeGameState` cũng không kéo dài lifetime của dữ liệu được trả bằng reference; xem [pointer/reference](#lesson-6).
+
+<a id="project-reix-api-contract"></a>
+
+### Ứng dụng ReiXHome — hợp đồng đầu vào và đầu ra
+
+API đặt đồ phải cho người gọi biết điều kiện được chấp nhận và kết quả khi thất bại. Với phòng có `width × height` ô, tọa độ hợp lệ thỏa `0 <= x && x < width` và `0 <= y && y < height`; kiểm tra biên trước khi truy cập container. Hàm trả `bool` giúp phân biệt tìm thấy một món đồ với danh sách rỗng hoặc ID không tồn tại.
+
+Ví dụ chữ ký để tự triển khai, giả định đã khai báo kiểu `Placement`:
+
+```cpp
+bool TryGetPlacement(int instanceId, Placement& out) const;
+```
+
+Chọn hợp đồng rõ ràng: thành công thì ghi một bản sao vào `out`; thất bại thì giữ nguyên `out`. `Placement&` là đầu ra có thể ghi, còn `const Placement&` chỉ cho đọc qua tham chiếu đó. `const` cuối hàm giới hạn việc sửa trạng thái thông thường của đối tượng qua `this`; nó không biến mọi đối tượng có thể tiếp cận thành bất biến.
+
+**Tự làm:** Viết hàm tìm theo ID và hàm kiểm tra ô; thử danh sách rỗng, ID không tồn tại, cùng các tọa độ `-1`, `0`, `size - 1`, `size`. Gán giá trị đánh dấu cho `out` trước ca thất bại và kiểm tra nó không bị đổi.
+
+**Liên hệ source:** `RoomGridComponent` trong ReiXHome dùng các tham số `In...`/`Out...` và `bool` để thể hiện hợp đồng. Tên tham số là quy ước dự án, còn tham chiếu và hàm thành viên `const` là cơ chế C++.
+
 ### Tự làm và tiêu chí hoàn thành
 
 **Bài tự làm:** Tách kiểm tra HP, tính damage và in trạng thái thành các hàm; tự chọn tham số value/const reference/reference.
@@ -926,6 +989,71 @@ if (inventory.find("potion") != inventory.end()) // C++17; contains là C++20
 ```
 
 > **Lời khuyên hiệu năng cho game:** `std::vector` thường là lựa chọn phù hợp khi cần duyệt tuần tự vì dữ liệu **liền kề trong bộ nhớ** → thân thiện cache (xem [Đo hiệu năng, cache và tối ưu](#lesson-27)). `std::list`/`std::map` (node rời rạc) thường chậm vì cache miss, dù big-O đẹp.
+
+<a id="project-cube-cells-containers"></a>
+
+### Tình huống CubeCubev2: danh sách, tập ô và bảng điểm
+
+Chọn container từ câu hỏi cần trả lời. Danh sách mảnh cần duyệt theo thứ tự; tập ô cần hỏi “ô này có thuộc goal/đã bị chiếm không?”; bảng điểm cần tra bằng ID. Trong source lần lượt gặp `TArray`, `TSet`, `TMap`. Khi luyện console có thể dùng `std::vector`, `std::set`/`std::unordered_set`, `std::map`/`std::unordered_map`; đây là đối chiếu **vai trò**, không phải API hay độ phức tạp giống hệt nhau. Xem [container Unreal](#lesson-35).
+
+**Bài tự làm — lõi puzzle:** viết `CanPlace`, `Place`, `Remove`, `IsComplete`. Luật bài luyện yêu cầu mọi ô của piece thuộc goal và còn trống; thất bại giữ nguyên trạng thái. Lưu piece ID cùng các ô nó chiếm; xóa theo ID chỉ giải phóng đúng phần đó. Quy định rõ cách xử lý ô nhập trùng. Với goal `(0,0,0), (1,0,0), (1,1,0)`, ô `(0,1,0)` nằm trong bounding box nhưng không thuộc goal. Test đặt chồng, goal rỗng, xóa hai lần, xóa ID chưa đặt và lấy một piece ra sau khi hoàn thành.
+
+Bất biến cần giữ là `occupied ⊆ valid`; chỉ so số lượng không tự chứng minh hai tập bằng nhau. **Khác biệt source:** CubeCubev2 có partial snap, có thể commit phần nằm trong goal và theo dõi phần ngoài; `CommitCells()` chỉ thêm ô, caller phải bảo đảm điều kiện. Không thay mô tả ấy bằng luật chặt hơn của bài luyện.
+
+#### Ví dụ chạy được: hỏi một ô láng giềng có tồn tại không
+
+`VoxelMeshBuilder.cpp` xét sáu láng giềng của mỗi ô, chỉ tạo mặt nơi không có láng giềng. Ví dụ C++17 dưới đây chỉ minh họa một thao tác thành viên của tập ô; chưa giải thuật toán đếm toàn bộ mặt. `std::array<int, 3>` biểu diễn tọa độ, còn `std::set` loại ô trùng.
+
+```cpp
+// example: project-cube-cell-membership; file: Main.cpp
+#include <array>
+#include <iostream>
+#include <set>
+
+int main() {
+    using Cell = std::array<int, 3>;
+    const std::set<Cell> cells{
+        Cell{0, 0, 0}, Cell{1, 0, 0}, Cell{0, 0, 0}
+    };
+    const bool neighborX = cells.find(Cell{1, 0, 0}) != cells.end();
+    const bool neighborY = cells.find(Cell{0, 1, 0}) != cells.end();
+    std::cout << "Cells: " << cells.size() << '\n';
+    std::cout << "Neighbor +X: " << neighborX << '\n';
+    std::cout << "Neighbor +Y: " << neighborY << '\n';
+}
+```
+
+**Kết quả mong đợi:**
+
+```text
+Cells: 2
+Neighbor +X: 1
+Neighbor +Y: 0
+```
+
+**Tự viết thuật toán đếm mặt ngoài:** tổng quát thao tác trên thành kiểm tra sáu hướng của mỗi ô, chưa cần vẽ mesh. Kiểm tra rỗng → 0; một ô → 6; hai ô kề mặt → 10; hai ô tách rời → 12; khối đặc 2×2×2 → 24; nhập ô trùng không tăng số mặt. Ghi giới hạn tọa độ và số ô để phép cộng tọa độ, bộ đếm mặt không tràn.
+
+Tìm kiếm trong `std::set` có chi phí O(log N); hash set có tìm kiếm trung bình O(1), không bảo đảm mọi trường hợp. Source có `Reserve()` trước khi thêm buffer; nó không thay thế bước thêm phần tử. Giảm mặt mesh không tự chứng minh FPS tăng: [đo hiệu năng](#lesson-27) tách thuật toán, cấp phát và chi phí mỗi frame. Source còn chuẩn hóa hai đầu mút cạnh, định nghĩa `operator==` và `GetTypeHash` để bỏ cạnh trùng: khóa bằng nhau phải có hash bằng nhau, nhưng hash bằng nhau chưa chứng minh khóa bằng nhau; xem [toán tử](#lesson-48).
+
+**Mở rộng vừa sức:** `FPinchGrabHandState` dùng buffer 16 mẫu vị trí/thời gian và chỉ số vòng, tính vận tốc từ tối đa năm mẫu gần nhất. Tự viết bản 1D: `(0,0s)` và `(10,0.1s)` cho 100 đơn vị/s. Dưới hai mẫu hoặc khoảng thời gian không dương phải có xử lý trước phép chia. Giải thích vì sao ghi đè ô kế tiếp bằng modulo khác xóa đầu vector mỗi lần.
+
+<a id="project-reix-identity-storage"></a>
+
+### Ứng dụng ReiXHome — ID ổn định và vị trí lưu trữ
+
+Xóa món đầu trong danh sách làm các vị trí phía sau thay đổi, nhưng danh tính của những món còn lại phải giữ nguyên. Vì vậy **index dùng để truy cập vị trí hiện tại**, còn **ID dùng để nhận diện món đồ**. Có ID không tự tạo tra cứu O(1): ReiXHome tìm placement bằng predicate tuyến tính; đổi sang bảng hash là một lựa chọn cấu trúc dữ liệu cần cân nhắc, không phải thuộc tính của ID.
+
+| Việc cần làm | Cấu trúc để luyện bằng C++ | Liên hệ Unreal |
+|---|---|---|
+| Duyệt/lọc catalog, giữ thứ tự | `std::vector` | `TArray` |
+| Ánh xạ ID đến dữ liệu/representation | `std::unordered_map` | `TMap` |
+| Kiểm tra ô đã bị chiếm | `std::unordered_set` | `TSet` |
+
+Các cặp trên có vai trò gần nhau nhưng khác kiểu, API và hợp đồng chi tiết. Với `vector`, reallocation có thể làm mọi pointer/reference/iterator đến phần tử mất hiệu lực; xóa còn làm mất hiệu lực ở vị trí xóa và phía sau. Không giữ địa chỉ phần tử qua thao tác làm thay đổi storage rồi tiếp tục dereference. Nếu tác vụ diễn ra ở frame sau, giữ ID và tìm lại; nếu chỉ cần ảnh chụp thông tin tại thời điểm hiện tại, lấy bản sao.
+
+**Tự làm:** Đặt ba món, lưu ID của món cuối, xóa món đầu rồi tìm lại bằng ID. Kiểm tra ID không tồn tại và ID trùng. Giải thích khác biệt giữa sửa bản sao và sửa dữ liệu do manager quản lý; không dùng pointer đã mất hiệu lực để “thử xem còn chạy không”.
+
+**Liên hệ source:** `IndexOfPlacement`, `FindPlacement`, `GetPlacementCopy`, `FReiInstanceRepresentation`; xem tiếp [pointer/reference](#lesson-6) và [container Unreal](#lesson-35).
 
 ### Tự làm và tiêu chí hoàn thành
 
@@ -1392,6 +1520,48 @@ HP: 80/100
 `struct` và `class` có cùng các khả năng ngôn ngữ; khác mặc định truy cập member và mặc định kiểu kế thừa: struct dùng public, class dùng private. Thường dùng struct cho nhóm dữ liệu đơn giản, class khi cần giao diện bảo vệ bất biến; struct không tự đồng nghĩa POD.
 
 `public` là giao diện bên ngoài; `private` dành cho class và friend; `protected` cho class, friend và ngữ cảnh derived được phép. Ví dụ Player phía trên giữ dữ liệu private để mọi thay đổi HP đi qua hợp đồng chung.
+
+<a id="project-cube-model-invariants"></a>
+
+### Tình huống CubeCubev2: dữ liệu nào đi cùng nhau, quy tắc nào cần bảo vệ?
+
+`FPuzzlePieceData` gom danh sách ô và màu của một mảnh; `FPuzzleLevelData` gom goal, các mảnh và mốc sao; `FLevelScoreData` mô tả kết quả. Cách nhóm này tránh các mảng rời phải giữ cùng chỉ số. `struct` có thể có phương thức; không phải cứ là struct thì chỉ chứa dữ liệu.
+
+`FPuzzleLevelData::IsValid()` trong source hiện chỉ kiểm tra goal và danh sách mảnh không rỗng. Tên hàm không chứng minh dữ liệu giải được, không có ô trùng, kích thước hợp lệ hay schema đã được kiểm tra đầy đủ. Hãy đọc hợp đồng thực tế trước khi dùng nó làm điều kiện bảo đảm.
+
+**Bài tự làm — dữ liệu level và best score:** mỗi level có ID riêng, danh sách chỉ quyết định thứ tự hiển thị. Lưu best time và best stars tốt nhất **độc lập** theo quy ước bài luyện; chỉ nhận kết quả hoàn thành và hợp lệ. Với `L-A`: 100 giây/2 sao → 130 giây/1 sao → 50 giây/3 sao, kết quả cuối là 50 giây/3 sao. Đổi chỗ `L-A` và `L-B` trong danh sách không được đổi chủ sở hữu điểm; ID chưa có trả trạng thái “chưa có kết quả”.
+
+Để tránh một class ôm mọi việc, tách model level, luật puzzle và lớp hiển thị. Trong dự án, GameState giữ trạng thái lượt chơi, GoalVolume quản lý ô, GameInstance cung cấp thao tác profile; đây là lựa chọn trách nhiệm của CubeCubev2. Nối với [composition](#lesson-16), [container](#lesson-20) và [vai trò lớp Unreal](#project-cube-framework).
+
+<a id="project-reix-model-invariants"></a>
+
+### Ứng dụng ReiXHome — loại nội thất, món đã đặt và điều kiện bất biến
+
+Catalog mô tả **loại nội thất**; placement mô tả **một món cụ thể trong phòng**. Hai ghế cùng loại dùng chung dữ liệu tên/mesh nhưng có danh tính và vị trí riêng. Tách hai mô hình giúp sửa vị trí một ghế mà không đổi ghế còn lại.
+
+Minh họa dữ liệu C++17; cần `<string>`:
+
+```cpp
+struct FurnitureDefinition {
+    int typeId;
+    std::string name;
+};
+
+struct PlacedFurniture {
+    int instanceId;
+    int typeId;
+    float x = 0.0f;
+    float y = 0.0f;
+};
+```
+
+`typeId` chọn định nghĩa; `instanceId` chọn món đã đặt. Manager chịu trách nhiệm từ chối ID trùng và thao tác lên đúng instance. Đây là quyết định thiết kế dữ liệu, không phải tính năng tự có của `struct`.
+
+Settings cho một ví dụ về đóng gói: thành viên volume ở `private`, setter chuẩn hóa vào `[0, 1]`, chỉ cập nhật khi giá trị thực sự thay đổi. Với số thực, cần quy định đầu vào hữu hạn hoặc từ chối NaN/Inf; chỉ nói “đã clamp” chưa đủ cho mọi đầu vào. Trong Unreal, metadata `ClampMin`/`ClampMax` của Editor không thay thế kiểm tra runtime.
+
+**Tự làm:** Tạo hai ghế cùng loại, di chuyển một ghế, xóa ghế đầu rồi kiểm tra danh tính ghế còn lại. Với class Settings, thử số âm, số lớn hơn 1 và gọi setter lặp lại cùng giá trị. Chưa thêm sự kiện vào class đầu tiên; nối hành vi thông báo khi học [delegate](#lesson-37).
+
+**Liên hệ source:** `FReiFurnitureEntry`, `FReiFurniturePlacement` và `UReiUserSettingsSubsystem`; ví dụ trên rút gọn mô hình để luyện C++ trước phần [data-driven](#lesson-39).
 
 ### Tự làm và tiêu chí hoàn thành
 
@@ -2167,6 +2337,16 @@ Pure virtual có thể có định nghĩa ở ngoài class; `= 0` không đồng
 
 > Abstract class với toàn pure virtual = **interface** (giống `interface` trong C#/Java). Định nghĩa "hợp đồng" mà lớp con phải tuân theo.
 
+<a id="project-cube-level-sources"></a>
+
+### Tình huống CubeCubev2: nhiều nguồn level, một model chung
+
+`UPuzzleLevelPack` đưa ra các thao tác đọc level; `UNativeLevelPack`, `UCubeFileLevelPack` và `UWebLevelPack` lấy dữ liệu từ các nguồn khác nhau. Nơi dùng cần biết giao diện đọc, không cần biết mọi chi tiết file hoặc HTTP. Đây là ứng dụng đa hình; `UDataAsset`, `UCLASS` và `PURE_VIRTUAL` trong source là cơ chế Unreal, không phải cú pháp interface C++ chuẩn.
+
+**Bài tự làm theo bước:** trước hết viết một abstract class C++ với virtual destructor và thao tác đọc trả cùng model. Làm hai nguồn hardcoded và file; xử lý file thiếu, rỗng, sai dữ liệu và ID trùng theo hợp đồng rõ ràng. Sau đó mới thêm save/profile và callback muộn ở [bài kiểm thử](#project-cube-regression-practice). Không cần tự viết JSON parser tổng quát; parse thành công vẫn cần validate model.
+
+`IGrabbable` là giao diện tương tác khác, dùng `BlueprintNativeEvent`; hãy học cơ chế gọi C++/Blueprint tại [Unreal Interfaces](#lesson-51). `UVRHandBase` dùng lớp chung cho controller hand và tracked hand. Phân biệt “là một nguồn level” với “Pawn có các component input/grab”; xem [composition](#lesson-16).
+
 ### Tự làm và tiêu chí hoàn thành
 
 **Bài tự làm:** Định nghĩa IDamageable và hai implementation; lựa chọn destructor theo cách sử dụng base.
@@ -2202,6 +2382,20 @@ public:
 ```
 
 > Đây chính là triết lý nền tảng của **Component pattern** và **ECS** (Phần V), và là cách Unreal Engine tổ chức Actor (Actor + nhiều ActorComponent).
+
+<a id="project-reix-responsibility-navigation"></a>
+
+### Ứng dụng ReiXHome — chia trách nhiệm và lần theo một thao tác
+
+Thay vì lấy toàn bộ player/manager lớn làm mẫu class, chọn một luồng nhỏ. Catalog trả định nghĩa, PlacementManager quản lý các món đã đặt, Navigator quản lý màn hình hiện tại và lịch sử Back. Chúng hợp tác qua API rõ ràng; constructor hoặc `Initialize` nhận dependency cần dùng, giúp thay nguồn thật bằng nguồn giả lập khi kiểm thử.
+
+Điều hướng Main → Rooms → Settings cần nhớ Rooms để Back trở về đúng nơi. Stack là một cách biểu diễn lịch sử: chuyển tới màn hình mới thì lưu màn hình trước; Back lấy phần tử trên cùng. Cần quy định thêm hành vi Back ở gốc, điều hướng lặp lại cùng màn hình và lúc một màn hình bị đóng; không để nhiều widget tự giữ các bản lịch sử mâu thuẫn.
+
+Khi đọc một thao tác, ghi lại: **sự kiện bắt đầu → hàm nhận → điều kiện từ chối → dữ liệu đổi ở đâu → ai được thông báo → cleanup ở đâu**. Thêm một câu cuối: nếu target biến mất hoặc tác vụ thất bại, trạng thái còn hợp lệ không? Cách đọc này biến source dài thành một luồng có thể mô phỏng.
+
+**Tự làm:** Viết ba lớp nhỏ Catalog, PlacementManager, Navigator cho console; chứng minh Main → Rooms → Settings → Back về Rooms. Thay Catalog bằng dữ liệu giả mà không phải sửa luật placement. Tự viết từ yêu cầu trước, sau đó mới đối chiếu source.
+
+**Liên hệ source:** `UReiUINavigator` và `UReiVRUIManager::Initialize`. Khi sang Unreal, `AReiPlayer : APawn` là kế thừa, còn player chứa camera/capsule/component là composition; các hook `BeginPlay`/`EndPlay` do framework gọi. Thực hành Actor nhỏ ở [lifecycle](#lesson-33), không sao chép cả player của dự án.
 
 ### Tự làm và tiêu chí hoàn thành
 
@@ -3085,6 +3279,45 @@ auto alive = std::count_if(enemies.begin(), enemies.end(),
 ```
 
 Kiểu kết quả `count_if` là difference type của iterator; dùng `auto` tránh giả định luôn là int. Hợp đồng iterator và xóa phần tử được giải thích ở [thuật toán STL](#lesson-21).
+
+<a id="project-cube-async-capture"></a>
+
+### Tình huống CubeCubev2: callback HTTP về sau có còn dữ liệu để dùng?
+
+Trong `ContentSyncSubsystem.cpp`, request hoàn thành bằng lambda capture `CapturedSource` theo giá trị và `WeakThis` là `TWeakObjectPtr<UContentSyncSubsystem>`. Bản sao tên nguồn sống cùng callback; weak owner chỉ cho xử lý nếu subsystem còn hợp lệ. Cơ chế cụ thể của weak UObject được học ở [pointer Unreal](#project-cube-pointer-choices).
+
+**Luồng đọc source:** tạo request → bind callback → lưu request đang chờ → kiểm tra kết nối/response/mã HTTP → parse → kiểm tra dữ liệu → cập nhật trạng thái → phát sự kiện. `Deinitialize()` có hủy request. Những việc này là các bước riêng: owner còn sống không bảo đảm kết quả còn phù hợp với level hoặc phiên hiện tại, còn hủy request không thay thế toàn bộ kiểm tra callback.
+
+**Bài tự làm:** mô phỏng hàng đợi callback chưa cần mạng. Capture ID yêu cầu bằng value; dùng `std::weak_ptr` và `lock()` cho receiver C++ do `shared_ptr` quản lý. Test receiver bị hủy trước khi chạy, hai request trả về ngược thứ tự và request thuộc phiên đã đóng. Tự thiết kế cách bỏ kết quả cũ; đây là yêu cầu bài luyện, không khẳng định source đã có đầy đủ cơ chế chống kết quả lỗi thời.
+
+Callback không mặc nhiên chạy trên thread nền. Trước khi cập nhật Actor/UI phải kiểm tra hợp đồng thread của API; `ESPMode::ThreadSafe` trên shared pointer chỉ bảo vệ việc đếm tham chiếu, không khóa dữ liệu gameplay. Xem [đồng bộ](#lesson-50).
+
+Đọc thêm: `CubeFileParser.cpp` dùng `MoveTemp(PieceData)` khi thêm dữ liệu. Như `std::move`, thao tác này cho phép chọn đường move nếu kiểu hỗ trợ, không bảo đảm mọi lời gọi đều di chuyển và không cho phép giả định object nguồn giữ nguyên dữ liệu; xem [copy/move](#lesson-11). Cú pháp `Container<Element>` đã học ở [templates](#lesson-19); chưa cần template metaprogramming để đọc những đoạn này.
+
+<a id="project-reix-callback-reentry"></a>
+
+### Ứng dụng ReiXHome — callback chạy khi nào và có thể gọi lại gì
+
+Lambda `Snap90` trong grid được dùng ngay để tính một giá trị; callback hoàn tất fade có thể được gọi về sau. Hai trường hợp cùng dùng callable nhưng khác yêu cầu lifetime. Capture pointer bằng value chỉ sao chép địa chỉ. Callback cũng không mặc nhiên chạy muộn hoặc chạy trên thread khác: phải đọc hợp đồng nơi gọi nó.
+
+Một tình huống ít gặp trong ví dụ nhỏ là **reentrancy**: callback A gọi ngược vào cùng hệ thống và bắt đầu tác vụ B trước khi hàm hoàn tất A trả về. Trong `FinishFade`, ReiXHome chuyển callback ra biến local, bỏ callback cũ và cập nhật trạng thái trước khi gọi.
+
+Mẫu rút gọn dưới đây giả định `pending` là `std::function<void()>`, `busy` là trạng thái thành viên, và có `<functional>`, `<utility>`:
+
+```cpp
+auto callback = std::move(pending);
+pending = {};
+busy = false;
+if (callback) {
+    callback();
+}
+```
+
+Nếu xóa `pending` sau khi gọi callback, ta có thể xóa luôn callback B vừa được đăng ký. `std::move` biểu đạt chuyển quyền sử dụng tài nguyên theo move operation của kiểu; nó không tự chạy callback. Mẫu trên chỉ minh họa thứ tự hoàn tất trên cùng thread, không cung cấp đồng bộ đa luồng.
+
+**Tự làm:** Callback A đăng ký callback B; sau khi A chạy, B phải còn chờ. Thử callback rỗng và hoàn tất hai lần để quyết định hợp đồng. Với callback đến UObject, nối sang [pointer Unreal](#lesson-36) để chọn weak reference và kiểm tra đích ở lúc gọi.
+
+**Liên hệ source:** `RoomGridComponent::Snap90`, callback fade của `UReiRealmapSubsystem`, `UReiXRScreenFadeService::FinishFade`. `TArray<T>`/`TWeakObjectPtr<T>` ở đây là sử dụng template có sẵn; chưa cần template metaprogramming.
 
 ### Tự làm và tiêu chí hoàn thành
 
@@ -4015,6 +4248,33 @@ bool FHealthComponentTest::RunTest(const FString& Parameters) {
 
 > Bắt đầu nhỏ: test các hàm **thuần logic** trước (không cần world). Mục tiêu của team không phải 100% coverage, mà là *mọi bug từng gây đau đều có một test chặn tái phát*.
 
+<a id="project-cube-regression-practice"></a>
+
+### Thực hành nối các bài qua CubeCubev2
+
+Đây là checklist dùng dần theo lộ trình: mốc 1–3 vận dụng nền tảng; mốc 4–6 dùng thêm các bài game loop, toán và state machine ở chặng kế tiếp; mốc 8 chỉ bắt đầu sau chặng Unreal. Ở bài kiểm thử này, hãy học cách xác định ca kiểm tra trước, chưa cần hoàn thành mọi mốc ngay.
+
+Tài liệu dự án là nguồn tình huống để tự viết, không phải bằng chứng người học đã hoàn thành. Mỗi bước giữ vòng học: đọc hợp đồng → dự đoán đầu vào/đầu ra → tự viết phiên bản nhỏ → build/chạy ca biên → đối chiếu source và giải thích khác biệt. Bắt đầu từ declaration trong `.h`, rồi mới xem implementation; ghi một bất biến và ít nhất ba ca lỗi.
+
+| Mốc tự viết | Học ở bài nào | Ca kiểm tra quyết định |
+|---|---|---|
+| 1. Bộ tính sao | [Hàm và hợp đồng](#project-cube-star-contract) | Đúng ngưỡng, âm/NaN, ngưỡng sai |
+| 2. Model level/best score | [Struct và bất biến](#project-cube-model-invariants) | ID chưa có; đổi thứ tự không đổi chủ điểm |
+| 3. Lõi puzzle bằng tập ô | [Container](#project-cube-cells-containers) | Chồng ô, ngoài goal, thất bại không sửa dữ liệu, xóa lặp |
+| 4. Đồng hồ phiên chơi | [Game loop](#project-cube-session-clock) | Playing 2 + Paused 5 + Playing 3 chỉ tính 5 giây |
+| 5. Tọa độ/mặt ngoài voxel | [Toán game](#project-cube-grid-space) | Biên ô, round trip, 1 ô→6 mặt, 2×2×2→24 |
+| 6. Nút có hysteresis/cancel | [State machine](#project-cube-input-state) | Mất input, trở lại đang bóp, mở rồi bấm lại |
+| 7. Nguồn level/save/callback | [Interface](#project-cube-level-sources), [callback](#project-cube-async-capture) | File lỗi, ID trùng, đóng/mở chương trình, callback muộn |
+| 8. Một lát cắt Unreal | [Framework](#project-cube-framework), [timer](#project-cube-timer-teardown) | Tạo/xóa level, menu mở lại, completion một lần, restart |
+
+**Mốc 7 làm theo thứ tự:** hai nguồn hardcoded/file cùng trả một model → lưu profile theo level ID → save, đóng hẳn, mở lại kiểm tra điểm → mô phỏng callback đến muộn. “Stable key” chỉ ổn định nếu cách tạo ổn định: base `UPuzzleLevelPack::GetStableLevelKey()` hiện fallback theo tên pack và index, nên không mặc nhiên chịu được đổi thứ tự. JSON parse thành công và `IsValid()` sơ bộ không chứng minh toàn bộ dữ liệu đúng.
+
+**Mốc 8 làm theo lát cắt:** một Actor piece + một Actor goal → input đơn giản → kiểm tra luật ô → event hoàn thành → widget thời gian/sao → lưu kết quả. Chỉ sau đó nối controller/hand tracking, âm thanh, web sync và MR. Tạo/xóa level liên tiếp không để lại timer; menu đóng/mở không nhân listener; completion phát một lần theo hợp đồng bài tập; pause và restart có ca kiểm tra riêng.
+
+Nguồn đọc test: `HandTrackingRegressionTests.cpp`, `HandMenuRegressionTests.cpp` và `WidgetStereoLayerRegressionTests.cpp`. Chúng gợi ý kiểm tra hand/grab, press/cancel/recovery và lifetime tài nguyên hiển thị. Editor-only tool/build dependency học ở [preprocessor](#lesson-41); đừng dùng code Editor làm bằng chứng tài nguyên runtime đã có.
+
+**Phân biệt bằng chứng:** đọc source, compile C++17, chạy test logic, chạy Unreal Editor và kiểm tra trên thiết bị là các mức khác nhau. Các ví dụ được giản lược trong giáo trình không xác nhận game CubeCubev2 đã chạy đúng trên kính. Có source save/load hoặc log chẩn đoán cũng chưa chứng minh profile còn sau khi tắt/mở; cần thử restart thực tế. Vấn đề persistence chỉ được kết luận khi có kết quả bước đó.
+
 ### Tự làm và tiêu chí hoàn thành
 
 **Bài tự làm:** Viết test cho damage/heal: thường, zero, biên và đầu vào ngoài hợp đồng đã chọn.
@@ -4078,8 +4338,10 @@ Async(EAsyncExecution::ThreadPool, [Data = MakeHeavyInput()]()
 
     AsyncTask(ENamedThreads::GameThread, [R]()
     {
-        // đã về Game Thread — an toàn để cập nhật actor/UI
-        GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, TEXT("Tính xong!"));
+        // Đã về Game Thread; vẫn cần kiểm tra receiver và phiên yêu cầu còn hợp lệ.
+        if (GEngine) {
+            GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, TEXT("Tính xong!"));
+        }
     });
 });
 ```
@@ -4175,6 +4437,35 @@ while (isRunning) {
     Render();                           // render chạy thoải mái theo FPS thực
 }
 ```
+
+<a id="project-cube-session-clock"></a>
+
+### Tình huống CubeCubev2: thời gian phiên chơi phụ thuộc trạng thái
+
+`ACubeGameState::Tick()` chỉ cộng `DeltaSeconds` khi trạng thái là Playing và cờ timer pause chưa bật. Thời gian wall-clock, thời gian game và thời gian đang chơi không phải cùng một đại lượng. Cần ghi rõ đồng hồ nào được dùng để chấm sao.
+
+**Bài tự làm:** viết `Update(deltaSeconds)` cho MainMenu, Loading, Playing, Paused, Complete, Failed. Lập bảng sự kiện/chuyển trạng thái trước khi code. Playing 2 giây → Paused 5 giây → Playing 3 giây phải có thời gian chơi 5 giây; Complete/Failed không tăng; gọi pause hai lần không gây thêm tác dụng; resume từ MainMenu bị từ chối theo hợp đồng bài luyện. Quy định cách xử lý delta âm hoặc không hữu hạn.
+
+**Đọc source đúng mức:** `SetState()` của GameState bỏ qua yêu cầu giữ nguyên trạng thái, đổi trạng thái rồi broadcast. Nó không tự kiểm tra mọi chuyển trạng thái hợp lệ; điều phối load/pause/resume nằm thêm ở GameMode. Vì vậy đừng lấy sự có mặt của enum làm bằng chứng state machine đã có đầy đủ luật. Liên hệ [state machine](#project-cube-input-state) và [Gameplay Framework](#project-cube-framework).
+
+<a id="project-reix-hold-confirm"></a>
+
+### Ứng dụng ReiXHome — giữ nút và di chuyển qua nhiều frame
+
+Một lần xác nhận bằng giữ nút cần ít nhất ba dữ liệu: target đang giữ, thời gian tích lũy và cờ đã xác nhận. Nhả nút, mất target hoặc chuyển sang target khác phải hủy tiến trình theo luật đã chọn. Khi đủ thời gian, phát sự kiện một lần; tiếp tục giữ không được lặp thao tác ở mọi frame.
+
+| Tình huống thử với ngưỡng 2 giây | Kết quả cần đạt |
+|---|---|
+| Giữ cùng target đủ 2 giây | Một lần xác nhận |
+| Nhả sau 1.9 giây | Không xác nhận, xóa thời gian cũ |
+| Đổi target giữa chừng | Không chuyển thời gian giữ sang target mới |
+| Giữ lâu hơn ngưỡng | Vẫn chỉ một lần cho lượt giữ đó |
+
+Với chuyển động tốc độ không đổi và hướng đã chuẩn hóa, độ dịch chuyển mỗi bước là `direction × speed × DeltaSeconds`. Nếu hướng bằng 0 thì không normalize mù quáng. Cùng một giây mô phỏng bằng 30, 60 và 120 bước nên cho vị trí cuối gần nhau trong sai số số thực. Đây là kiểm tra mô hình chuyển động; không khẳng định mọi hệ physics khác bước thời gian đều cho kết quả giống hệt.
+
+**Tự làm:** Viết trạng thái giữ-xác nhận và kiểm tra các ca trong bảng; thêm ca target bị xóa ngay trước lúc đủ ngưỡng. Tách nhận input khỏi luật giữ để test bằng dữ liệu giả mà chưa cần thiết bị.
+
+**Liên hệ source:** `TickMRDeleteHold`, `NudgeSelectedPlanar`. `SetupPlayerInputComponent` ở snapshot ReiXHome dùng `BindAxis`/`BindAction` của input cũ. Ý tưởng trạng thái chuyển được sang [Enhanced Input](#lesson-52), nhưng không gọi các API cũ là Enhanced Input.
 
 ### Tự làm và tiêu chí hoàn thành
 
@@ -4289,6 +4580,20 @@ enemies.emplace_back(args...);
 // Object Pool — tái sử dụng object thay vì new/delete liên tục (mục 29).
 ```
 
+<a id="project-reix-cache-precompute"></a>
+
+### Ứng dụng ReiXHome — cache kết quả và dữ liệu tính trước
+
+CPU cache là cơ chế bộ nhớ phần cứng; cache thumbnail là dữ liệu phần mềm chủ động giữ để tránh tính lại. Với ảnh phụ thuộc mesh và material, dùng riêng mesh làm khóa có thể trả ảnh sai material. Khóa phải thể hiện các đầu vào ảnh hưởng kết quả; nếu nội dung đầu vào thay đổi trong khi danh tính giữ nguyên, cần quy tắc invalidation hoặc phiên bản dữ liệu.
+
+Mỗi cache phải trả lời: khi nào tính, dùng lại ở đâu, khi nào xóa/làm mới, tốn bao nhiêu bộ nhớ và giữ đối tượng bằng kiểu tham chiếu nào. `Reserve` có thể giảm cấp phát khi biết quy mô, nhưng không thay thế đo workload. Ghi số lần tính, hit/miss, thời gian và bộ nhớ trước/sau cùng một thay đổi.
+
+ReiXHome có `GetOrCreateMeshThumbnail`, nhưng đường `ResolveFurnitureThumbnail` hiện yêu cầu thumbnail đã gán và trả null nếu thiếu; không tự fallback sang render mesh. Đường room/material có hành vi riêng. Phải đọc nhánh thực thi đang dùng, không suy toàn hệ thống từ tên hàm hoặc comment tổng quát.
+
+**Tự làm:** Cache bằng cặp `(meshId, materialId)` và đếm số lần tính. Gọi lại cùng khóa không tính thêm, đổi material tạo mục khác, invalidate làm lần sau tính lại. Chưa cần render thật: trả chuỗi hoặc số từ hàm giả lập để kiểm tra luật cache.
+
+**Mở rộng:** Voxel preprocessing chuẩn bị dữ liệu hình học để dùng lại. Luyện bằng bài gộp các ô 2D thành hình chữ nhật: hợp các hình phải đúng tập ô ban đầu, không thêm/mất ô. Greedy là chiến lược chọn từng bước, không mặc nhiên cho số hình tối ưu toàn cục. `BuildGreedyVoxelBoxes`/`ExportToFootprintAsset` là nguồn đọc nâng cao, không phải chứng cứ đã đo được mức tăng FPS.
+
 ### Tự làm và tiêu chí hoàn thành
 
 **Bài tự làm:** Đo một workload lặp đủ lớn; ghi cấu hình, baseline và kết quả sau đúng một thay đổi.
@@ -4316,10 +4621,15 @@ struct Vector3 {
     Vector3 operator*(float s)          const { return {x*s, y*s, z*s}; }
 
     float Length() const { return std::sqrt(x*x + y*y + z*z); }
-    Vector3 Normalized() const { float l = Length(); return {x/l, y/l, z/l}; }
+    bool TryNormalize(Vector3& out) const {
+        const float length = Length();
+        if (!std::isfinite(length) || length <= 1e-6f) return false;
+        out = {x / length, y / length, z / length};
+        return true; // thất bại giữ nguyên out; chỉ dùng kết quả khi trả true
+    }
 };
 
-// Dot product — góc giữa 2 vector (>0: cùng hướng, 0: vuông góc, <0: ngược)
+// Với hai vector khác zero: dot > 0 là góc nhọn, = 0 vuông góc, < 0 góc tù.
 float Dot(const Vector3& a, const Vector3& b) {
     return a.x*b.x + a.y*b.y + a.z*b.z;
 }
@@ -4344,6 +4654,36 @@ float Lerp(float a, float b, float t) { return a + (b - a) * t; }
 camera.position.x = Lerp(camera.position.x, target.x, 0.1f);   // mỗi frame tiến 10% về target
 // ⚠️ Cách "10%/frame" này phụ thuộc FPS — bản chuẩn độc lập FPS: Lerp(cam, target, 1 - std::exp(-k * dt));
 ```
+
+<a id="project-cube-grid-space"></a>
+
+### Tình huống CubeCubev2: từ điểm world tới ô trong goal
+
+Đọc `GoalVolume::WorldToGrid()` theo luồng: đổi world về local bằng inverse transform → bù offset gốc lưới → chia bước ô → floor thành chỉ số → kiểm tra giới hạn → kiểm tra ô thuộc tập valid. Chiều ngược lấy tâm ô rồi transform về world. Kiểm tra bounding box chưa đủ với goal có chỗ khuyết; tâm piece nằm trong box cũng chưa chứng minh toàn bộ piece nằm trong đó.
+
+**Bài tự làm, phần A:** grid 2D chưa xoay, góc nhỏ nhất world `(100,200)`, ô rộng 10, khai báo số ô. Biên dưới bao gồm, biên trên loại trừ. Tâm ô `(0,0)` là `(105,205)`; `(109.9,205)` ở ô `(0,0)`; `(110,205)` ở ô `(1,0)` nếu ô tồn tại; `(99.9,205)` ở ngoài. Dùng floor, không thay bằng cast int vốn cắt phần thập phân về zero. Khi đúng, thêm quay 90° và kiểm tra world → grid → tâm world.
+
+**Phần B:** luyện mặt ngoài voxel tại [container và tập ô](#project-cube-cells-containers), rồi mới học vertices/triangle indices/normals/UV. Trong source, snap rotation tính tương đối với goal; hãy ghi nhãn local/world trên từng biến trước khi chọn `FRotator` hay `FQuat`. Không sao chép công thức world-axis vào goal đã quay.
+
+<a id="project-reix-grid-geometry"></a>
+
+### Ứng dụng ReiXHome — grid, không gian tọa độ và hình học có điều kiện
+
+Để đặt đồ vào grid đã dịch chuyển hoặc xoay, đổi điểm world về local của grid trước. Với kích thước ô dương, chia tọa độ local cho kích thước ô rồi lấy `floor`. Tâm local của ô `i` là `(i + 0.5) × cellSize`; sau đó biến đổi tâm trở lại world. Pivot của mesh có thể lệch tâm hình học, nên actor location không mặc nhiên là tâm footprint.
+
+| Tọa độ local x, ô rộng 10 | `floor(x / 10)` | Tâm local x |
+|---|---:|---:|
+| 9.9 | 0 | 5 |
+| 10 | 1 | 15 |
+| -0.1 | -1 | -5 |
+
+Với số âm, ép kiểu cắt phần thập phân khác `floor`. Bài 2D nên yêu cầu đầu vào hữu hạn, kích thước ô dương và chỉ số biểu diễn được; sau khi xác định ô vẫn kiểm tra bounds. Occupancy là tập ô đã chiếm: kiểm tra toàn bộ footprint trước khi cập nhật, và khi xóa phải giải phóng đúng các ô của món đó.
+
+Bậc học hình học tiếp theo: điểm trong hình chữ nhật → chồng lấn AABB → tia chạm mặt phẳng → xoay điểm quanh pivot → hộp có hướng OBB/SAT. Với tia `O + tD` và mặt phẳng qua P, pháp tuyến n, nghiệm là `t = dot(P - O, n) / dot(D, n)`; cần loại trường hợp mẫu gần 0 và, nếu chỉ xét tia phía trước, loại `t < 0`. Vector hướng/pháp tuyến phải hợp lệ; ngưỡng gần 0 phụ thuộc cách chuẩn hóa và thang đo.
+
+**Tự làm:** Kiểm tra ba tọa độ ở bảng, grid đã tịnh tiến/xoay, xóa rồi đặt lại đúng ô. Sau đó viết giao tia-sàn có kết quả không-hit và thử tia song song, tia hướng ra xa, tia chạm hợp lệ. Khi xoay, ghi rõ góc dùng độ hay radian.
+
+**Liên hệ source:** `WorldToCell`, `GetCellCenterWorld`, `RayFloorIntersection`, `ComputeRotateDragAngle`, `IntersectsOBB`. Quaternion, bit packing và OBB/SAT là bước mở rộng; không cần tự viết toàn bộ thư viện 3D để bắt đầu.
 
 ### Tự làm và tiêu chí hoàn thành
 
@@ -4468,6 +4808,28 @@ public:
 
 ### Component Pattern — (đã nói ở [Composition và thiết kế trách nhiệm](#lesson-16)) nền tảng của Unreal Actor & ECS.
 
+<a id="project-cube-input-state"></a>
+
+### Tình huống CubeCubev2: hysteresis, hủy tương tác và phục hồi
+
+`FHandMenuPinchState` cho thấy state machine nhỏ cũng cần xử lý gián đoạn. Hai ngưỡng khác nhau tránh bật/tắt liên tục khi strength rung quanh một ngưỡng. `Release` là thả chủ động; `Cancel` là hệ thống hủy thao tác do input không đáng tin hoặc menu đóng. Không biến mất tracking thành một click hoàn tất.
+
+**Quy tắc bài luyện dựa trên source:** press ở 0.82, release ở 0.55; sau khởi tạo hoặc gián đoạn phải nhận mẫu mở tay hợp lệ trước lần press mới. Các con số là cấu hình bài luyện/test của dự án, không phải ngưỡng chuẩn bắt buộc của Meta hay của C++.
+
+| Chuỗi input | Kết quả cần có |
+|---|---|
+| Vừa vào menu, reliable và strength 1.0 | None; chưa được press |
+| Reliable 0.0 rồi 0.9 | Chuẩn bị, sau đó Press |
+| Reliable 0.65 khi đang giữ | None, vẫn đang giữ |
+| Mất reliable | Cancel, xóa trạng thái giữ |
+| Trở lại ở 1.0; sau đó một mẫu 0.0 nhưng unreliable | Chưa được press; mẫu không tin cậy không chuẩn bị lần bấm |
+| Reliable 0.0 rồi 1.0, sau đó 0.5 | Press mới, rồi Release |
+| Cancel/interrupt lặp lại | Không tạo thêm thao tác |
+
+**Tự viết:** một struct nhận strength/reliable, trả None/Press/Release/Cancel; thêm kiểm tra số không hữu hạn. Tự viết bản console từ bảng trên rồi đọc `HandMenuPinchState.h` và test `CubeCube.HandTracking.MenuPinchRecovery`. Trạng thái phải nhất quán trước khi phát callback vì listener có thể gọi ngược ngay.
+
+Khi nối tracking thật, tách gesture strength khỏi điều kiện dữ liệu còn hợp lệ. Meta hướng dẫn kiểm tra pointer pose trước khi dùng aim ray; đọc [Is Pointer Pose Valid](https://developers.meta.com/vr/documentation/unreal/unreal-blueprints-is-pointer-pose-valid). API/plugin cần đối chiếu phiên bản đang cài. Logic console không xác nhận tương tác đã đúng trên kính. Xem [Enhanced Input](#lesson-52) để phân biệt hành động logic với nguồn input cụ thể.
+
 ### Tự làm và tiêu chí hoàn thành
 
 **Bài tự làm:** Thiết kế state machine của enemy và vòng đời đăng ký/hủy listener; nêu lý do có hoặc không dùng pool.
@@ -4550,6 +4912,22 @@ public class MyGame : ModuleRules {
     }
 }
 ```
+
+<a id="project-reix-sdk-build-boundaries"></a>
+
+### Ứng dụng ReiXHome — ranh giới C++, Unreal và SDK
+
+Một tính năng thực tế gồm ba lớp: quy tắc dữ liệu bằng C++, vòng đời/asset của Unreal, và dịch vụ ngoài như MRUK. Tách nguồn cung cấp dữ liệu phòng khỏi luật placement để luyện bằng nguồn giả lập trước. Khi nối SDK, kiểm tra kết quả, trạng thái loading và nhánh thất bại; không trộn chi tiết thiết bị vào mọi hàm xử lý dữ liệu.
+
+Theo [Meta MRUK Features](https://developers.meta.com/vr/documentation/unreal/unreal-mr-utility-kit-features), nạp scene có nhánh thành công/thất bại; sau load có room/anchor để truy vấn nhưng chưa tự có nội dung render. Raycast anchor của MRUK là cơ chế riêng với physics trace Unreal. Tên hàm và tính năng phải khớp plugin cài trong dự án; tài liệu online mới hơn không tự chứng minh plugin của dự án UE 5.5 có tất cả API mới.
+
+`ReiXHome.Build.cs` viết bằng **C#**, cấu hình dependency module cho UnrealBuildTool. `#include` cung cấp khai báo trong C++; nó không thay thế dependency module. Forward declaration đủ cho một số khai báo pointer/reference nhưng không đủ khi cần truy cập member của kiểu chưa hoàn chỉnh. `#if WITH_EDITOR` đánh dấu nhánh biên dịch; vẫn phải cấu hình module phù hợp. Xem [dependency](#lesson-41) khi phân biệt lỗi cú pháp, thiếu khai báo, linker và module.
+
+Render target, material, stereo layer và HISM là các chủ đề Unreal/XR sau Actor và UI. Vòng tiến trình procedural nối mảng đỉnh/tam giác với lượng giác: có thể luyện hình tròn 2D trước khi tạo mesh. Asset Blueprint, mesh, material, map và config vẫn cần thiết; đọc C++ không thay việc kiểm tra graph hoặc runtime.
+
+**Tự làm:** Cho cùng bộ dữ liệu phòng giả vào luật placement và kiểm tra kết quả; sau đó thay riêng nguồn dữ liệu bằng SDK. Với progress ring, tính các điểm trên cung tròn và kiểm tra góc/đơn vị trước phần render. Ghi rõ kiểm thử nào chạy bằng console, Editor hay thiết bị; không xem “đọc được source” là bằng chứng hành vi hoàn chỉnh.
+
+**Phạm vi nguồn:** Các tình huống ReiXHome được biên tập từ `Update/ReiXHome_CPP_Knowledge_Map.md`, đối chiếu source commit `7ba23b4` ngày 28/10/2026; phần tài liệu chính thức được kiểm tra lại ngày 29/10/2026. Ví dụ rút gọn phục vụ bài hiện tại, không thay toàn bộ dự án hoặc tự xác nhận tiến độ học.
 
 ### Tự làm và tiêu chí hoàn thành
 
@@ -4765,7 +5143,7 @@ UE cung cấp khung gameplay sẵn — hiểu vai trò từng lớp để biết
 | `APlayerController` | Đại diện 1 người chơi, nhận input, điều khiển Pawn |
 | `APlayerState` | Trạng thái của 1 người chơi (tên, điểm, ping) |
 | `APawn` / `ACharacter` | Thực thể điều khiển được; `ACharacter` thêm sẵn di chuyển 2 chân, capsule, mesh |
-| `UGameInstance` | Tồn tại xuyên suốt phiên game (qua nhiều level) — lưu trạng thái lâu dài |
+| `UGameInstance` | Giữ dữ liệu qua nhiều level trong cùng lần chạy; dữ liệu qua lần đóng/mở cần save/load riêng |
 
 ```cpp
 // Mã giả — luồng điều khiển điển hình
@@ -4774,6 +5152,45 @@ UE cung cấp khung gameplay sẵn — hiểu vai trò từng lớp để biết
 ```
 
 > Nhận input người chơi trong UE5 dùng **Enhanced Input** (Input Action + Mapping Context) — xem **[Enhanced Input](#lesson-52)**.
+
+<a id="project-cube-framework"></a>
+
+### Tình huống CubeCubev2: nhận diện trách nhiệm bằng lớp cha và luồng dữ liệu
+
+| Nơi trong dự án | Trách nhiệm quan sát từ source |
+|---|---|
+| `ACubeGameMode` / `ACubeGameState` | Điều phối load/pause/kết thúc / giữ trạng thái, thời gian, số lần cầm |
+| `ACubePlayerPawn` và components | Camera, input, tay, grab, ray, phản hồi |
+| `AGridPiece`, `AGoalVolume`, `APieceZone` | Mảnh ghép, tập ô goal, vùng không gian |
+| `UCubeGameInstance` | Profile, save/load, ngôn ngữ và dịch vụ âm thanh |
+| `UCubeMenuWidgetV2` | Chuyển dữ liệu gameplay thành hàng/card/nhãn và gửi yêu cầu |
+| `UContentSyncSubsystem` | Dịch vụ đồng bộ nội dung gắn với GameInstance |
+
+Tên không quyết định lifecycle: `UPuzzleSubsystem`, `ULevelRegistry`, `UCubeMRSceneSubsystem` thực tế kế thừa **UActorComponent**; `UContentSyncSubsystem` kế thừa **UGameInstanceSubsystem**. Phải xem lớp cha và nơi tạo trước khi suy luận lifetime. Một class Pawn được định nghĩa bằng nhiều file `.cpp` cho input, magnet, haptics, recenter vẫn là một class; xem [header/source](#lesson-2) và [dependency](#lesson-41).
+
+`UGameInstance` giữ dữ liệu xuyên việc đổi map trong một lần chạy; muốn còn sau khi đóng chương trình phải save/load. Theo [Epic Gameplay Framework 5.5](https://dev.epicgames.com/documentation/en-us/unreal-engine/gameplay-framework-in-unreal-engine?application_version=5.5), GameInstance không được replicate và có instance riêng ở server/client. Không biến cách chia lớp của game này thành quy tắc “mọi game phải đặt mọi profile vào đây”.
+
+**Theo luồng dữ liệu:** dữ liệu level → GameMode điều phối → component spawn → Actor áp luật → event → widget/âm thanh. ID profile/level phải tách tên hiển thị; `FString/FName/FText` có mục đích khác nhau ở [chuỗi Unreal](#lesson-35). DataAsset cấu hình layout và `TSubclassOf` chọn lớp piece là ví dụ [data-driven](#lesson-39); `UPROPERTY` không tự cho mọi property cả quyền chỉnh Editor, quyền Blueprint, save và replication — kiểm tra specifier ở [reflection](#lesson-31) và [C++/Blueprint](#lesson-38).
+
+MR/tracking, render target/stereo layer và audio là lớp tích hợp sau lõi gameplay: có thêm trạng thái loading/ready/fallback, tài nguyên tạo/hủy và thay đổi cách hiển thị. Chưa cần sao chép các hệ đó để học struct hoặc vòng lặp; thử một lát cắt nhỏ ở [bài thực hành tổng hợp](#project-cube-regression-practice).
+
+<a id="project-reix-lifetime-scope"></a>
+
+### Ứng dụng ReiXHome — chọn nơi giữ dữ liệu theo thời gian sống
+
+Tên class là gợi ý; lớp cha và đường tạo/giữ đối tượng mới quyết định vòng đời. Ba class trong cùng dự án cho thấy sự khác biệt:
+
+| Class trong ReiXHome | Lớp cha thực tế | Điều cần xác định |
+|---|---|---|
+| `UReiPlacementSubsystem` | `UWorldSubsystem` | Dữ liệu gắn với world nào; dọn khi world kết thúc |
+| `UReiUserSettingsSubsystem` | `UGameInstanceSubsystem` | Settings dùng trong game instance; khởi tạo và dọn theo lifetime đó |
+| `UReiRealmapSubsystem` | `UObject` | Manager tạo và giữ thủ công; hậu tố Subsystem không tự đăng ký với engine |
+
+Giữ settings qua chuyển màn trong cùng game instance khác với giữ qua đóng/mở ứng dụng. Tại source ReiXHome commit `7ba23b4` đã đối chiếu, không thấy `USaveGame`, `SaveGameToSlot`, `LoadGameFromSlot` trong `Source/ReiXHome`. Tên SavedPreset hoặc comment save/load không đủ chứng minh persistence; kết luận này cũng không thay việc kiểm tra các graph Blueprint ngoài phạm vi source đã đọc.
+
+**Tự làm:** Lập bảng ai tạo, ai giữ tham chiếu, lifetime kết thúc lúc nào, nơi hủy timer/gỡ listener cho ba đối tượng nhỏ. Nếu mở rộng bài sang lưu dữ liệu, kiểm tra riêng chuỗi ghi → đóng chương trình → mở lại → đọc; không dùng dữ liệu còn trong RAM làm bằng chứng đã lưu thành công.
+
+Đối chiếu [Programming Subsystems](https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-subsystems-in-unreal-engine) và [UWorldSubsystem](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/UWorldSubsystem). Chi tiết GC và loại tham chiếu đã nằm ở [GC](#lesson-32), [object pointers](#lesson-36).
 
 ### Tự làm và tiêu chí hoàn thành
 
@@ -4874,6 +5291,24 @@ TUniquePtr<FMyData>  Unique = MakeUnique<FMyData>();  // ≈ std::unique_ptr
 
 Đối chiếu: [Object Pointers](https://dev.epicgames.com/documentation/en-us/unreal-engine/object-pointers-in-unreal-engine), [Unreal Object Handling](https://dev.epicgames.com/documentation/en-us/unreal-engine/unreal-object-handling-in-unreal-engine).
 
+<a id="project-cube-pointer-choices"></a>
+
+### Tình huống CubeCubev2: cùng là pointer nhưng khác trách nhiệm
+
+| Dữ liệu/thao tác trong source | Kiểu gặp trong dự án | Lý do đọc code |
+|---|---|---|
+| Piece đang nhắm/cầm trong `PinchGrabComponent` | `TWeakObjectPtr` | Quan sát Actor có thể bị hủy; không giữ nó sống |
+| Asset âm thanh trong `PuzzleSubsystem` | `UPROPERTY` + `TObjectPtr` | Strong reference được GC theo dõi |
+| Mesh có thể chưa nạp | `TSoftObjectPtr` | Theo đường dẫn asset; phải tải/kiểm tra trạng thái khi dùng |
+| Lớp piece cấu hình để spawn | `TSubclassOf<AGridPiece>` | Chọn class, chưa phải instance piece |
+| HTTP/JSON | `TSharedRef` / `TSharedPtr` | Shared ownership cho đối tượng C++ ngoài hệ UObject |
+
+`WeakThis.Get()` trong callback cho phép kiểm tra receiver còn hợp lệ; kiểm tra này không tự bảo vệ thread hoặc loại bỏ kết quả thuộc phiên cũ. `TObjectPtr` cũng không tự thành strong reference được GC theo dõi chỉ vì viết tên kiểu; trong trường hợp member phản chiếu ở đây, cần `UPROPERTY` phù hợp. Không áp dụng `delete` hay shared pointer sở hữu thông thường để quản lý UObject.
+
+**Tự làm:** vẽ ai tạo, ai giữ mạnh, ai chỉ quan sát và ai kết thúc lifetime của piece, request và asset. Sau đó thử giải thích kết quả khi piece bị Destroy, subsystem teardown hoặc asset chưa tải. Ôn [lifetime](#lesson-7), [RAII](#lesson-9), [smart pointer chuẩn](#lesson-10) và [GC](#lesson-32); không coi các kiểu ở hai hệ là thay thế trực tiếp.
+
+Đối chiếu [Epic Object Pointers](https://dev.epicgames.com/documentation/en-us/unreal-engine/object-pointers-in-unreal-engine) và [Unreal Smart Pointer Library](https://dev.epicgames.com/documentation/en-us/unreal-engine/smart-pointers-in-unreal-engine).
+
 ### Tự làm và tiêu chí hoàn thành
 
 **Bài tự làm:** Chọn strong/weak/soft reference cho actor hiện tại, actor có thể bị hủy và asset tải theo nhu cầu.
@@ -4926,7 +5361,7 @@ void AMyHUD::HandleHealthChanged(float NewHealth) {   // được gọi mỗi kh
     UpdateHealthBar(NewHealth);
 }
 ```
-> ⚠️ **Bẫy hay gặp:** Với *dynamic* delegate (`AddDynamic`), hàm callback **bắt buộc** đánh dấu `UFUNCTION()` — quên là lỗi biên dịch. Còn delegate non-dynamic dùng `AddUObject(this, &Class::Func)`, `AddLambda(...)`, `AddRaw(...)` thì callback **không** cần `UFUNCTION()`. Khi đối tượng nghe bị hủy, nhớ gọi `RemoveDynamic`/`RemoveAll` (hoặc dùng `AddWeakLambda`/handle) để tránh gọi vào con trỏ chết.
+> **Chữ ký và lifetime:** Với dynamic delegate (`AddDynamic`), callback cần `UFUNCTION()` và chữ ký khớp để reflection tìm được hàm. Delegate non-dynamic dùng `AddUObject`, `AddLambda`, `AddRaw` không yêu cầu `UFUNCTION()`. Binding tới UObject qua `AddUObject`/dynamic delegate theo dõi đối tượng bằng tham chiếu yếu; `AddRaw` hoặc lambda capture raw `this` không có bảo đảm đó. Gỡ subscription khi listener ngừng hoạt động (chẳng hạn `NativeDestruct`) để tránh đăng ký lặp hoặc nhận sự kiện khi UI đã đóng, kể cả object vẫn còn sống. `AddWeakLambda` chỉ bảo vệ UObject được bind, không tự bảo vệ mọi pointer capture khác. Xem [Epic: Multicast Delegates](https://dev.epicgames.com/documentation/en-us/unreal-engine/multicast-delegates-in-unreal-engine).
 
 ### Các loại delegate
 | Loại | Đặc điểm |
@@ -4937,6 +5372,32 @@ void AMyHUD::HandleHealthChanged(float NewHealth) {   // được gọi mỗi kh
 | `DECLARE_DYNAMIC_MULTICAST_DELEGATE` | Blueprint + nhiều listener (hay dùng nhất cho event) |
 
 > Các event va chạm (`OnComponentBeginOverlap`, `OnComponentHit`...) chính là dynamic multicast delegate — cách bind & chữ ký chuẩn: xem **[Timer, collision và tiện ích gameplay](#lesson-53)**.
+
+<a id="project-cube-widget-subscriptions"></a>
+
+### Tình huống CubeCubev2: menu mở lại không được nhân đôi listener
+
+`CubeMenuWidgetV2.cpp` đăng ký profile/progress/state events trong `NativeConstruct()`, dùng cặp remove/add cho cùng handler, rồi hủy đăng ký trong `NativeDestruct()`. Bài học là quản lý **thời gian cần nghe sự kiện**, không chỉ thời gian UObject còn sống. Widget còn tồn tại nhưng đã đóng vẫn có thể không nên nhận cập nhật gameplay.
+
+`CubeGameState::SetState()` ghi trạng thái mới trước `Broadcast()`. Listener có thể đọc lại trạng thái hoặc gọi ngược vào hệ thống ngay, nên phát sự kiện khi trạng thái còn cập nhật dở sẽ tạo bug khó theo dõi. Không dựa vào thứ tự đăng ký để quyết định thứ tự listener chạy.
+
+**Phân biệt lifetime:** binding có weak UObject semantics như `AddUObject`/dynamic binding không đồng nghĩa raw pointer; `AddRaw` hoặc lambda capture raw `this` cần tự bảo đảm receiver còn sống. Remove đúng handler/handle vẫn cần để kết thúc subscription và tránh đăng ký trùng. Xem [Epic Multicast Delegates](https://dev.epicgames.com/documentation/en-us/unreal-engine/multicast-delegates-in-unreal-engine).
+
+**Bài tự làm:** mở/đóng menu ba lần, phát một sự kiện và đếm số lần handler chạy; khi menu đóng phải có kết quả theo hợp đồng đã chọn. Thử handler đọc trạng thái ngay trong callback. UI và âm thanh chỉ phản ánh dữ liệu đã đổi, không tự trở thành nguồn lưu điểm hoặc profile.
+
+<a id="project-reix-model-events-ui"></a>
+
+### Ứng dụng ReiXHome — cập nhật dữ liệu trước, thông báo sau
+
+Luồng đổi volume trong ReiXHome là: UI gửi yêu cầu → settings chuẩn hóa giá trị → so với giá trị hiện tại → cập nhật → `Broadcast`. Listener như player/UI phản ứng theo dữ liệu đã được chấp nhận. Nếu mỗi widget tự sửa một bản settings, đóng rồi mở màn hình có thể hiển thị các giá trị lệch nhau.
+
+Nguồn hiện tại dùng `FMath::IsNearlyEqual` trước khi phát sự kiện: “không đổi” có dung sai, không phải luôn so float bằng tuyệt đối. Với placement, thao tác từ chối vì ID không tồn tại hoặc vị trí không hợp lệ không được phát sự kiện mang nghĩa đã cập nhật thành công. Đăng ký listener và gỡ đăng ký là hai đầu của cùng vòng đời; widget có thể được mở lại nên cần tránh bind lặp.
+
+**Tự làm:** Một manager giữ volume và một listener đếm thông báo. Với giá trị đầu 0.5, đặt 2.0 rồi đặt 1.0: lần đầu chuẩn hóa về 1; lần sau không tăng số thông báo. Thêm listener in ID món đồ vừa di chuyển; thao tác thất bại không in thông báo thành công.
+
+**Nối sang UI:** `ReiMainMenuWidget` nhận click từ nút UMG rồi gọi logic điều hướng. `UFUNCTION`/binding là cơ chế Unreal, không phải keyword C++; tên widget và kiểu phải khớp Blueprint. C++ xử lý luật vẫn cần asset cho trình bày. Tạo một nút mở Rooms ở [C++/Blueprint](#lesson-38), kiểm tra mở/đóng/mở lại chỉ xử lý một lần mỗi click.
+
+**Liên hệ source:** `SetMasterVolume`, `OnSettingsChanged`, `UpdatePlacementTransform`, `OnPlacementMutated`, `ReiMainMenuWidget`.
 
 ### Tự làm và tiêu chí hoàn thành
 
@@ -5276,13 +5737,13 @@ FTimerHandle FireTimerHandle;   // giữ handle làm member để còn Clear
 GetWorldTimerManager().SetTimer(FireTimerHandle, this, &AWeapon::Fire,
                                 0.2f, /*bLoop=*/true, /*FirstDelay=*/0.f);
 
-// Lambda + chạy 1 lần sau 3 giây:
-GetWorldTimerManager().SetTimer(ExplodeHandle, [this]() { Explode(); }, 3.f, false);
+// Bind trực tiếp tới UObject; ExplodeHandle cũng là member:
+GetWorldTimerManager().SetTimer(ExplodeHandle, this, &AWeapon::Explode, 3.f, false);
 
 GetWorldTimerManager().ClearTimer(FireTimerHandle);                      // hủy hẹn giờ
-GetWorldTimerManager().SetTimerForNextTick(this, &AWeapon::LateInit);    // "chạy ở frame sau"
+GetWorldTimerManager().SetTimerForNextTick(this, &AWeapon::LateInit);    // lượt tick timer kế tiếp
 ```
-> Timer thuộc World → tự dừng khi actor bị destroy / đổi level, và **tôn trọng pause + time dilation** — ưu việt hơn tự cộng dồn thời gian trong Tick.
+Timer Manager có ở từng World và ở GameInstance. Timer bind trực tiếp tới UObject được hủy khi đối tượng đích bị hủy; lambda `[this]` giữ raw pointer không được tự bảo vệ theo cùng cách. Giữ handle và `ClearTimer` khi tác vụ bị hủy hoặc trong `EndPlay` (cả `FireTimerHandle` lẫn `ExplodeHandle`). Timer là lịch gọi trên game thread, không tạo worker thread; chọn timer cho tác vụ định kỳ và Tick cho cập nhật liên tục theo frame. Quy tắc pause/thời gian cần kiểm tra trong world thực tế của game. Xem [Epic: Gameplay Timers](https://dev.epicgames.com/documentation/en-us/unreal-engine/gameplay-timers-in-unreal-engine).
 
 ### Overlap & Hit events — chính là dynamic delegate của collision
 ```cpp
@@ -5333,6 +5794,30 @@ UGameplayStatics::ApplyDamage(Target, 25.f, GetController(), this, UDamageType::
 UGameplayStatics::OpenLevel(this, FName("Arena"));
 float Now = GetWorld()->GetTimeSeconds();            // "đồng hồ" thời gian của game
 ```
+
+<a id="project-cube-timer-teardown"></a>
+
+### Tình huống CubeCubev2: dọn lượt spawn trước khi tạo puzzle mới
+
+`UPuzzleSubsystem::ClearCurrentPuzzle()` xóa hàng chờ spawn, clear `SpawnTimerHandle`, hủy pieces/goal/zones đang sống và reset trạng thái liên quan. Nếu chỉ hủy Actor mà quên tác vụ chờ, callback cũ có thể tác động vào puzzle mới. Haptics cũng có timer kết thúc pulse; cần xác định lúc nào pulse/request không còn ý nghĩa.
+
+Timer là công việc được lên lịch, **không phải một thread riêng**. TimerManager có ở World và GameInstance; không suy ra mọi timer đều mất khi đổi map. Với timer bind vào method của UObject, engine nhận biết receiver; một lambda capture raw `this` không có cùng bảo đảm. Giữ handle và clear lúc kết thúc chức năng là cách thể hiện ý định rõ ràng. Xem [Epic Gameplay Timers](https://dev.epicgames.com/documentation/en-us/unreal-engine/gameplay-timers-in-unreal-engine).
+
+**Bài tự làm:** load puzzle → bắt đầu spawn nhiều đợt → hủy khi còn hàng chờ → tạo puzzle mới. Kiểm tra không có piece hoặc callback từ lượt cũ, cancel lặp lại vẫn an toàn. Với grab, tách kiểm tra input hợp lệ, ray/overlap, quyền được tương tác, attach/detach và chuyển kinematic/simulated; một lần hit không chứng minh mọi điều kiện gameplay đều đúng. Đo vận tốc khi thả phải kiểm tra số mẫu và khoảng thời gian như [buffer vị trí](#project-cube-cells-containers).
+
+<a id="project-reix-loading-states"></a>
+
+### Ứng dụng ReiXHome — loading, timeout và kết quả thuộc lượt nào
+
+Yêu cầu load, dữ liệu đã load và nội dung đã hiện là những mốc khác nhau. Trong level streaming, `OnLevelLoaded` báo level đã streamed in; `OnLevelShown` báo level đã được thêm vào world và visible. Ứng dụng có thể còn điều kiện riêng trước khi cho gameplay tiếp tục. Một khoảng chờ cố định tự nó không chứng minh các điều kiện đó đã đạt.
+
+Mô phỏng nhỏ để học: `Idle → Loading → Ready` khi thành công, hoặc `Loading → Failed` khi lỗi/timeout; từ Failed cho phép thử lại. Mỗi lượt có request ID tăng dần. Callback chỉ cập nhật nếu ID của nó vẫn là lượt hiện hành và trạng thái còn phù hợp; nhờ vậy kết quả muộn của lượt cũ không ghi đè lượt mới. Hủy timer không mặc nhiên hủy mọi tác vụ bên ngoài đã khởi chạy.
+
+Timeout là một **chính sách phục hồi** phải ghi rõ: hủy/rollback, thử lại, hoặc fallback có giới hạn. ReiXHome có `AbortEnter` dọn timer, delegate và trạng thái tạm, nhưng `HandleShowTimeout` tại snapshot lại tiếp tục bằng `FinishCommitEnter` với fallback. Không suy ra mọi nhánh timeout đều rollback hay mọi fallback đã được kiểm chứng an toàn trên thiết bị.
+
+**Tự làm:** Dùng bộ nạp giả lập, kiểm tra bắt đầu hai lần, lỗi ngay, timeout, thử lại và callback lượt cũ đến sau lượt mới. Sau mỗi ca, chỉ một kết quả cuối cùng được áp dụng; các timer/listener không còn cần phải được dọn. Request ID là yêu cầu của bài mô phỏng, không phải khẳng định source ReiXHome đã có cơ chế đó.
+
+Timer/callback không đồng nghĩa tự tạo thread. Đối chiếu [Gameplay Timers](https://dev.epicgames.com/documentation/en-us/unreal-engine/gameplay-timers-in-unreal-engine) và [ULevelStreaming](https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/ULevelStreaming); quay lại [callback](#project-reix-callback-reentry) khi completion có thể bắt đầu tác vụ mới.
 
 ### Tự làm và tiêu chí hoàn thành
 
@@ -5447,7 +5932,7 @@ Bảng tra cứu giúp khôi phục ý nghĩa; mở bài được liên kết đ
 - **Translation Unit:** Một file `.cpp` sau khi preprocess — đơn vị compiler dịch.
 - **RAII:** Resource Acquisition Is Initialization — gắn vòng đời tài nguyên vào object.
 - **UB (Undefined Behavior):** Hành vi không xác định theo chuẩn — nguồn bug nguy hiểm.
-- **Lvalue / Rvalue:** Giá trị có tên/địa chỉ lâu dài (lvalue) vs giá trị tạm (rvalue).
+- **Lvalue / Rvalue:** Nhóm thuộc tính của biểu thức: lvalue xác định đối tượng/hàm có danh tính; rvalue gồm prvalue và xvalue. Không suy ra chỉ từ việc biến có tên hay lifetime dài/ngắn; biến có tên kiểu `T&&` vẫn là biểu thức lvalue khi dùng tên đó. Xem [copy/move và value category](#lesson-11).
 - **Move Semantics:** Chuyển nhượng tài nguyên thay vì copy.
 - **vtable:** Bảng hàm ảo, cơ chế cho dynamic dispatch (đa hình runtime).
 - **POD (Plain Old Data):** Struct dữ liệu thuần, không có hành vi/constructor phức tạp.
@@ -5952,6 +6437,56 @@ Những phím dưới theo mapping thông dụng. Đọc [Bài 17](#cpp-17) đ�
 | `HasAuthority()` | Hỏi Actor hiện tại có authority hay không; dùng trong logic replication đúng ngữ cảnh. | [Replication](#lesson-54) |
 | `DOREPLIFETIME(AMyCharacter, Health)` | Đăng ký property trong GetLifetimeReplicatedProps; cần thiết lập replication tương ứng. | [Replication](#lesson-54) |
 
+### Tập hợp không trùng — C++17
+
+| Cú pháp | Ý nghĩa và điều kiện | Bài học |
+|---|---|---|
+| `std::unordered_set<int> cells;` | Tạo tập ID ô không trùng; cần `<unordered_set>`, không bảo đảm thứ tự duyệt. | [Chọn container và tập ô](#project-cube-cells-containers) |
+| `cells.insert(cell)` | Thêm khóa nếu chưa có; kết quả `.second` cho biết có chèn mới không. | [Chọn container và tập ô](#project-cube-cells-containers) |
+| `cells.find(cell) != cells.end()` | Kiểm tra khóa tồn tại bằng C++17; không tự chèn phần tử. | [Chọn container và tập ô](#project-cube-cells-containers) |
+| `cells.erase(cell)` | Xóa theo khóa; unordered_set trả số phần tử bị xóa, bằng 0 hoặc 1. | [Chọn container và tập ô](#project-cube-cells-containers) |
+
+### Số thực và làm tròn
+
+| Cú pháp | Ý nghĩa và điều kiện | Bài học |
+|---|---|---|
+| `std::floor(value)` | Làm tròn xuống phía âm vô cùng, trả số thực; `floor(-0.2)` bằng `-1.0`. Cần `<cmath>`. | [Tọa độ và ô lưới](#project-cube-grid-space) |
+| `std::isfinite(value)` | Trả true khi số hữu hạn, false cho NaN hoặc vô cùng; cần `<cmath>`. Vẫn cần kiểm tra miền hợp lệ của bài toán. | [Điều kiện và giá trị biên](#project-cube-star-contract) |
+
+### Unreal — tập ô bằng TSet
+
+| Cú pháp | Ý nghĩa và điều kiện | Bài học |
+|---|---|---|
+| `TSet<FIntVector> Occupied;` | Tập tọa độ nguyên không trùng trong Unreal; không bảo đảm thứ tự duyệt. | [Container Unreal](#lesson-35) |
+| `Occupied.Contains(Cell)` | Kiểm tra Cell có trong tập; không tự kiểm tra giới hạn phòng hoặc goal. | [Container Unreal](#lesson-35) |
+| `Occupied.Add(Cell)` | Thêm ô vào tập; phải kiểm tra luật placement trước khi cập nhật occupancy. | [Container Unreal](#lesson-35) |
+| `Occupied.Remove(Cell)` | Bỏ ô khỏi tập; không tự thay đổi Actor hiển thị tương ứng. | [Container Unreal](#lesson-35) |
+
+### Unreal — pointer và tải asset
+
+| Cú pháp | Ý nghĩa và điều kiện | Bài học |
+|---|---|---|
+| `TWeakObjectPtr<AActor> WeakActor;` | Quan sát Actor mà không giữ UObject sống; kiểm tra hiệu lực mỗi lần dùng. | [Pointer UObject](#project-cube-pointer-choices) |
+| `WeakActor.Get()` | Lấy raw pointer nếu weak reference còn hợp lệ, ngược lại trả nullptr; dùng ngay sau khi kiểm tra. | [Pointer UObject](#project-cube-pointer-choices) |
+| `WeakActor.IsValid()` | Kiểm tra weak reference hiện có trỏ tới UObject hợp lệ hay không; không bảo đảm lifetime trong tương lai. | [Pointer UObject](#project-cube-pointer-choices) |
+| `TSoftObjectPtr<UStaticMesh> MeshAsset;` | Giữ tham chiếu asset để tải khi cần; asset có thể chưa ở trong bộ nhớ. | [Pointer UObject](#project-cube-pointer-choices) |
+| `MeshAsset.LoadSynchronous()` | Nạp đồng bộ nếu cần và trả pointer hoặc nullptr; có thể chặn game thread, không nên dùng lặp trong Tick. | [Pointer UObject](#project-cube-pointer-choices) |
+
+### Unreal — hệ tọa độ và ô lưới
+
+| Cú pháp | Ý nghĩa và điều kiện | Bài học |
+|---|---|---|
+| `GridTransform.InverseTransformPosition(WorldPosition)` | Với transform local-to-world của lưới, đổi điểm world về local, tính cả tịnh tiến/xoay/scale. | [Tọa độ và ô lưới](#project-cube-grid-space) |
+| `GridTransform.TransformPosition(LocalPosition)` | Với transform local-to-world của lưới, đổi điểm local ra world. | [Tọa độ và ô lưới](#project-cube-grid-space) |
+| `FMath::FloorToInt(LocalX / CellSize)` | Tính chỉ số ô theo floor; CellSize dương, dữ liệu hữu hạn và kết quả trong miền số nguyên. | [Tọa độ và ô lưới](#project-cube-grid-space) |
+
+### Unreal — kết thúc đăng ký sự kiện
+
+| Cú pháp | Ý nghĩa và điều kiện | Bài học |
+|---|---|---|
+| `OnHealthChanged.RemoveDynamic(this, &AMyHUD::HandleHealthChanged)` | Gỡ đúng object/method khỏi dynamic multicast delegate đã đăng ký; dùng trên nguồn sự kiện còn hợp lệ. | [Delegate và vòng đời listener](#project-cube-widget-subscriptions) |
+
+
 ---
 
 <a id="healing"></a>
@@ -6449,6 +6984,8 @@ Các file ghi “trong ZIP” dưới đây là entry giữ nguyên tên và n�
 | `CPlusPlus_CuPhap_TraCuuNhanh.md` (trong ZIP) | Tra cứu theo nhóm, điều kiện dùng cú pháp và phím VS2022. |
 | `Update/CPP_Fundamentals_Review_01-09_AI_Handoff.md` (21/10/2026) | Arena, Healing, 23 câu/đáp án, lịch ôn, điểm lịch sử và các diễn giải hữu ích. |
 | `KNOWLEDGE_REVIEW_2026-10-23.md`, `WEBSITE_UPDATE_PLAN_01-13_2026-10-24.md` (trong ZIP) | Danh sách sai lệch, hợp đồng dữ liệu, tiên quyết, ánh xạ và bảo toàn tiến độ. Không ghép nguyên văn các báo cáo vào bài học. |
+| `Update/CPP_KienThuc_TuDuAn_CubeCubev2.md` (đối chiếu source 28/10/2026) | Tính sao, model level, tập ô/voxel, state machine, input cancel, ownership, sự kiện, save/callback và thực hành theo lát cắt. |
+| `Update/ReiXHome_CPP_Knowledge_Map.md` (source 7ba23b4, UE 5.5) | Catalog/placement ID, invariants, pointer mượn, callback, transform, loading/timeout, cache và ranh giới tích hợp SDK. |
 | Bảng cú pháp đang dùng trên web | Đối chiếu tránh mất các thao tác/toán tử có ích. Không lấy trạng thái web làm bằng chứng chấm bài. |
 
 ZIP còn giữ `CONTENT_AUDIT.md` để truy vết lần tích hợp handoff 01–09; báo cáo lịch sử này không thay cho giáo trình hoặc kế hoạch cập nhật hiện tại.
@@ -6459,6 +6996,7 @@ Các nguồn kỹ thuật dùng để kiểm tra những điểm biên tập: [M
 
 | Phiên bản | Ngày | Thay đổi |
 |---|---|---|
+| 3.1.0 | 29/10/2026 | Tích hợp ví dụ từ CubeCubev2/ReiXHome vào bài hiện có; bổ sung tra cứu theo thao tác, bài tự luyện và ca biên; sửa timer, delegate, normalize và ranh giới persistence; chỉ yêu cầu xác nhận lại bài có kiến thức mới. |
 | 3.0.0 | 28/10/2026 | Hợp nhất thực sự chương trình website với Completion Pack theo chủ đề; 56 ID bài được giữ, các buổi nguồn trở thành anchor nội bộ; một mục lục, một nguồn lý thuyết; tra cứu phân cấp theo thao tác. |
 | 2.0.0 | 27/10/2026 | Hợp nhất Completion Pack đến 17.2 vào đúng bài; thêm bảy chương đọc và sáu ví dụ hoàn chỉnh, mở rộng tra cứu, cập nhật lịch sử và giới hạn; giữ nguồn gốc bản Final đã chỉnh. Chuẩn hóa nội dung để tích hợp bằng manifest riêng và bảo toàn dữ liệu học. |
 | 1.0.1 | 26/10/2026 | Dọn 5 tài liệu nguồn/báo cáo vào một ZIP và cập nhật đường dẫn truy vết; giữ handoff 01–09 đang được website đọc. Không đổi nội dung bài học, ví dụ hoặc website. |
@@ -6472,9 +7010,9 @@ Giữ giáo trình chuẩn làm nguồn biên tập duy nhất; giữ nguyên Co
 
 ## Kiểm tra bản hợp nhất
 
-Phiên bản 3.0.0 giữ nguyên 20 bộ ví dụ C++17 có nhãn (27 file) từ bản 2.0.0; các file trong cùng một example phải được build cùng nhau. Mẫu minh họa khác cần đọc ngữ cảnh và không được coi là project độc lập.
+Phiên bản 3.1.0 giữ nguyên 20 bộ ví dụ cũ (27 file), có tổng 22 bộ ví dụ C++17 (29 file) sau khi thêm minh họa dự án; các file trong cùng một example phải được build cùng nhau. Mẫu minh họa khác cần đọc ngữ cảnh và không được coi là project độc lập.
 
-- Bảng đối chiếu `curriculum-coverage.json` ghi đủ 56 bài và 8 phụ lục nguồn, cùng từng đề mục H3 của Completion Pack đã biên tập.
+- Bảng đối chiếu `curriculum-coverage.json` ghi đủ 56 bài và 8 phụ lục nguồn, từng đề mục H3 của Completion Pack, cùng mọi H2/H3 của hai tài liệu dự án. Hash nguồn giúp phát hiện tài liệu thay đổi để đối chiếu lại trước khi phát hành.
 - Câu hỏi, exercise và quiz dùng ID ổn định; lịch sử thực hành/điểm có nguồn không được sửa thành kết quả kiểm tra phần mềm.
 - Kiểm tra tự động phải xác nhận link và ví dụ, giữ output liền với code, bảo toàn ID và tránh cấp tiến độ do nhập tài liệu.
 - Kiểm tra trình duyệt phải xác nhận người học tìm được đúng kiến thức qua mục lục, tra cứu theo ý định và link bài giải thích.

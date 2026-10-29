@@ -9,6 +9,9 @@
 .unified-sidebar-progress .row { margin-bottom: 6px; }
 .unified-progress-notice { padding: 14px 18px; margin-bottom: 20px; border-left: 3px solid var(--warning); }
 .unified-progress-notice p { margin: 5px 0 0; }
+.lesson-project-examples { padding: 14px 18px; margin-bottom: 20px; }
+.lesson-project-examples ul { padding-left: 20px; margin: 8px 0 0; display: grid; gap: 6px; }
+.lesson-project-examples a { overflow-wrap: anywhere; font-size: 14px; }
 .unified-stage-lessons { display: grid; gap: 8px; margin-top: 14px; }
 .unified-stage-lessons a { display: flex; align-items: baseline; gap: 10px; color: var(--text-dim); font-size: 13px; }
 .unified-stage-lessons .lesson-number { min-width: 24px; color: var(--text-faint); font-family: var(--mono); }

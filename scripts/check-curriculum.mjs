@@ -44,7 +44,8 @@ assert.deepEqual(lessonProgressStatus('3',{'3':{read:true}}),{read:false,needsUp
 assert.equal(lessonProgressStatus('3',{'course:cpp-02':{read:true}}).read,false);
 assert.equal(lessonProgressStatus('3',{'course:cpp-02':{read:true}}).hasHistory,true);
 assert.equal(lessonProgressStatus('3',{'3':{read:true,contentRevision:CONTENT_REVISION}}).read,true);
-assert.equal(lessonProgressStatus('29',{'29':{read:true}}).read,true);
+assert.equal(lessonProgressStatus('29',{'29':{read:true}}).needsUpdate,true);
+assert.equal(lessonProgressStatus('29',{'29':{read:true,contentRevision:CONTENT_REVISION}}).read,true);
 assert.equal(readingReward('3',{'3':{read:true}}),0);
 assert.equal(readingReward('3',{'course:cpp-02':{read:true}}),0);
 assert.equal(readingReward('3',{}),15);

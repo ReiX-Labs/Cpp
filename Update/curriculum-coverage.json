@@ -1,6 +1,6 @@
 {
-  "version": 3,
-  "date": "2026-10-28",
+  "version": 4,
+  "date": "2026-10-29",
   "sourceCommit": "f51e45624c04f7ecfe943fd4dc84b0702486e6d7",
   "canonical": "Update/CPP_GIAO_TRINH_CHUAN.md",
   "groups": [
@@ -2435,5 +2435,944 @@
     "Setup Unreal chuyển từ bài0 sang30; ví dụ virtual lifetime chuyển từ13 sang14 sau smart pointer/inheritance.",
     "Lookup là bảng tra cứu chung; appendix-a trở thành chỉ mục ký hiệu trỏ tới bài và cùng catalog.",
     "Các phần advanced container, string_view và string Unreal được ghi rõ prerequisite/lần đọc tiếp trong bài."
+  ],
+  "projectIntegrationBase": "e590abb9ca02b3b6fc675714304f20ce1625bd17",
+  "projectCorrections": [
+    {
+      "lessonId": "50",
+      "reason": "Game-thread dispatch does not establish receiver lifetime or request freshness; guard GEngine in illustrative callback."
+    }
+  ],
+  "projectSources": [
+    {
+      "file": "Update/CPP_KienThuc_TuDuAn_CubeCubev2.md",
+      "sha256": "16edc1e840cec56663c5c0ddc4d9103b1fb3da9f6023794484ce0f19d9e6ec39",
+      "reviewedOn": "2026-10-29",
+      "examples": [
+        {
+          "lessonId": "5",
+          "anchor": "project-cube-star-contract"
+        },
+        {
+          "lessonId": "12",
+          "anchor": "project-cube-model-invariants"
+        },
+        {
+          "lessonId": "20",
+          "anchor": "project-cube-cells-containers"
+        },
+        {
+          "lessonId": "15",
+          "anchor": "project-cube-level-sources"
+        },
+        {
+          "lessonId": "18",
+          "anchor": "project-cube-async-capture"
+        },
+        {
+          "lessonId": "25",
+          "anchor": "project-cube-session-clock"
+        },
+        {
+          "lessonId": "28",
+          "anchor": "project-cube-grid-space"
+        },
+        {
+          "lessonId": "29",
+          "anchor": "project-cube-input-state"
+        },
+        {
+          "lessonId": "34",
+          "anchor": "project-cube-framework"
+        },
+        {
+          "lessonId": "36",
+          "anchor": "project-cube-pointer-choices"
+        },
+        {
+          "lessonId": "37",
+          "anchor": "project-cube-widget-subscriptions"
+        },
+        {
+          "lessonId": "53",
+          "anchor": "project-cube-timer-teardown"
+        },
+        {
+          "lessonId": "55",
+          "anchor": "project-cube-regression-practice"
+        }
+      ],
+      "topics": [
+        {
+          "heading": "1. Nhìn toàn bộ kiến thức trước khi học",
+          "destinations": [
+            "34",
+            "55"
+          ],
+          "anchors": [
+            "project-cube-framework",
+            "project-cube-regression-practice"
+          ],
+          "treatment": "Gắn tầng C++/tư duy game/Unreal/tích hợp vào lộ trình đang có, không tạo khóa học thứ hai."
+        },
+        {
+          "heading": "2. C++ nền tảng đang xuất hiện ở đâu?",
+          "destinations": [
+            "5",
+            "12",
+            "20",
+            "15",
+            "18",
+            "36"
+          ],
+          "anchors": [
+            "project-cube-star-contract",
+            "project-cube-model-invariants",
+            "project-cube-cells-containers",
+            "project-cube-level-sources",
+            "project-cube-async-capture",
+            "project-cube-pointer-choices"
+          ],
+          "treatment": "Phân bổ theo khái niệm và source thực tế."
+        },
+        {
+          "heading": "2.1. Kiểu dữ liệu, biểu thức, điều kiện và giá trị biên",
+          "destinations": [
+            "5"
+          ],
+          "anchors": [
+            "project-cube-star-contract"
+          ],
+          "treatment": "Ví dụ kiểm tra một mốc thời gian, crosslink lesson-3/4, phân biệt hợp đồng thêm với source."
+        },
+        {
+          "heading": "2.2. Hàm, tham số, giá trị trả về và hợp đồng dữ liệu",
+          "destinations": [
+            "5"
+          ],
+          "anchors": [
+            "project-cube-star-contract"
+          ],
+          "treatment": "Hợp đồng sao, bool+output WorldToGrid, reference getter không kéo dài lifetime."
+        },
+        {
+          "heading": "2.3. Struct, enum class và mô hình hóa dữ liệu",
+          "destinations": [
+            "12",
+            "25"
+          ],
+          "anchors": [
+            "project-cube-model-invariants",
+            "project-cube-session-clock"
+          ],
+          "treatment": "Model piece/level/score và trạng thái, crosslink enum."
+        },
+        {
+          "heading": "2.4. Container, vòng lặp và lựa chọn cấu trúc dữ liệu",
+          "destinations": [
+            "20"
+          ],
+          "anchors": [
+            "project-cube-cells-containers"
+          ],
+          "treatment": "Array/set/map theo câu hỏi; buffer16, vòng chỉ số, vận tốc và mẫu thiếu."
+        },
+        {
+          "heading": "2.5. Class, đóng gói và phân chia trách nhiệm",
+          "destinations": [
+            "12",
+            "34"
+          ],
+          "anchors": [
+            "project-cube-model-invariants",
+            "project-cube-framework"
+          ],
+          "treatment": "Bất biến/model/luật/UI; crosslink composition."
+        },
+        {
+          "heading": "2.6. Kế thừa, đa hình và interface",
+          "destinations": [
+            "15"
+          ],
+          "anchors": [
+            "project-cube-level-sources"
+          ],
+          "treatment": "Nguồn level chung, hand base, IGrabbable và cơ chế riêng Unreal."
+        },
+        {
+          "heading": "2.7. Pointer, lifetime và quyền sở hữu",
+          "destinations": [
+            "36"
+          ],
+          "anchors": [
+            "project-cube-pointer-choices"
+          ],
+          "treatment": "Bảng five usecases, crosslink RAII/GC."
+        },
+        {
+          "heading": "2.8. Template, lambda, toán tử, header và compilation",
+          "destinations": [
+            "18",
+            "20",
+            "34"
+          ],
+          "anchors": [
+            "project-cube-async-capture",
+            "project-cube-cells-containers",
+            "project-cube-framework"
+          ],
+          "treatment": "Callback capture, equality/hash; class chia nhiều cpp; crosslink templates/copy move/header/preprocessor."
+        },
+        {
+          "heading": "3. Thuật toán và tư duy game rút ra từ dự án",
+          "destinations": [
+            "20",
+            "25",
+            "28",
+            "29"
+          ],
+          "anchors": [
+            "project-cube-cells-containers",
+            "project-cube-session-clock",
+            "project-cube-grid-space",
+            "project-cube-input-state"
+          ],
+          "treatment": "Luật, state, tọa độ, thuật toán gắn ví dụ."
+        },
+        {
+          "heading": "3.1. State machine: hành động phụ thuộc trạng thái",
+          "destinations": [
+            "25",
+            "29"
+          ],
+          "anchors": [
+            "project-cube-session-clock",
+            "project-cube-input-state"
+          ],
+          "treatment": "Đồng hồ dựa state và SetState không validate hết transitions."
+        },
+        {
+          "heading": "3.2. Tập ô, bất biến và cập nhật dữ liệu có kiểm soát",
+          "destinations": [
+            "20"
+          ],
+          "anchors": [
+            "project-cube-cells-containers"
+          ],
+          "treatment": "Bài strict-placement riêng với source partial-snap; occupancysubset và xóa theo piece."
+        },
+        {
+          "heading": "3.3. Toán 3D: hệ tọa độ trước, công thức sau",
+          "destinations": [
+            "28"
+          ],
+          "anchors": [
+            "project-cube-grid-space"
+          ],
+          "treatment": "Pipelineworld/local/grid, biên và rotation."
+        },
+        {
+          "heading": "3.4. Hysteresis, cancel và xử lý dữ liệu không đáng tin",
+          "destinations": [
+            "29"
+          ],
+          "anchors": [
+            "project-cube-input-state"
+          ],
+          "treatment": "Bảng sequence test, nguồn Meta chính thức, không áp đặt ngưỡng làm chuẩn nền tảng."
+        },
+        {
+          "heading": "3.5. Hình học voxel và chi phí tính toán",
+          "destinations": [
+            "20",
+            "28"
+          ],
+          "anchors": [
+            "project-cube-cells-containers",
+            "project-cube-grid-space"
+          ],
+          "treatment": "C++17 membership, equality/hash cạnh và đo trước tối ưu."
+        },
+        {
+          "heading": "4. C++ được đặt vào Unreal như thế nào?",
+          "destinations": [
+            "34",
+            "36",
+            "37",
+            "53"
+          ],
+          "anchors": [
+            "project-cube-framework",
+            "project-cube-pointer-choices",
+            "project-cube-widget-subscriptions",
+            "project-cube-timer-teardown"
+          ],
+          "treatment": "Phân theo hệ Unreal và thời gian sống."
+        },
+        {
+          "heading": "4.1. Vai trò của các lớp trong dự án",
+          "destinations": [
+            "34"
+          ],
+          "anchors": [
+            "project-cube-framework"
+          ],
+          "treatment": "Lớp cha thật của subsystem/registry; GameInstance không thay save."
+        },
+        {
+          "heading": "4.2. Reflection và ranh giới C++/Blueprint",
+          "destinations": [
+            "34",
+            "15",
+            "36"
+          ],
+          "anchors": [
+            "project-cube-framework",
+            "project-cube-level-sources",
+            "project-cube-pointer-choices"
+          ],
+          "treatment": "TSubclassOf/DataAsset/BlueprintNativeEvent, phân biệt specifiers; crosslink lesson31/38/39/51."
+        },
+        {
+          "heading": "4.3. Vòng đời, sự kiện và timer",
+          "destinations": [
+            "25",
+            "37",
+            "53"
+          ],
+          "anchors": [
+            "project-cube-session-clock",
+            "project-cube-widget-subscriptions",
+            "project-cube-timer-teardown"
+          ],
+          "treatment": "State trước broadcast, widget subscription, spawn teardown, timer và thread."
+        },
+        {
+          "heading": "4.4. UI, âm thanh và dữ liệu trình bày",
+          "destinations": [
+            "34",
+            "37"
+          ],
+          "anchors": [
+            "project-cube-framework",
+            "project-cube-widget-subscriptions"
+          ],
+          "treatment": "ID tách tên, model->UI/audio, FString/FName/FText linklesson35."
+        },
+        {
+          "heading": "5. Các kiến thức tích hợp học sau phần lõi",
+          "destinations": [
+            "15",
+            "18",
+            "20",
+            "29",
+            "34",
+            "53",
+            "55"
+          ],
+          "anchors": [
+            "project-cube-level-sources",
+            "project-cube-async-capture",
+            "project-cube-cells-containers",
+            "project-cube-input-state",
+            "project-cube-framework",
+            "project-cube-timer-teardown",
+            "project-cube-regression-practice"
+          ],
+          "treatment": "FileJSON/stablekey/save/HTTP/inputphysics/trackingMR/rendering/editor đều phân bổ; không tuyên bốdevicepass."
+        },
+        {
+          "heading": "6. Lộ trình tự viết: tám bài thực hành",
+          "destinations": [
+            "55"
+          ],
+          "anchors": [
+            "project-cube-regression-practice"
+          ],
+          "treatment": "Bảng8mốc link thẳng các bài hiện tại, không riêngcourse."
+        },
+        {
+          "heading": "Bài 1 — Bộ tính sao",
+          "destinations": [
+            "5"
+          ],
+          "anchors": [
+            "project-cube-star-contract"
+          ],
+          "treatment": "Ví dụ một mốc nhỏ chạy được, bài tự viết đủ bộ chấm sao và ca biên."
+        },
+        {
+          "heading": "Bài 2 — Dữ liệu level và best score",
+          "destinations": [
+            "12"
+          ],
+          "anchors": [
+            "project-cube-model-invariants"
+          ],
+          "treatment": "Đề bài + output, không solution."
+        },
+        {
+          "heading": "Bài 3 — Lõi puzzle bằng tập ô",
+          "destinations": [
+            "20"
+          ],
+          "anchors": [
+            "project-cube-cells-containers"
+          ],
+          "treatment": "Đề bài nghiêm ngặt, invariant, boundary, partialsnap source distinction."
+        },
+        {
+          "heading": "Bài 4 — Đồng hồ và trạng thái phiên chơi",
+          "destinations": [
+            "25"
+          ],
+          "anchors": [
+            "project-cube-session-clock"
+          ],
+          "treatment": "Đề bài transition/time và test."
+        },
+        {
+          "heading": "Bài 5 — Tọa độ lưới và mặt ngoài voxel",
+          "destinations": [
+            "28",
+            "20"
+          ],
+          "anchors": [
+            "project-cube-grid-space",
+            "project-cube-cells-containers"
+          ],
+          "treatment": "Đề tọa độ, ví dụ membership chạy được; bộ đếm mặt để người học tự viết."
+        },
+        {
+          "heading": "Bài 6 — Nút bấm có hysteresis và cancel",
+          "destinations": [
+            "29"
+          ],
+          "anchors": [
+            "project-cube-input-state"
+          ],
+          "treatment": "Chuỗi test và yêu cầu tự viết."
+        },
+        {
+          "heading": "Bài 7 — Nguồn level, lưu dữ liệu và callback",
+          "destinations": [
+            "15",
+            "18",
+            "55"
+          ],
+          "anchors": [
+            "project-cube-level-sources",
+            "project-cube-async-capture",
+            "project-cube-regression-practice"
+          ],
+          "treatment": "Bài theo bước,fileerror,stableID,restart,latecallback."
+        },
+        {
+          "heading": "Bài 8 — Đưa một lát cắt gameplay vào Unreal",
+          "destinations": [
+            "34",
+            "53",
+            "55"
+          ],
+          "anchors": [
+            "project-cube-framework",
+            "project-cube-timer-teardown",
+            "project-cube-regression-practice"
+          ],
+          "treatment": "Thực hành slice đủinput->model->event->UI->save."
+        },
+        {
+          "heading": "7. Cách đọc source để thực sự tự viết được",
+          "destinations": [
+            "55"
+          ],
+          "anchors": [
+            "project-cube-regression-practice"
+          ],
+          "treatment": "Vònghọc tựcode/test/đốichiếu;source filenames trong block."
+        },
+        {
+          "heading": "8. Dấu hiệu bạn đã hiểu một hệ thống",
+          "destinations": [
+            "55"
+          ],
+          "anchors": [
+            "project-cube-regression-practice"
+          ],
+          "treatment": "Flow ownership invariant boundary independentcoding and evidencelevels."
+        }
+      ],
+      "verifiedSources": [
+        {
+          "title": "Epic — Object Pointers",
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/object-pointers-in-unreal-engine"
+        },
+        {
+          "title": "Epic — Unreal Smart Pointer Library",
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/smart-pointers-in-unreal-engine"
+        },
+        {
+          "title": "Epic — Gameplay Timers",
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/gameplay-timers-in-unreal-engine"
+        },
+        {
+          "title": "Epic — Multicast Delegates",
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/multicast-delegates-in-unreal-engine"
+        },
+        {
+          "title": "Epic — Gameplay Framework UE5.5",
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/gameplay-framework-in-unreal-engine?application_version=5.5"
+        },
+        {
+          "title": "Meta — Is Pointer Pose Valid (verified via vr_docs_search/get_page)",
+          "url": "https://developers.meta.com/vr/documentation/unreal/unreal-blueprints-is-pointer-pose-valid"
+        }
+      ]
+    },
+    {
+      "file": "Update/ReiXHome_CPP_Knowledge_Map.md",
+      "sha256": "2646ae0036c259afc2697dc0517ba5fcc39474a9ee8641091c9502f2695ae626",
+      "reviewedOn": "2026-10-29",
+      "examples": [
+        {
+          "lessonId": "5",
+          "anchor": "project-reix-api-contract"
+        },
+        {
+          "lessonId": "12",
+          "anchor": "project-reix-model-invariants"
+        },
+        {
+          "lessonId": "20",
+          "anchor": "project-reix-identity-storage"
+        },
+        {
+          "lessonId": "18",
+          "anchor": "project-reix-callback-reentry"
+        },
+        {
+          "lessonId": "16",
+          "anchor": "project-reix-responsibility-navigation"
+        },
+        {
+          "lessonId": "34",
+          "anchor": "project-reix-lifetime-scope"
+        },
+        {
+          "lessonId": "37",
+          "anchor": "project-reix-model-events-ui"
+        },
+        {
+          "lessonId": "28",
+          "anchor": "project-reix-grid-geometry"
+        },
+        {
+          "lessonId": "25",
+          "anchor": "project-reix-hold-confirm"
+        },
+        {
+          "lessonId": "53",
+          "anchor": "project-reix-loading-states"
+        },
+        {
+          "lessonId": "27",
+          "anchor": "project-reix-cache-precompute"
+        },
+        {
+          "lessonId": "30",
+          "anchor": "project-reix-sdk-build-boundaries"
+        }
+      ],
+      "topics": [
+        {
+          "heading": "1. Nhìn tính năng để nhận ra kiến thức",
+          "level": 2,
+          "destinations": [
+            "16",
+            "30"
+          ],
+          "anchors": [
+            "project-reix-responsibility-navigation",
+            "project-reix-sdk-build-boundaries"
+          ],
+          "treatment": "Chuyển bảng tính năng thành phương pháp lần theo một luồng và phân biệt ba lớp kiến thức; không tạo lộ trình song song."
+        },
+        {
+          "heading": "2. C++ nền tảng thực sự xuất hiện trong dự án",
+          "level": 2,
+          "destinations": [
+            "5",
+            "12",
+            "20",
+            "18"
+          ],
+          "anchors": [
+            "project-reix-api-contract",
+            "project-reix-model-invariants",
+            "project-reix-identity-storage",
+            "project-reix-callback-reentry"
+          ],
+          "treatment": "Các phần nền tảng được bổ sung bằng tình huống cụ thể tại chương sở hữu lý thuyết."
+        },
+        {
+          "heading": "01 — Biến, biểu thức, điều kiện và kiểm tra biên",
+          "level": 3,
+          "destinations": [
+            "5",
+            "12",
+            "4"
+          ],
+          "anchors": [
+            "project-reix-api-contract",
+            "project-reix-model-invariants"
+          ],
+          "treatment": "Giữ lý thuyết if/bool ở lesson-4; thêm hợp đồng grid, kiểm tra biên và setter volume."
+        },
+        {
+          "heading": "02 — Hàm, tham số, giá trị trả về và `const`",
+          "level": 3,
+          "destinations": [
+            "5"
+          ],
+          "anchors": [
+            "project-reix-api-contract"
+          ],
+          "treatment": "Bổ sung hợp đồng Try, phân biệt input/output reference, thất bại giữ nguyên đầu ra."
+        },
+        {
+          "heading": "03 — `struct`, `enum class` và mô hình dữ liệu",
+          "level": 3,
+          "destinations": [
+            "12",
+            "39"
+          ],
+          "anchors": [
+            "project-reix-model-invariants"
+          ],
+          "treatment": "Bổ sung definition vs instance bằng snippet nhỏ; nối data-driven thay vì lặp lý thuyết enum."
+        },
+        {
+          "heading": "04 — Class, đóng gói và điều kiện bất biến",
+          "level": 3,
+          "destinations": [
+            "12"
+          ],
+          "anchors": [
+            "project-reix-model-invariants"
+          ],
+          "treatment": "Bổ sung invariant volume, chuẩn hóa và giới hạn metadata/runtime; không đưa delegate vào bài class đầu."
+        },
+        {
+          "heading": "05 — Container, vòng lặp, tìm kiếm và ID",
+          "level": 3,
+          "destinations": [
+            "20",
+            "35"
+          ],
+          "anchors": [
+            "project-reix-identity-storage"
+          ],
+          "treatment": "So sánh nhu cầu vector/map/set, ID/index, tìm tuyến tính; liên kết API Unreal."
+        },
+        {
+          "heading": "06 — Con trỏ, tham chiếu, bản sao và thời gian sống",
+          "level": 3,
+          "destinations": [
+            "20",
+            "6",
+            "36"
+          ],
+          "anchors": [
+            "project-reix-identity-storage"
+          ],
+          "treatment": "Thêm tình huống borrow invalidation, snapshot copy và tìm lại theo ID; tái dùng lý thuyết lifetime."
+        },
+        {
+          "heading": "07 — Lambda, callback và template ở mức sử dụng",
+          "level": 3,
+          "destinations": [
+            "18"
+          ],
+          "anchors": [
+            "project-reix-callback-reentry"
+          ],
+          "treatment": "Giải thích tức thời/chạy sau/reentrancy, move callback trước khi gọi, dùng template có sẵn."
+        },
+        {
+          "heading": "3. Kiến thức Unreal cần nối vào nền tảng C++",
+          "level": 2,
+          "destinations": [
+            "16",
+            "34",
+            "37"
+          ],
+          "anchors": [
+            "project-reix-responsibility-navigation",
+            "project-reix-lifetime-scope",
+            "project-reix-model-events-ui"
+          ],
+          "treatment": "Nối các tình huống ứng dụng vào nền tảng đã có, giữ cơ chế engine đúng chương."
+        },
+        {
+          "heading": "08 — Kế thừa, `override`, Actor và Component",
+          "level": 3,
+          "destinations": [
+            "16",
+            "33"
+          ],
+          "anchors": [
+            "project-reix-responsibility-navigation"
+          ],
+          "treatment": "Đối chiếu APawn inheritance với composition camera/components; giữ ví dụ lifecycle ở lesson-33."
+        },
+        {
+          "heading": "09 — Reflection, Blueprint và UI",
+          "level": 3,
+          "destinations": [
+            "37",
+            "38",
+            "31"
+          ],
+          "anchors": [
+            "project-reix-model-events-ui"
+          ],
+          "treatment": "Thêm luồng UMG click đến điều hướng và test mở lại; giữ macro/reflection ở bài sở hữu."
+        },
+        {
+          "heading": "10 — Ownership và vòng đời trong Unreal",
+          "level": 3,
+          "destinations": [
+            "34",
+            "32",
+            "36"
+          ],
+          "anchors": [
+            "project-reix-lifetime-scope"
+          ],
+          "treatment": "Bổ sung bảng lớp cha thật, World/GameInstance/manual UObject và ranh giới RAM/persistence; tránh lặp lý thuyết pointer."
+        },
+        {
+          "heading": "11 — Delegate, sự kiện và tách dữ liệu khỏi giao diện",
+          "level": 3,
+          "destinations": [
+            "37"
+          ],
+          "anchors": [
+            "project-reix-model-events-ui"
+          ],
+          "treatment": "Giải thích normalize/compare/update/broadcast, failed mutation và listener cleanup."
+        },
+        {
+          "heading": "12 — Tách trách nhiệm, dependency và điều hướng",
+          "level": 3,
+          "destinations": [
+            "16"
+          ],
+          "anchors": [
+            "project-reix-responsibility-navigation"
+          ],
+          "treatment": "Thêm API responsibilities, dependency injection đơn giản, Back stack và ca biên."
+        },
+        {
+          "heading": "4. Kiến thức bài toán và kỹ thuật nâng cao",
+          "level": 2,
+          "destinations": [
+            "28",
+            "25",
+            "53",
+            "27",
+            "30"
+          ],
+          "anchors": [
+            "project-reix-grid-geometry",
+            "project-reix-hold-confirm",
+            "project-reix-loading-states",
+            "project-reix-cache-precompute",
+            "project-reix-sdk-build-boundaries"
+          ],
+          "treatment": "Xếp ứng dụng toán/thời gian/async/cache/SDK tại chương liên quan và chỉ mở rộng độ khó sau nền tảng."
+        },
+        {
+          "heading": "13 — Grid, local/world transform và snap",
+          "level": 3,
+          "destinations": [
+            "28"
+          ],
+          "anchors": [
+            "project-reix-grid-geometry"
+          ],
+          "treatment": "Bổ sung quy trình world-local-floor-center, tọa độ âm, pivot và occupancy nhất quán."
+        },
+        {
+          "heading": "14 — Input, thời gian và trạng thái qua nhiều frame",
+          "level": 3,
+          "destinations": [
+            "25",
+            "52"
+          ],
+          "anchors": [
+            "project-reix-hold-confirm"
+          ],
+          "treatment": "Thêm hold-confirm hủy khi đổi target và delta-time; ghi đúng snapshot dùng legacy input."
+        },
+        {
+          "heading": "15 — Raycast, vector, phép quay và collision",
+          "level": 3,
+          "destinations": [
+            "28",
+            "53"
+          ],
+          "anchors": [
+            "project-reix-grid-geometry"
+          ],
+          "treatment": "Giải thích ray-plane và guard mẫu gần zero/no-hit; bậc AABB đến OBB/SAT, degree/radian."
+        },
+        {
+          "heading": "16 — Loading bất đồng bộ, timer, timeout và phục hồi",
+          "level": 3,
+          "destinations": [
+            "53",
+            "18"
+          ],
+          "anchors": [
+            "project-reix-loading-states",
+            "project-reix-callback-reentry"
+          ],
+          "treatment": "Phân biệt requested/loaded/shown/app-ready, chính sách timeout khác nhau, request identity cho bài mô phỏng và reentrancy."
+        },
+        {
+          "heading": "17 — Cache, dữ liệu tạo trước và hiệu năng",
+          "level": 3,
+          "destinations": [
+            "27"
+          ],
+          "anchors": [
+            "project-reix-cache-precompute"
+          ],
+          "treatment": "Giải thích composite key/invalidation, đo hit/miss, source fallback chính xác và greedy coverage."
+        },
+        {
+          "heading": "18 — Tích hợp SDK, render và tổ chức build",
+          "level": 3,
+          "destinations": [
+            "30",
+            "41",
+            "28"
+          ],
+          "anchors": [
+            "project-reix-sdk-build-boundaries"
+          ],
+          "treatment": "Phân biệt C++/UE/SDK/Build.cs C#, nguồn giả lập, module/include và procedural geometry/render prerequisites."
+        },
+        {
+          "heading": "5. Thứ tự tự học và sản phẩm để chứng minh đã hiểu",
+          "level": 2,
+          "destinations": [
+            "5",
+            "12",
+            "20",
+            "16",
+            "28",
+            "25",
+            "53",
+            "27",
+            "30",
+            "55"
+          ],
+          "anchors": [
+            "project-reix-api-contract",
+            "project-reix-model-invariants",
+            "project-reix-identity-storage",
+            "project-reix-responsibility-navigation",
+            "project-reix-grid-geometry",
+            "project-reix-hold-confirm",
+            "project-reix-loading-states",
+            "project-reix-cache-precompute",
+            "project-reix-sdk-build-boundaries"
+          ],
+          "treatment": "Chuyển các chặng thành bài tự làm và tiêu chí tại từng chương; tái dùng chương kiểm thử, không cộng tiến độ từ tài liệu."
+        },
+        {
+          "heading": "6. Cách đọc một tính năng mà không bị ngợp",
+          "level": 2,
+          "destinations": [
+            "16",
+            "43"
+          ],
+          "anchors": [
+            "project-reix-responsibility-navigation"
+          ],
+          "treatment": "Tích hợp phương pháp lần input/guard/state/event/error/cleanup; liên kết debugging hiện có."
+        },
+        {
+          "heading": "7. Những ranh giới cần hiểu đúng",
+          "level": 2,
+          "destinations": [
+            "34",
+            "27",
+            "30",
+            "16"
+          ],
+          "anchors": [
+            "project-reix-lifetime-scope",
+            "project-reix-cache-precompute",
+            "project-reix-sdk-build-boundaries",
+            "project-reix-responsibility-navigation"
+          ],
+          "treatment": "Giữ ranh giới RAM/đĩa, source/assets, có kỹ thuật/đã đo, đọc/tự viết; không khẳng định runtime chưa kiểm chứng."
+        }
+      ],
+      "verifiedSources": [
+        {
+          "id": "epic-timers",
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/gameplay-timers-in-unreal-engine",
+          "verified": "2026-10-29",
+          "supports": "Timer managers World/GameInstance, object-bound timer lifetime, handle cleanup, game-thread access."
+        },
+        {
+          "id": "epic-pointers",
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/object-pointers-in-unreal-engine",
+          "verified": "2026-10-29",
+          "supports": "Reflected TObjectPtr strong references, weak/soft semantics; retain existing lesson-32/36 explanation."
+        },
+        {
+          "id": "epic-subsystems",
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/programming-subsystems-in-unreal-engine",
+          "verified": "2026-10-29",
+          "supports": "UGameInstanceSubsystem initialization/deinitialization lifetime."
+        },
+        {
+          "id": "epic-world-subsystem",
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/UWorldSubsystem",
+          "verified": "2026-10-29",
+          "supports": "UWorldSubsystem shared world lifetime."
+        },
+        {
+          "id": "epic-metadata",
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/metadata-specifiers-in-unreal-engine",
+          "verified": "2026-10-29",
+          "supports": "Editor metadata does not replace runtime validation."
+        },
+        {
+          "id": "epic-streaming",
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/ULevelStreaming",
+          "verified": "2026-10-29",
+          "supports": "OnLevelLoaded versus OnLevelShown meanings."
+        },
+        {
+          "id": "epic-async-save",
+          "url": "https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/Engine/UGameplayStatics/AsyncSaveGameToSlot",
+          "verified": "2026-10-29",
+          "supports": "Serialization game thread, write worker, completion game thread; cross-project QA only, not claim ReiXHome uses it."
+        },
+        {
+          "id": "meta-mruk",
+          "url": "https://developers.meta.com/vr/documentation/unreal/unreal-mr-utility-kit-features",
+          "verified": "2026-10-29",
+          "method": "vr_docs_search scope=unreal mode=verify followed by vr_docs_get_page",
+          "supports": "Scene loading/query versus rendering, MRUK raycasts separate from UE physics, match installed plugin API."
+        }
+      ]
+    }
   ]
 }
