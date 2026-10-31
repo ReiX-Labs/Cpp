@@ -5,34 +5,13 @@ import { quizFor } from "../data/quizzes";
 import { challengesFor } from "../data/challenges";
 import { cards as allCards } from "../data/cards";
 import { actions, useStore } from "../lib/store";
-import Markdown, { headingSlug } from "../components/Markdown";
+import Markdown from "../components/Markdown";
 import Quiz from "../components/Quiz";
 import ChallengePanel from "../components/ChallengePanel";
-import { curriculumAnchorUrl, lessonProgressStatus, lessonProjectExamples } from "../content/curriculum";
+import { lessonProgressStatus } from "../content/curriculum";
 
-interface Toc {
-  text: string;
-  slug: string;
-  level: number;
-}
-
-function buildToc(body: string): Toc[] {
-  const out: Toc[] = [];
-  let inFence = false;
-  for (const line of body.split(/\r?\n/)) {
-    if (/^```/.test(line.trim())) {
-      inFence = !inFence;
-      continue;
-    }
-    if (inFence) continue;
-    const m = line.match(/^(#{3,4})\s+(.*)$/);
-    if (m) {
-      const text = m[2].trim();
-      out.push({ text, slug: headingSlug(text), level: m[1].length });
-    }
-  }
-  return out;
-}
+import { parseLessonReading } from "../content/lessonReading";
+import LessonReader, { ReadingOutline } from "../components/LessonReader";
 
 function scrollTo(slug: string) {
   const el = document.getElementById(slug);
@@ -41,25 +20,59 @@ function scrollTo(slug: string) {
 
 export default function Lesson() {
   const { id } = useParams();
-  const [params] = useSearchParams();
+  const [params, setParams] = useSearchParams();
   const state = useStore();
   const [tab, setTab] = useState<"learn" | "practice">(params.get("tab") === "practice" ? "practice" : "learn");
   const [revealedCards, setRevealedCards] = useState<Set<string>>(new Set());
 
   const section = id ? reference.byId[id] : undefined;
   const anchor = params.get("anchor");
+  const reading = useMemo(() => parseLessonReading(section?.body ?? ""), [section]);
+  const all = params.get("view") === "all";
+  const requestedPart = params.get("part");
+  const partIndex = reading.units.findIndex(unit => unit.id === requestedPart);
+  const anchorIndex = reading.units.findIndex(unit => anchor && unit.anchors.includes(anchor));
+  const activeIndex = Math.max(0, partIndex >= 0 ? partIndex : anchorIndex);
+  const selectPart = (index: number) => {
+    const unit = reading.units[index];
+    if (!unit) return;
+    setTab("learn");
+    const nextParams = new URLSearchParams(params);
+    nextParams.delete("tab");
+    nextParams.set("part", unit.id);
+    nextParams.set("anchor", unit.anchors[0] ?? unit.id);
+    setParams(nextParams);
+    requestAnimationFrame(() => {
+      const panel = document.getElementById(`reading-${unit.id}`);
+      panel?.focus({ preventScroll: true });
+      panel?.scrollIntoView({ block: "start" });
+    });
+  };
+  const changeView = (showAll: boolean) => {
+    const nextParams = new URLSearchParams(params);
+    if (showAll) nextParams.set("view", "all");
+    else nextParams.delete("view");
+    setParams(nextParams);
+    requestAnimationFrame(() => scrollTo("lesson-reading-start"));
+  };
   useEffect(() => {
     setTab(params.get("tab") === "practice" ? "practice" : "learn");
     setRevealedCards(new Set());
   }, [id, params.get("tab")]);
   useEffect(() => {
     if (anchor && tab === "learn") {
-      const frame = requestAnimationFrame(() => document.getElementById(anchor)?.scrollIntoView({ block: "start" }));
+      const frame = requestAnimationFrame(() => {
+        const target = document.getElementById(anchor) ?? document.getElementById(`reading-${reading.units[activeIndex]?.id}`);
+        if (target) {
+          let parent = target.parentElement;
+          while (parent) { if (parent instanceof HTMLDetailsElement) parent.open = true; parent = parent.parentElement; }
+          target.scrollIntoView({ block: "start" });
+        }
+      });
       return () => cancelAnimationFrame(frame);
     }
-  }, [id, anchor, tab]);
+  }, [id, anchor, tab, activeIndex, reading]);
 
-  const toc = useMemo(() => (section ? buildToc(section.body) : []), [section]);
   const quiz = section ? quizFor(section.id) : [];
   const challenges = section ? challengesFor(section.id) : [];
   const sectionCards = useMemo(
@@ -79,7 +92,6 @@ export default function Lesson() {
   }
 
   const progress = state.progress[section.id];
-  const projectExamples = lessonProjectExamples[section.id] ?? [];
   const status = lessonProgressStatus(section.id, state.progress);
   const exerciseCount = quiz.length + challenges.length + sectionCards.length;
 
@@ -129,25 +141,14 @@ export default function Lesson() {
         {tab === "learn" ? (
           <div className="fade">
             {status.needsUpdate && <aside className="card unified-progress-notice"><strong>Bài học đã được bổ sung</strong><p className="muted">Kết quả và XP trước đây vẫn được giữ. Đọc các phần mới rồi xác nhận đã học ở cuối bài.</p></aside>}
-            {projectExamples.length > 0 && <nav className="card lesson-project-examples" aria-label="Ví dụ dự án trong bài">
-              <strong>Ví dụ từ dự án trong bài này</strong>
-              <ul>{projectExamples.map(example => <li key={example.anchor}>
-                <Link to={curriculumAnchorUrl(example.anchor)!} onClick={event => {
-                  if (anchor === example.anchor && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey) {
-                    event.preventDefault();
-                    scrollTo(example.anchor);
-                  }
-                }}>{example.title}</Link>
-              </li>)}</ul>
-            </nav>}
-            <Markdown resolveAnchor={curriculumAnchorUrl}>{section.body}</Markdown>
-            <section className="card pad lesson-completion">
+            <LessonReader reading={reading} activeIndex={activeIndex} all={all} anchor={anchor} onSelect={selectPart} onViewChange={changeView} />
+            {(all || activeIndex === reading.units.length - 1) && <section className="card pad lesson-completion">
               <h3>Trước khi chuyển bài</h3>
               <p>Tự giải thích ví dụ và hoàn thành yêu cầu thực hành. Việc đánh dấu ghi nhận bạn đã học nội dung này; kết quả quiz và bài nộp được lưu riêng.</p>
               <button className="btn primary" disabled={status.read} onClick={() => actions.markSectionRead(section.id)}>
                 {status.read ? "✓ Đã học bản hiện tại" : status.hasHistory ? "✓ Xác nhận đã học phần cập nhật" : "✓ Đánh dấu đã học (+15 XP)"}
               </button>
-            </section>
+            </section>}
             <div className="lesson-footer">
               {prev ? (
                 <Link className="lesson-nav" to={`/lesson/${prev.id}`}>
@@ -281,22 +282,10 @@ export default function Lesson() {
           )}
         </div>
 
-        {toc.length > 0 && (
-          <div className="rail-card">
-            <h4>Trong bài này</h4>
-            <nav className="toc">
-              {toc.map((t, index) => (
-                <button
-                  key={`${t.slug}-${index}`}
-                  className={t.level === 4 ? "h3" : ""}
-                  onClick={() => { setTab("learn"); requestAnimationFrame(() => scrollTo(t.slug)); }}
-                >
-                  {t.text}
-                </button>
-              ))}
-            </nav>
-          </div>
-        )}
+        {reading.units.length > 0 && <div className="rail-card reading-rail-outline">
+          <h4>Trong bài này · {reading.units.length} phần</h4>
+          <ReadingOutline reading={reading} activeIndex={activeIndex} onSelect={selectPart} />
+        </div>}
         <div className="rail-card"><h4>Tra cứu và thực hành</h4>
           <Link className="btn block sm" to="/reference?tab=syntax">Tra cú pháp và thao tác</Link>
           <Link className="btn block sm" to="/review">Ôn các bài đã học</Link>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { reference } from "../content/reference";
 import { lessonProgressStatus } from "../content/curriculum";
@@ -6,10 +6,13 @@ import { eligibleReviewCardIds } from "../content/courseReview";
 import { useStore } from "../lib/store";
 import { startOfDay } from "../lib/srs";
 import "./UnifiedCourse.css";
+import "./SidebarMobile.css";
 
 export default function Sidebar() {
   const state = useStore();
   const location = useLocation();
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const menuButton = useRef<HTMLButtonElement>(null);
   const activeId = location.pathname.match(/^\/lesson\/([^/]+)/)?.[1];
   const activePartId = reference.byId[activeId ?? ""]?.partId;
   const parts = reference.parts.filter((part) => !part.isAppendix);
@@ -17,6 +20,9 @@ export default function Sidebar() {
   useEffect(() => {
     if (activePartId) setOpen((previous) => new Set(previous).add(activePartId));
   }, [activePartId]);
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [location.pathname, location.search]);
   const today = startOfDay();
   const due = eligibleReviewCardIds("learned", state.progress).filter((id) => !state.srs[id] || state.srs[id].due <= today).length;
   const totalRead = reference.lessonSections.filter((lesson) => lessonProgressStatus(lesson.id, state.progress).read).length;
@@ -25,11 +31,22 @@ export default function Sidebar() {
     next.has(id) ? next.delete(id) : next.add(id);
     return next;
   });
-  return <aside className="sidebar">
+  return <aside className={"sidebar" + (mobileOpen ? " sidebar-mobile-open" : "")} onKeyDown={(event) => {
+    if (event.key === "Escape" && mobileOpen && window.matchMedia("(max-width: 900px)").matches) {
+      setMobileOpen(false);
+      menuButton.current?.focus();
+    }
+  }}>
     <div className="brand">
       <div className="logo reix-mark" role="img" aria-label="ReiX Labs" />
       <div><div className="brand-name">C++ Dojo</div><div className="brand-sub">C++ · Game Development · Unreal</div></div>
+      <button ref={menuButton} type="button" className="sidebar-menu-toggle" aria-expanded={mobileOpen} aria-controls="sidebar-navigation" onClick={() => setMobileOpen((previous) => !previous)}>
+        <span aria-hidden="true">{mobileOpen ? "×" : "☰"}</span> {mobileOpen ? "Đóng" : "Menu"}
+      </button>
     </div>
+    <div id="sidebar-navigation" className="sidebar-navigation" onClick={(event) => {
+      if ((event.target as Element).closest("a") && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey) setMobileOpen(false);
+    }}>
     <nav className="nav" aria-label="Điều hướng chính">
       <NavLink to="/" end className={({ isActive }) => "nav-link" + (isActive ? " active" : "")}><span className="nav-ico">◈</span> Chương trình học</NavLink>
       <NavLink to="/review" className={({ isActive }) => "nav-link" + (isActive ? " active" : "")}><span className="nav-ico">↻</span> Ôn tập hàng ngày {due > 0 && <span className="badge">{due}</span>}</NavLink>
@@ -60,6 +77,7 @@ export default function Sidebar() {
     <div className="unified-sidebar-progress">
       <div className="row spread"><span>Tiến độ chương trình</span><span>{totalRead}/{reference.lessonSections.length}</span></div>
       <div className="bar success"><span style={{ width: `${reference.lessonSections.length ? totalRead / reference.lessonSections.length * 100 : 0}%` }} /></div>
+    </div>
     </div>
   </aside>;
 }

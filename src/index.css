@@ -1733,3 +1733,12 @@ a:hover {
     border-bottom: 1px solid var(--border-soft);
   }
 }
+
+/* Keep search usable alongside learning stats on narrow phones. */
+@media (max-width: 600px) {
+  .topbar { padding: 10px 0; }
+  .topbar-inner { flex-wrap: wrap; gap: 8px; padding-inline: 16px; }
+  .topbar-inner .search { flex-basis: 100%; max-width: none; min-width: 0; }
+  .topbar-stats { gap: 8px; margin-left: auto; flex-wrap: wrap; }
+  .page .content-anchor, .page .prose [id], .page .lesson-reader [id] { scroll-margin-top: 130px; }
+}
